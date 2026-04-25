@@ -1,4 +1,5 @@
-import { Slot } from 'expo-router';
+import { DBProvider } from '@/src/context/DBContext';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
@@ -9,5 +10,15 @@ export default function RootLayout() {
     SplashScreen.hideAsync();
   }, []);
 
-  return <Slot />;
+  return (
+    <DBProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: '#0e0e0e' },
+          animation: 'slide_from_right',
+        }}
+      />
+    </DBProvider>
+  );
 }
