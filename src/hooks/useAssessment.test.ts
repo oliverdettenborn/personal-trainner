@@ -1,6 +1,5 @@
-import { renderHook, act } from '@testing-library/react-native';
+import { act, renderHook } from '@testing-library/react-native';
 import { useAssessment } from './useAssessment';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Mock do AsyncStorage
 jest.mock('@react-native-async-storage/async-storage', () => ({

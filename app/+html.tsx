@@ -51,6 +51,10 @@ body {
     padding: 0 !important;
     overflow: visible !important;
   }
+  [data-testid="template-card"] {
+    border: 2px solid #C9963A !important;
+    max-width: 100% !important;
+  }
   div {
     border-radius: 0 !important;
   }

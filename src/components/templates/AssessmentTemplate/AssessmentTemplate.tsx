@@ -13,7 +13,7 @@ export function AssessmentTemplate({ children }: AssessmentTemplateProps) {
   return (
     <View style={[styles.container, { backgroundColor: bg }]}>
       <ScrollView style={styles.contentContainer} contentContainerStyle={styles.contentScroll}>
-        <View style={[styles.card, { borderColor: borderGold }]}>
+        <View style={[styles.card, { borderColor: borderGold }]} testID="template-card" nativeID="template-card">
           {children}
         </View>
       </ScrollView>

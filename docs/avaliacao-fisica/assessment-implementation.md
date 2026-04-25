@@ -1,7 +1,43 @@
 # Plano de Implementação: Alinhar Código com SPEC Pixel-Perfect
 
-> **Referência:** `docs/avaliacao-fisica/SPEC.md`
-> **Estado atual:** Todos os componentes visuais existem (atoms, molecules, organisms, template). O gap principal é **state management e wiring** — o hook `useAssessment` não gerencia seleção, os componentes não se comunicam, e existe rota duplicada.
+> **Referência:** `docs/avaliacao-fisica/SPEC.md`  
+> **HTML Reference:** `docs/avaliacao-fisica/acompanhamento_fisico.html`  
+> **Estado atual:** ✅ Implementação completa — todos os componentes alinhados pixel-perfect com o HTML de referência.
+
+---
+
+## Status de Implementação
+
+| Fase | Status |
+|------|--------|
+| Fase 1: Tokens e Limpeza | ✅ Concluída |
+| Fase 2: State Management | ✅ Concluída |
+| Fase 3: Wiring Componentes | ✅ Concluída |
+| Fase 4: Detalhes Visuais | ✅ Concluída |
+| Fase 5: Print CSS & Web | ✅ Concluída |
+| Fase 6: Testes | ✅ Concluída (11 suites, 28 testes) |
+
+---
+
+## Divergências HTML vs React Native — Resolvidas
+
+| # | Componente | Divergência | Severidade | Resolução |
+|---|-----------|-------------|------------|-----------|
+| 1 | AppHeader | Título fontSize 26 → deveria ser 18 | Crítica | fontSize corrigido, layout com `<select>` nativo |
+| 2 | AppHeader | Botão "Novo Aluno" hardcoded → deveria ser `<select>` dropdown | Crítica | `<select>` nativo web, modal próprio pro "+ Aluno" |
+| 3 | Sidebar | Duplicava student selector + botão remover | Crítica | Stripped: só "Avaliações" + lista + "+ Nova avaliação" |
+| 4 | PhotoSection | Data/Peso usavam MeasurementRow com ícone circular | Crítica | Convertidos pra Input boxed como no HTML |
+| 5 | Ícones | Ionicons (genéricos) → SVG paths exatos do HTML | Crítica | Todos substituídos por react-native-svg inline |
+| 6 | AssessmentForm | Emojis (📝📅) nos títulos obs/meta | Crítica | SVG icons (info, person) com cores split |
+| 7 | FeedbackPanel | `icon` prop (Ionicons) → `svgPath` prop | Média | Prop renomeada, SVG inline |
+| 8 | MeasurementRow | `icon` prop (Ionicons) → `svgPath` prop | Média | Prop renomeada, SVG inline |
+| 9 | SectionLabel | paddingHorizontal 16 → 24 | Média | Corrigido |
+| 10 | Empty State | Ionicons fitness-outline gold → SVG info icon text3 | Média | SVG com opacity 0.4 |
+| 11 | Footer | textAlign sem alignItems center | Média | alignItems: 'center' |
+| 12 | Meta textarea | bg genérico → #120f05 | Média | Corrigido |
+| 13 | Print CSS | Faltava hide de input[type=file] | Baixa | Adicionado |
+| 14 | AssessmentForm | Seção "FOTOS" label sobrando | Média | Removida (labels dentro de PhotoSection) |
+| 15 | _layout.tsx | Over-engineered (Stack, ThemeProvider, fonts) | Baixa | Simplificado pra Slot + SplashScreen |
 
 ---
 
