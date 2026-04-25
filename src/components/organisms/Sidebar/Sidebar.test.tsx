@@ -1,15 +1,7 @@
+import { fireEvent, render } from '@testing-library/react-native';
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { Assessment, Student } from '../../../types/assessment';
 import { Sidebar } from './Sidebar';
-import { Student, Assessment } from '../../../types/assessment';
-
-// Mocking @expo/vector-icons
-jest.mock('@expo/vector-icons', () => {
-  const { Text: MockText } = require('react-native');
-  return {
-    Ionicons: ({ name }: any) => <MockText>{name}</MockText>,
-  };
-});
 
 const mockStudents: Student[] = [
   { id: 's1', name: 'Alice', createdAt: Date.now() },
@@ -17,58 +9,65 @@ const mockStudents: Student[] = [
 ];
 
 const mockAssessments: Assessment[] = [
-  { id: 'a1', studentId: 's1', createdAt: 1704067200000, frente_antes_data: '2024-01-01' }, 
+  { id: 'a1', studentId: 's1', createdAt: 1704067200000, frente_antes_data: '2024-01-01' },
   { id: 'a2', studentId: 's1', createdAt: 1706745600000, frente_antes_data: '2024-02-01' },
 ];
 
 const commonProps = {
   students: mockStudents,
-  currentStudentId: 's1',
+  currentStudentId: 's1' as string | null,
   assessments: mockAssessments,
   currentAssessmentId: 'a1',
-  onSelectStudent: jest.fn(),
-  onAddStudent: jest.fn(),
-  onRemoveStudent: jest.fn(),
   onSelectAssessment: jest.fn(),
   onAddAssessment: jest.fn(),
-  onImportJSON: jest.fn(),
 };
 
 describe('Sidebar', () => {
-  it('renders correctly with students and assessments', () => {
-    const { getAllByText, queryByText, getByText } = render(<Sidebar {...commonProps} />);
+  it('renders title and assessment list', () => {
+    const { getByText, getAllByText } = render(<Sidebar {...commonProps} />);
 
-    expect(getAllByText('Alice').length).toBeGreaterThan(0); 
-    expect(queryByText('— Selecione um aluno —')).toBeNull(); 
-    expect(getByText('Remover Aluno')).toBeTruthy();
-
-    // Just check that there are items in the list by looking for the student name Alice (which appears in each row)
-    // We already have Alice from the student button, so we check for more occurrences.
-    // In our mock, Alice appears 3 times total: 1 in button, 2 in assessment items.
-    expect(getAllByText('Alice').length).toBe(3);
+    expect(getByText('Avaliações')).toBeTruthy();
+    expect(getByText('+ Nova avaliação')).toBeTruthy();
+    // Alice appears once per assessment item
+    expect(getAllByText('Alice').length).toBe(2);
   });
 
-  it('opens student modal when "Novo Aluno" button is pressed', () => {
+  it('formats dates as DD/MM/YYYY from frente_antes_data', () => {
     const { getByText } = render(<Sidebar {...commonProps} />);
-    
-    const addButton = getByText('+ Novo Aluno');
-    fireEvent.press(addButton);
-    
-    expect(getByText('Novo Aluno')).toBeTruthy();
+
+    expect(getByText('01/01/2024')).toBeTruthy();
+    expect(getByText('01/02/2024')).toBeTruthy();
   });
 
-  it('calls onAddStudent when confirmed in modal', () => {
-    const { getByText, getByPlaceholderText } = render(<Sidebar {...commonProps} />);
-    
-    // Open modal
-    fireEvent.press(getByText('+ Novo Aluno'));
+  it('calls onAddAssessment when "+ Nova avaliação" is pressed', () => {
+    const { getByText } = render(<Sidebar {...commonProps} />);
 
-    // Type student name
-    fireEvent.changeText(getByPlaceholderText('Ex: João Silva'), 'New Student');
+    fireEvent.press(getByText('+ Nova avaliação'));
 
-    // Confirm
-    fireEvent.press(getByText('Criar'));
+    expect(commonProps.onAddAssessment).toHaveBeenCalledWith('s1');
+  });
 
-    expect(commonProps.onAddStudent).toHaveBeenCalledWith('New Student');
+  it('calls onSelectAssessment when an assessment item is pressed', () => {
+    const { getByText } = render(<Sidebar {...commonProps} />);
+
+    fireEvent.press(getByText('01/02/2024'));
+
+    expect(commonProps.onSelectAssessment).toHaveBeenCalledWith('a2');
+  });
+
+  it('shows empty message when no student selected', () => {
+    const { getByText } = render(
+      <Sidebar {...commonProps} currentStudentId={null} />
+    );
+
+    expect(getByText('Selecione um aluno para ver as avaliações')).toBeTruthy();
+  });
+
+  it('shows empty message when no assessments exist', () => {
+    const { getByText } = render(
+      <Sidebar {...commonProps} assessments={[]} />
+    );
+
+    expect(getByText(/Nenhuma avaliação ainda/)).toBeTruthy();
   });
 });

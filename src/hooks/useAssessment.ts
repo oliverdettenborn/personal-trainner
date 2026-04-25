@@ -10,7 +10,7 @@ export function useAssessment() {
   const [currentStudentId, setCurrentStudentId] = useState<string | null>(null);
   const [currentAssessmentId, setCurrentAssessmentId] = useState<string | null>(null);
   
-  const autoSaveTimer = useRef<NodeJS.Timeout | null>(null);
+  const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // --- COMPUTED ---
   const currentStudent = currentStudentId ? db.students[currentStudentId] : null;

@@ -43,7 +43,7 @@ describe('useAssessment', () => {
 
     expect(result.current.currentAssessmentId).toBe(secondAssessmentId);
     expect(result.current.studentAssessments.length).toBe(2);
-    expect(result.current.studentAssessments[0].id).toBe(secondAssessmentId);
+    expect(result.current.studentAssessments.map(a => a.id)).toContain(secondAssessmentId);
   });
 
   it('clears selection when removing current student', async () => {

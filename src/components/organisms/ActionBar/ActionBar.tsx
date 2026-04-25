@@ -11,6 +11,7 @@ export type ActionBarProps = {
   onDelete?: () => void;
   isSaving?: boolean;
   status?: 'saved' | 'unsaved';
+  nativeID?: string;
 };
 
 export function ActionBar({
@@ -20,6 +21,7 @@ export function ActionBar({
   onDelete,
   isSaving = false,
   status = 'saved',
+  nativeID,
 }: ActionBarProps) {
   const text3 = '#6a5a40';
   const success = useThemeColor({}, 'success');
@@ -65,7 +67,7 @@ export function ActionBar({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} nativeID={nativeID}>
       <View style={styles.leftSection}>
         <Button
           title={isSaving ? "Salvando..." : "Salvar"}
@@ -94,7 +96,7 @@ export function ActionBar({
             color: '#C9963A',
             borderRadius: 6,
           }}>
-            <Ionicons name="download-outline" size={13} color="#C9963A" />
+            <Ionicons name="cloud-download-outline" size={13} color="#C9963A" />
             Importar JSON
             <input
               type="file"

@@ -4,11 +4,12 @@ import { AppHeader } from '@organisms/AppHeader';
 import { AssessmentForm } from '@organisms/AssessmentForm';
 import { Sidebar } from '@organisms/Sidebar';
 import { AssessmentTemplate } from '@templates/AssessmentTemplate';
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { Path, Svg } from 'react-native-svg';
 import { Text } from '../src/components/atoms/Text';
-import { Ionicons } from '@expo/vector-icons';
-import { useThemeColor } from '@hooks/useThemeColor';
+
+const SVG_INFO_EMPTY = "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z";
 
 export default function AssessmentScreen() {
   const { 
@@ -18,7 +19,6 @@ export default function AssessmentScreen() {
     setCurrentStudentId,
     currentAssessmentId,
     setCurrentAssessmentId,
-    currentStudent,
     currentAssessment,
     studentAssessments,
     addStudent,
@@ -33,7 +33,6 @@ export default function AssessmentScreen() {
   const [isSaving, setIsSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
 
-  const gold = useThemeColor({}, 'gold');
   const text3 = '#6a5a40';
 
   const handleUpdateAssessment = (key: string, value: string) => {
@@ -47,7 +46,7 @@ export default function AssessmentScreen() {
     if (isDirty) {
       const timer = setTimeout(() => {
         setIsDirty(false);
-      }, 3500); // Slightly more than hook's 3000ms autosave
+      }, 3500);
       return () => clearTimeout(timer);
     }
   }, [isDirty]);
@@ -61,38 +60,27 @@ export default function AssessmentScreen() {
         currentStudentId={currentStudentId}
         students={Object.values(db.students)}
         onSelectStudent={setCurrentStudentId}
-        onAddStudent={() => {
-          // Shared modal state would be better, but for now Sidebar handles its own.
-          // This button in header will be a secondary way or just same trigger.
-        }}
+        onAddStudent={addStudent}
         onRemoveStudent={(id) => {
-          if (confirm('Excluir aluno e todas as suas avaliações?')) {
+          if (confirm(`Remover o aluno "${db.students[id]?.name}" e todas as suas avaliações? Essa ação é irreversível.`)) {
             removeStudent(id);
           }
         }}
         onImportJSON={importFromJSON}
       />
       
-      <View style={styles.container}>
+      <View style={styles.appBody}>
         <Sidebar 
           nativeID="sidebar"
           students={Object.values(db.students)}
           currentStudentId={currentStudentId}
           assessments={studentAssessments}
           currentAssessmentId={currentAssessmentId}
-          onSelectStudent={setCurrentStudentId}
-          onAddStudent={addStudent}
-          onRemoveStudent={(id) => {
-            if (confirm('Excluir aluno e todas as suas avaliações?')) {
-              removeStudent(id);
-            }
-          }}
           onSelectAssessment={setCurrentAssessmentId}
           onAddAssessment={addAssessment}
-          onImportJSON={importFromJSON}
         />
         
-        <View style={styles.contentContainer} nativeID="main-content">
+        <ScrollView style={styles.mainContent} nativeID="main-content">
           {currentAssessment ? (
             <>
               <ActionBar
@@ -112,7 +100,7 @@ export default function AssessmentScreen() {
                 }}
                 onImport={importFromJSON}
                 onDelete={() => {
-                  if (currentAssessmentId && confirm('Excluir avaliação?')) {
+                  if (currentAssessmentId && confirm('Excluir esta avaliação? A ação é irreversível.')) {
                     removeAssessment(currentAssessmentId);
                   }
                 }}
@@ -120,24 +108,26 @@ export default function AssessmentScreen() {
                 status={isDirty ? 'unsaved' : 'saved'}
               />
               
-              <ScrollView contentContainerStyle={styles.scrollContent}>
-                <AssessmentTemplate>
-                  <AssessmentForm 
-                    assessment={currentAssessment}
-                    onUpdate={handleUpdateAssessment}
-                  />
-                </AssessmentTemplate>
-              </ScrollView>
+              <AssessmentTemplate>
+                <AssessmentForm 
+                  assessment={currentAssessment}
+                  onUpdate={handleUpdateAssessment}
+                />
+              </AssessmentTemplate>
             </>
           ) : (
             <View style={styles.emptyState}>
-              <Ionicons name="fitness-outline" size={48} color={gold} />
-              <Text style={[styles.emptyText, { color: text3 }]}>
+              <View style={{ opacity: 0.4 }}>
+                <Svg width={48} height={48} viewBox="0 0 24 24" fill={text3}>
+                  <Path d={SVG_INFO_EMPTY} />
+                </Svg>
+              </View>
+              <Text style={styles.emptyText}>
                 Selecione um aluno e crie uma avaliação para começar.
               </Text>
             </View>
           )}
-        </View>
+        </ScrollView>
       </View>
     </View>
   );
@@ -148,27 +138,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0e0e0e',
   },
-  container: {
+  appBody: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'row' as const,
   },
-  contentContainer: {
+  mainContent: {
     flex: 1,
-    overflow: 'hidden',
-    paddingTop: 20,
-  },
-  scrollContent: {
-    paddingBottom: 40,
+    padding: 20,
   },
   emptyState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 16,
+    gap: 12,
+    paddingVertical: 60,
+    paddingHorizontal: 20,
   },
   emptyText: {
-    fontSize: 16,
+    fontSize: 13,
+    color: '#6a5a40',
     textAlign: 'center',
-    maxWidth: 300,
   },
 });

@@ -1,13 +1,13 @@
-import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { Path, Svg } from 'react-native-svg';
 import { useThemeColor } from '../../../hooks/useThemeColor';
 import { Input, Text } from '../../atoms';
 
 export type MeasurementRowProps = {
   label: string;
   placeholder: string;
-  icon: keyof typeof Ionicons.glyphMap;
+  svgPath: string;
   value: string;
   onChangeText: (text: string) => void;
   textAlign?: 'left' | 'right';
@@ -16,7 +16,7 @@ export type MeasurementRowProps = {
 export function MeasurementRow({ 
   label, 
   placeholder, 
-  icon, 
+  svgPath, 
   value, 
   onChangeText,
   textAlign = 'left' 
@@ -26,13 +26,17 @@ export function MeasurementRow({
 
   const isRight = textAlign === 'right';
 
+  const icon = (
+    <View style={[styles.iconContainer, { borderColor: borderGold }]}>
+      <Svg width={14} height={14} viewBox="0 0 24 24" fill={gold}>
+        <Path d={svgPath} />
+      </Svg>
+    </View>
+  );
+
   return (
     <View style={[styles.container, isRight && styles.containerRight]}>
-      {!isRight && (
-        <View style={[styles.iconContainer, { borderColor: borderGold }]}>
-          <Ionicons name={icon} size={14} color={gold} />
-        </View>
-      )}
+      {!isRight && icon}
       
       <View style={[styles.content, isRight && styles.contentRight]}>
         <Text style={[styles.label, isRight && styles.labelRight]}>{label}</Text>
@@ -46,11 +50,7 @@ export function MeasurementRow({
         />
       </View>
 
-      {isRight && (
-        <View style={[styles.iconContainer, { borderColor: borderGold }]}>
-          <Ionicons name={icon} size={14} color={gold} />
-        </View>
-      )}
+      {isRight && icon}
     </View>
   );
 }

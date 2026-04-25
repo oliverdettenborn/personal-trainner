@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   },
   labelBox: {
     paddingVertical: 4,
-    paddingHorizontal: 16,
+    paddingHorizontal: 24,
     borderRadius: 20,
     backgroundColor: '#2a2a2a',
     borderWidth: 1,

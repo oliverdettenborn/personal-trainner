@@ -21,6 +21,21 @@ const Colors = {
     info: '#2a6a9a',
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorLight,
+    // Complementos para compatibilidade com dark theme
+    panelGreenBg: '#e6f4ea',
+    panelGreenBorder: '#34a853',
+    panelAmberBg: '#fef7e0',
+    panelAmberBorder: '#fbbc04',
+    panelRedBg: '#fce8e6',
+    panelRedBorder: '#ea4335',
+    dotAmber: '#fbbc04',
+    dotRed: '#ea4335',
+    metaBg: '#fdf7e3',
+    metaTextareaBg: '#fff',
+    btnDangerBorder: '#ea4335',
+    btnDangerText: '#ea4335',
+    activeAssessmentBg: '#fcf2e0',
+    templateHeaderGradientTop: '#fff',
   },
   dark: {
     text: '#e8e0d0', // text-beige

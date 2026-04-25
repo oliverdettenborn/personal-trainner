@@ -1,6 +1,6 @@
-import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { Path, Svg } from 'react-native-svg';
 import { useThemeColor } from '../../../hooks/useThemeColor';
 import { Input, Text } from '../../atoms';
 
@@ -13,7 +13,7 @@ export type FeedbackItem = {
 export type FeedbackPanelProps = {
   title: string;
   highlightedTitle?: string;
-  icon: keyof typeof Ionicons.glyphMap;
+  svgPath: string;
   dotColor: 'green' | 'amber' | 'red';
   items: FeedbackItem[];
 };
@@ -21,7 +21,7 @@ export type FeedbackPanelProps = {
 export function FeedbackPanel({ 
   title, 
   highlightedTitle,
-  icon, 
+  svgPath, 
   dotColor, 
   items 
 }: FeedbackPanelProps) {
@@ -42,7 +42,9 @@ export function FeedbackPanel({
     <View style={[styles.container, { borderColor: border }]}>
       <View style={styles.header}>
         <View style={[styles.iconContainer, { backgroundColor: colors.bg, borderColor: colors.border }]}>
-          <Ionicons name={icon} size={12} color={colors.dot} />
+          <Svg width={12} height={12} viewBox="0 0 24 24" fill={colors.dot}>
+            <Path d={svgPath} />
+          </Svg>
         </View>
         <Text style={styles.title}>
           {title} {highlightedTitle && <Text style={{ color: gold }}>{highlightedTitle}</Text>}

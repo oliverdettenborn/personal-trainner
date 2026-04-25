@@ -37,7 +37,7 @@ body {
   }
 }
 @media print {
-  #app-header, #sidebar, #action-bar, [data-testid="remove-photo-btn"] {
+  #app-header, #sidebar, #action-bar, [data-testid="remove-photo-btn"], input[type="file"] {
     display: none !important;
   }
   body {

@@ -1,6 +1,16 @@
+import { fireEvent, render } from '@testing-library/react-native';
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
 import { MeasurementRow } from './MeasurementRow';
+
+jest.mock('react-native-svg', () => {
+  const { View: MockView } = require('react-native');
+  return {
+    Svg: (props: any) => <MockView {...props} />,
+    Path: (props: any) => <MockView {...props} />,
+  };
+});
+
+const SVG_SHOULDERS = "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z";
 
 describe('MeasurementRow', () => {
   it('renders label and placeholder correctly', () => {
@@ -8,7 +18,7 @@ describe('MeasurementRow', () => {
       <MeasurementRow 
         label="Ombros" 
         placeholder="__ cm" 
-        icon="resize"
+        svgPath={SVG_SHOULDERS}
         value=""
         onChangeText={() => {}}
       />
@@ -23,7 +33,7 @@ describe('MeasurementRow', () => {
       <MeasurementRow 
         label="Cintura" 
         placeholder="__ cm" 
-        icon="fitness"
+        svgPath={SVG_SHOULDERS}
         value=""
         onChangeText={onChangeTextMock}
       />

@@ -1,12 +1,12 @@
-import React from 'react';
 import { render } from '@testing-library/react-native';
+import React from 'react';
 import { FeedbackPanel } from './FeedbackPanel';
 
-// Mocking @expo/vector-icons
-jest.mock('@expo/vector-icons', () => {
-  const { Text: MockText } = require('react-native');
+jest.mock('react-native-svg', () => {
+  const { View: MockView } = require('react-native');
   return {
-    Ionicons: ({ name }: any) => <MockText>{name}</MockText>,
+    Svg: (props: any) => <MockView {...props} />,
+    Path: (props: any) => <MockView {...props} />,
   };
 });
 
@@ -21,17 +21,14 @@ describe('FeedbackPanel', () => {
       <FeedbackPanel 
         title="Test" 
         highlightedTitle="Panel" 
-        icon="checkmark" 
+        svgPath="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" 
         dotColor="green"
         items={mockItems} 
       />
     );
 
-    // Use regex to be flexible with nested Text components
     expect(getByText(/Test/)).toBeTruthy();
     expect(getByText(/Panel/)).toBeTruthy();
-    
-    // Inputs use getByDisplayValue or similar
     expect(getByDisplayValue('Test Item 1')).toBeTruthy();
     expect(getByDisplayValue('Test Item 2')).toBeTruthy();
   });
