@@ -1,17 +1,14 @@
-name: PR Checks & Preview
+name: PR Checks
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, closed]
+    types: [opened, synchronize, reopened]
 
 permissions:
-  contents: write
-  pull-requests: write
-  pages: write
+  contents: read
 
 jobs:
   checks:
-    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,57 +26,19 @@ jobs:
       - name: Unit tests
         run: npm test -- --passWithNoTests --ci
 
-  preview:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
-        if: github.event.action != 'closed'
         with:
           node-version: 20
           cache: npm
 
       - run: npm ci
-        if: github.event.action != 'closed'
-
-      - name: Set preview base URL
-        if: github.event.action != 'closed'
-        run: |
-          node -e "
-            const fs = require('fs');
-            const config = JSON.parse(fs.readFileSync('app.json', 'utf8'));
-            config.expo.experiments.baseUrl = '/personal-trainner/pr-preview/pr-${{ github.event.pull_request.number }}';
-            fs.writeFileSync('app.json', JSON.stringify(config, null, 2));
-          "
 
       - name: Build web
-        if: github.event.action != 'closed'
         run: npx expo export --platform web
         env:
           NODE_ENV: production
-
-      - name: Configure GitHub Pages source
-        if: github.event.action != 'closed'
-        run: |
-          gh api repos/${{ github.repository }}/pages \
-            --method PUT \
-            -f build_type=legacy \
-            -f source[branch]=gh-pages \
-            -f source[path]=/ 2>/dev/null || \
-          gh api repos/${{ github.repository }}/pages \
-            --method POST \
-            -f build_type=legacy \
-            -f source[branch]=gh-pages \
-            -f source[path]=/ 2>/dev/null || \
-          echo "::warning::Could not auto-configure GitHub Pages. Go to Settings > Pages and set source to 'Deploy from a branch' → gh-pages / root."
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Deploy preview
-        uses: rossjrw/pr-preview-action@v1
-        with:
-          source-dir: dist
-          preview-branch: gh-pages
-          umbrella-dir: pr-preview
-          action: auto
