@@ -7,6 +7,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  pages: write
 
 jobs:
   checks:
@@ -57,6 +58,23 @@ jobs:
         run: npx expo export --platform web
         env:
           NODE_ENV: production
+
+      - name: Configure GitHub Pages source
+        if: github.event.action != 'closed'
+        run: |
+          gh api repos/${{ github.repository }}/pages \
+            --method PUT \
+            -f build_type=legacy \
+            -f source[branch]=gh-pages \
+            -f source[path]=/ 2>/dev/null || \
+          gh api repos/${{ github.repository }}/pages \
+            --method POST \
+            -f build_type=legacy \
+            -f source[branch]=gh-pages \
+            -f source[path]=/ 2>/dev/null || \
+          echo "::warning::Could not auto-configure GitHub Pages. Go to Settings > Pages and set source to 'Deploy from a branch' → gh-pages / root."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy preview
         uses: rossjrw/pr-preview-action@v1
