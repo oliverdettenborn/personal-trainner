@@ -1,16 +1,16 @@
-import React from 'react';
-import { 
-  Pressable,
-  PressableProps,
-  StyleSheet, 
-  ActivityIndicator,
-  ViewStyle,
-  StyleProp,
-  TextStyle
-} from 'react-native';
-import { Text } from '../Text';
-import { useThemeColor } from '../../../hooks/useThemeColor';
 import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import {
+    ActivityIndicator,
+    Pressable,
+    PressableProps,
+    StyleSheet,
+    TextStyle,
+    View,
+    ViewStyle
+} from 'react-native';
+import { useThemeColor } from '../../../hooks/useThemeColor';
+import { Text } from '../Text';
 
 export type ButtonVariant = 'gold' | 'outline' | 'danger';
 
@@ -32,6 +32,7 @@ export function Button({
   iconRight,
   ...rest 
 }: ButtonProps) {
+  const [hovered, setHovered] = useState(false);
   const gold = useThemeColor({}, 'gold');
   const borderGold = useThemeColor({}, 'borderGold');
 
@@ -77,38 +78,44 @@ export function Button({
   const fontSize = size === 'sm' ? 12 : 14;
 
   return (
-    <Pressable
-      style={(state) => [
-        styles.container,
-        { paddingVertical, paddingHorizontal },
-        getVariantStyles(state.hovered).container,
-        state.pressed && { opacity: 0.7 },
-        disabled && styles.disabled,
-        typeof style === 'function' ? style(state) : style,
-      ]}
-      disabled={disabled || loading}
-      {...rest}
+    <View
+      // @ts-ignore - web-only events
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      {(state) => (
-        loading ? (
-          <ActivityIndicator color={getVariantStyles(state.hovered).text.color} />
-        ) : (
-          <>
-            <Text style={[styles.text, { fontSize }, getVariantStyles(state.hovered).text]}>
-              {title}
-            </Text>
-            {iconRight && (
-              <Ionicons 
-                name={iconRight} 
-                size={fontSize + 2} 
-                color={getVariantStyles(state.hovered).text.color} 
-                style={{ marginLeft: 6 }} 
-              />
-            )}
-          </>
-        )
-      )}
-    </Pressable>
+      <Pressable
+        style={(state) => [
+          styles.container,
+          { paddingVertical, paddingHorizontal },
+          getVariantStyles(hovered).container,
+          state.pressed && { opacity: 0.7 },
+          disabled && styles.disabled,
+          typeof style === 'function' ? style(state) : style,
+        ]}
+        disabled={disabled || loading}
+        {...rest}
+      >
+        {(state) => (
+          loading ? (
+            <ActivityIndicator color={getVariantStyles(hovered).text.color} />
+          ) : (
+            <>
+              <Text style={[styles.text, { fontSize }, getVariantStyles(hovered).text]}>
+                {title}
+              </Text>
+              {iconRight && (
+                <Ionicons 
+                  name={iconRight} 
+                  size={fontSize + 2} 
+                  color={getVariantStyles(hovered).text.color} 
+                  style={{ marginLeft: 6 }} 
+                />
+              )}
+            </>
+          )
+        )}
+      </Pressable>
+    </View>
   );
 }
 
