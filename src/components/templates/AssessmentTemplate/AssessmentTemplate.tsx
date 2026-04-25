@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useThemeColor } from '../../../hooks/useThemeColor';
 
 export type AssessmentTemplateProps = {
@@ -7,30 +7,16 @@ export type AssessmentTemplateProps = {
 };
 
 export function AssessmentTemplate({ children }: AssessmentTemplateProps) {
-  const bg = useThemeColor({}, 'background');
   const borderGold = useThemeColor({}, 'borderGold');
 
   return (
-    <View style={[styles.container, { backgroundColor: bg }]}>
-      <ScrollView style={styles.contentContainer} contentContainerStyle={styles.contentScroll}>
-        <View style={[styles.card, { borderColor: borderGold }]} testID="template-card" nativeID="template-card">
-          {children}
-        </View>
-      </ScrollView>
+    <View style={[styles.card, { borderColor: borderGold }]} testID="template-card" nativeID="template-card">
+      {children}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  contentContainer: {
-    flex: 1,
-  },
-  contentScroll: {
-    padding: 20,
-  },
   card: {
     borderWidth: 1,
     borderRadius: 10,

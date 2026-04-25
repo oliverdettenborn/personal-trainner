@@ -40,6 +40,6 @@ describe('MeasurementRow', () => {
     );
     
     fireEvent.changeText(getByPlaceholderText('__ cm'), '80');
-    expect(onChangeTextMock).toHaveBeenCalledWith('80');
+    expect(onChangeTextMock).toHaveBeenCalledWith('80 cm');
   });
 });

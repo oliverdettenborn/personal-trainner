@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
 import { useThemeColor } from '../../../hooks/useThemeColor';
+import { maskDate, maskWeight } from '../../../utils/masks';
 import { Input, PhotoSlot, Text } from '../../atoms';
 import { MeasurementRow } from '../MeasurementRow';
 import { SectionLabel } from '../SectionLabel';
@@ -41,29 +42,31 @@ function SideInfo({ prefix, side, assessmentData, onFieldChange, measures }: Sid
   const isRight = side === 'right';
 
   return (
-    <View style={[styles.sideInfo, isRight && { alignItems: 'flex-end' }]}>
+    <View style={styles.sideInfo}>
       {/* Data - boxed field */}
       <View style={styles.fieldGroup}>
-        <Text style={styles.fieldLabel}>Data</Text>
+        <Text style={[styles.fieldLabel, isRight && styles.fieldLabelRight]}>Data</Text>
         <Input
           variant="boxed"
           placeholder="__/__/____"
           value={assessmentData[`${prefix}_data`] || ''}
-          onChangeText={(v) => onFieldChange(`${prefix}_data`, v)}
-          style={[styles.fieldValue, isRight && { textAlign: 'right' }]}
+          onChangeText={(v) => onFieldChange(`${prefix}_data`, maskDate(v))}
+          keyboardType="numeric"
+          style={[styles.fieldValue, { borderColor: border }, isRight && { textAlign: 'right' }]}
           containerStyle={styles.fieldContainer}
         />
       </View>
 
       {/* Peso - boxed field */}
       <View style={styles.fieldGroup}>
-        <Text style={styles.fieldLabel}>Peso</Text>
+        <Text style={[styles.fieldLabel, isRight && styles.fieldLabelRight]}>Peso</Text>
         <Input
           variant="boxed"
           placeholder="0,0 kg"
           value={assessmentData[`${prefix}_peso`] || ''}
-          onChangeText={(v) => onFieldChange(`${prefix}_peso`, v)}
-          style={[styles.fieldValue, isRight && { textAlign: 'right' }]}
+          onChangeText={(v) => onFieldChange(`${prefix}_peso`, maskWeight(v))}
+          keyboardType="numeric"
+          style={[styles.fieldValue, { borderColor: border }, isRight && { textAlign: 'right' }]}
           containerStyle={styles.fieldContainer}
         />
       </View>
@@ -186,20 +189,23 @@ export function PhotoSection({
 
 const styles = StyleSheet.create({
   photoRow: {
-    flexDirection: 'row', 
-    gap: 0, 
-    padding: 16, 
+    flexDirection: 'row',
+    gap: 0,
+    padding: 16,
     backgroundColor: '#181818',
   },
   sideInfo: {
-    flexDirection: 'column', 
-    gap: 10, 
-    paddingHorizontal: 10, 
-    width: 160, 
+    flexDirection: 'column',
+    gap: 10,
+    paddingHorizontal: 10,
+    width: 160,
+    flexShrink: 0,
+    flexGrow: 0,
   },
   fieldGroup: {
     flexDirection: 'column',
     gap: 4,
+    width: '100%',
   },
   fieldLabel: {
     fontSize: 10,
@@ -208,6 +214,9 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
+  fieldLabelRight: {
+    textAlign: 'right',
+  },
   fieldValue: {
     fontSize: 13,
   },
@@ -215,10 +224,11 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   photoCol: {
-    flexDirection: 'column', 
-    gap: 8, 
-    alignItems: 'center', 
-    flex: 1, 
+    flexDirection: 'column',
+    gap: 8,
+    alignItems: 'center',
+    flex: 1,
+    minWidth: 0,
   },
   photoLabel: {
     fontSize: 11, 

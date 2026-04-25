@@ -60,7 +60,7 @@ export function FeedbackPanel({
               placeholder={item.placeholder}
               value={item.value}
               onChangeText={item.onChangeText}
-              style={styles.input}
+              style={[styles.input, { borderBottomColor: '#3a3020' }]}
               containerStyle={styles.inputContainer}
             />
           </View>

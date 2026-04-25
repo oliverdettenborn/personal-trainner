@@ -32,9 +32,13 @@ export function Sidebar({
   const currentStudent = students.find(s => s.id === currentStudentId);
 
   const formatDate = (assessment: Assessment) => {
-    if (assessment.frente_antes_data) {
-      const [y, m, d] = assessment.frente_antes_data.split('-');
-      return `${d}/${m}/${y}`;
+    const v = assessment.frente_antes_data;
+    if (v) {
+      if (v.includes('-')) {
+        const [y, m, d] = v.split('-');
+        return `${d}/${m}/${y}`;
+      }
+      return v; // already DD/MM/YYYY
     }
     const date = new Date(assessment.createdAt);
     return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;

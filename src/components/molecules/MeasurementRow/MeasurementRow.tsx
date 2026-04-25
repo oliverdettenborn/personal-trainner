@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
+import { maskCm } from '../../../utils/masks';
 import { useThemeColor } from '../../../hooks/useThemeColor';
 import { Input, Text } from '../../atoms';
 
@@ -44,7 +45,8 @@ export function MeasurementRow({
           variant="minimal"
           placeholder={placeholder}
           value={value}
-          onChangeText={onChangeText}
+          onChangeText={(v) => onChangeText(maskCm(v))}
+          keyboardType="numeric"
           style={[styles.input, isRight && styles.inputRight]}
           containerStyle={styles.inputContainer}
         />
