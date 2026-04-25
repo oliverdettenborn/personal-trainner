@@ -19,7 +19,7 @@ export default function Root({ children }: { children: React.ReactNode }) {
         <ScrollViewStyleReset />
 
         {/* Using raw CSS styles as an escape-hatch to ensure the background color never flickers in dark-mode. */}
-        <style dangerouslySetInnerHTML={{ __html: responsiveBackground }} />
+        <style dangerouslySetInnerHTML={{ __html: styles }} />
         {/* Add any additional <head> elements that you want globally available on web... */}
       </head>
       <body>{children}</body>
@@ -27,7 +27,7 @@ export default function Root({ children }: { children: React.ReactNode }) {
   );
 }
 
-const responsiveBackground = `
+const styles = `
 body {
   background-color: #fff;
 }
@@ -35,4 +35,24 @@ body {
   body {
     background-color: #000;
   }
-}`;
+}
+@media print {
+  #app-header, #sidebar, #action-bar, [data-testid="remove-photo-btn"] {
+    display: none !important;
+  }
+  body {
+    background-color: #0e0e0e !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  #main-content {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  div {
+    border-radius: 0 !important;
+  }
+}
+`;

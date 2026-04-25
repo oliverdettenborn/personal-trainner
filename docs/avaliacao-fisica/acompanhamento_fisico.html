@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acompanhamento Físico — Caio Oliver</title>
+<style>
+  :root {
+    --gold: #C9963A;
+    --gold-light: #E4B96A;
+    --gold-dark: #8B6520;
+    --bg: #0e0e0e;
+    --bg2: #181818;
+    --bg3: #222222;
+    --bg4: #2a2a2a;
+    --border: #3a3020;
+    --border-gold: #5a4010;
+    --text: #e8e0d0;
+    --text2: #a89878;
+    --text3: #6a5a40;
+    --danger: #c04040;
+    --success: #3a8a3a;
+    --info: #2a6a9a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; min-height: 100vh; }
+
+  /* HEADER */
+  .app-header { background: var(--bg2); border-bottom: 1px solid var(--border-gold); padding: 12px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .app-title { font-size: 18px; font-weight: 700; color: var(--gold); letter-spacing: 1px; white-space: nowrap; }
+  .app-title span { color: var(--text); }
+  .student-bar { display: flex; align-items: center; gap: 8px; flex: 1; flex-wrap: wrap; }
+  select.student-select { background: var(--bg3); border: 1px solid var(--border-gold); color: var(--text); padding: 6px 10px; border-radius: 6px; font-size: 13px; cursor: pointer; min-width: 180px; }
+  select.student-select:focus { outline: none; border-color: var(--gold); }
+  button { cursor: pointer; border: none; border-radius: 6px; padding: 6px 14px; font-size: 13px; font-weight: 600; transition: opacity .15s; }
+  button:hover { opacity: .85; }
+  button:active { opacity: .7; }
+  .btn-gold { background: var(--gold); color: #0e0e0e; }
+  .btn-outline { background: transparent; border: 1px solid var(--border-gold); color: var(--gold); }
+  .btn-outline:hover { border-color: var(--gold); }
+  .btn-danger { background: transparent; border: 1px solid #6a2020; color: #c08080; }
+  .btn-sm { padding: 4px 10px; font-size: 12px; }
+
+  /* MAIN LAYOUT */
+  .app-body { display: flex; gap: 0; min-height: calc(100vh - 57px); }
+  .sidebar { width: 230px; background: var(--bg2); border-right: 1px solid var(--border); padding: 16px 12px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+  .sidebar-title { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .assessment-list { display: flex; flex-direction: column; gap: 4px; flex: 1; overflow-y: auto; }
+  .assessment-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; cursor: pointer; transition: border-color .15s; }
+  .assessment-item:hover { border-color: var(--border-gold); }
+  .assessment-item.active { border-color: var(--gold); background: #2a2010; }
+  .assessment-item .a-date { font-size: 12px; color: var(--gold); font-weight: 600; }
+  .assessment-item .a-student { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .assessment-item .a-weight { font-size: 11px; color: var(--text3); }
+  .no-assessments { color: var(--text3); font-size: 12px; text-align: center; padding: 20px 0; }
+
+  /* MAIN CONTENT */
+  .main-content { flex: 1; padding: 20px; overflow-y: auto; }
+
+  /* TEMPLATE CARD */
+  .template-card { background: var(--bg2); border: 1px solid var(--border-gold); border-radius: 10px; overflow: hidden; max-width: 900px; margin: 0 auto; }
+  .template-header { text-align: center; padding: 20px 16px 12px; border-bottom: 1px solid var(--border-gold); background: linear-gradient(180deg, #1a1408 0%, var(--bg2) 100%); }
+  .template-title { font-size: 26px; font-weight: 900; color: var(--text); letter-spacing: 3px; text-transform: uppercase; }
+  .template-title span { color: var(--gold); }
+  .template-subtitle { font-size: 11px; color: var(--text3); letter-spacing: 3px; margin-top: 4px; }
+
+  /* SECTION LABEL */
+  .section-label { text-align: center; padding: 8px 16px; background: var(--bg3); border-bottom: 1px solid var(--border-gold); border-top: 1px solid var(--border-gold); }
+  .section-label span { display: inline-block; background: var(--bg4); border: 1px solid var(--border-gold); color: var(--gold); font-size: 13px; font-weight: 700; letter-spacing: 2px; padding: 4px 24px; border-radius: 20px; text-transform: uppercase; }
+
+  /* PHOTO SECTION */
+  .photo-section { display: grid; grid-template-columns: 160px 1fr 1fr 160px; gap: 0; padding: 16px; background: var(--bg2); }
+  .side-info { display: flex; flex-direction: column; gap: 10px; padding: 0 10px; }
+  .field-group { display: flex; flex-direction: column; gap: 4px; }
+  .field-label { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+  .field-value { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 5px 8px; color: var(--text); font-size: 13px; width: 100%; }
+  .field-value:focus { outline: none; border-color: var(--gold); }
+  .field-value::placeholder { color: var(--text3); }
+  .measure-row { display: flex; align-items: center; gap: 6px; }
+  .measure-icon { width: 28px; height: 28px; border: 1px solid var(--border-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .measure-icon svg { width: 14px; height: 14px; fill: var(--gold); }
+  .measure-info { display: flex; flex-direction: column; flex: 1; }
+  .measure-label { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+  .measure-val { background: transparent; border: none; border-bottom: 1px solid var(--border-gold); color: var(--text); font-size: 12px; width: 100%; padding: 2px 0; }
+  .measure-val:focus { outline: none; border-bottom-color: var(--gold); }
+  .measure-val::placeholder { color: var(--text3); }
+
+  /* PHOTO UPLOAD */
+  .photo-col { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .photo-label-tag { font-size: 11px; font-weight: 700; color: var(--text2); letter-spacing: 2px; text-transform: uppercase; }
+  .photo-slot { width: 100%; aspect-ratio: 3/4; background: var(--bg3); border: 1px dashed var(--border-gold); border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; transition: border-color .15s; }
+  .photo-slot:hover { border-color: var(--gold); }
+  .photo-slot img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+  .photo-slot .photo-placeholder { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--text3); pointer-events: none; }
+  .photo-slot .photo-placeholder svg { width: 24px; height: 24px; fill: var(--text3); }
+  .photo-slot .photo-placeholder span { font-size: 10px; }
+  .photo-slot input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .photo-remove { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,.7); border: 1px solid #555; color: #ccc; font-size: 10px; padding: 2px 6px; border-radius: 4px; cursor: pointer; z-index: 2; display: none; }
+  .photo-slot:hover .photo-remove { display: block; }
+
+  /* DIVIDER */
+  .section-divider { height: 1px; background: var(--border-gold); margin: 0; }
+
+  /* BOTTOM PANELS */
+  .bottom-panels { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border-top: 1px solid var(--border-gold); }
+  .panel { padding: 14px 16px; border-right: 1px solid var(--border); }
+  .panel:last-child { border-right: none; }
+  .panel-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .panel-icon { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .panel-icon.green { background: #1a3020; border: 1px solid #2a6040; }
+  .panel-icon.amber { background: #302010; border: 1px solid #604020; }
+  .panel-icon.red { background: #301010; border: 1px solid #602020; }
+  .panel-icon svg { width: 12px; height: 12px; }
+  .panel-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .panel-title .highlight { color: var(--gold); }
+  .panel-rows { display: flex; flex-direction: column; gap: 5px; }
+  .panel-row { display: flex; align-items: center; gap: 6px; }
+  .panel-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .panel-dot.green { background: #3a8a3a; }
+  .panel-dot.amber { background: #c08030; }
+  .panel-dot.red { background: #a03030; }
+  .panel-input { background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--text); font-size: 12px; flex: 1; padding: 2px 0; }
+  .panel-input:focus { outline: none; border-bottom-color: var(--gold); }
+  .panel-input::placeholder { color: var(--text3); }
+
+  /* BOTTOM INFO */
+  .bottom-info { display: grid; grid-template-columns: 3fr 2fr; gap: 0; border-top: 1px solid var(--border-gold); }
+  .obs-section { padding: 14px 16px; border-right: 1px solid var(--border-gold); }
+  .meta-section { padding: 14px 16px; background: #1a1408; }
+  .section-mini-title { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .section-mini-title .highlight { color: var(--gold); }
+  .section-mini-title svg { width: 14px; height: 14px; fill: var(--gold); }
+  .textarea-field { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 12px; width: 100%; padding: 8px; resize: vertical; min-height: 60px; font-family: inherit; }
+  .textarea-field:focus { outline: none; border-color: var(--gold); }
+  .textarea-field::placeholder { color: var(--text3); }
+  .meta-section .textarea-field { min-height: 70px; border-color: var(--border-gold); background: #120f05; }
+
+  /* TEMPLATE FOOTER */
+  .template-footer { text-align: center; padding: 14px; border-top: 1px solid var(--border-gold); background: var(--bg3); }
+  .footer-name { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: 2px; text-transform: uppercase; }
+  .footer-name span { color: var(--gold); }
+  .footer-tagline { font-size: 10px; color: var(--text3); letter-spacing: 2px; margin-top: 4px; text-transform: uppercase; }
+  .footer-tagline span { color: var(--gold); }
+
+  /* ACTION BAR */
+  .action-bar { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; max-width: 900px; margin: 0 auto 16px; }
+  .action-bar-left { display: flex; gap: 8px; flex: 1; }
+  .action-bar-right { display: flex; gap: 8px; }
+  .assessment-status { font-size: 12px; color: var(--text3); display: flex; align-items: center; gap: 6px; }
+  .dot-saved { width: 8px; height: 8px; border-radius: 50%; background: var(--success); display: inline-block; }
+  .dot-unsaved { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); display: inline-block; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); display: none; align-items: center; justify-content: center; z-index: 100; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--bg2); border: 1px solid var(--border-gold); border-radius: 10px; padding: 24px; width: 340px; }
+  .modal h3 { color: var(--gold); font-size: 15px; margin-bottom: 16px; }
+  .modal label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 4px; }
+  .modal input { background: var(--bg3); border: 1px solid var(--border-gold); color: var(--text); padding: 8px 10px; border-radius: 6px; width: 100%; margin-bottom: 14px; font-size: 13px; }
+  .modal input:focus { outline: none; border-color: var(--gold); }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
+
+  /* PRINT */
+  @media print {
+    .sidebar, .app-header, .action-bar, .photo-slot input[type=file], .photo-remove { display: none !important; }
+    .app-body { display: block; }
+    .main-content { padding: 0; }
+    .template-card { border: 2px solid #C9963A; max-width: 100%; }
+    body { background: #0e0e0e; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  /* EMPTY STATE */
+  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 60px 20px; color: var(--text3); text-align: center; }
+  .empty-state svg { width: 48px; height: 48px; fill: var(--text3); opacity: .4; }
+  .empty-state p { font-size: 13px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="app-title">ACOMPANHAMENTO <span>FÍSICO</span></div>
+  <div class="student-bar">
+    <select class="student-select" id="studentSelect" onchange="onStudentChange()">
+      <option value="">— Selecione um aluno —</option>
+    </select>
+    <button class="btn-gold" onclick="openNewStudentModal()">+ Aluno</button>
+    <button class="btn-outline btn-sm" onclick="deleteStudent()" id="btnDeleteStudent" style="display:none">Remover aluno</button>
+    <label class="btn-outline btn-sm" style="cursor:pointer; display:inline-flex; align-items:center; gap:5px;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+      Importar JSON
+      <input type="file" accept=".json" onchange="importJSON(event)" style="display:none">
+    </label>
+  </div>
+</div>
+
+<div class="app-body">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-title">Avaliações</div>
+    <button class="btn-gold" onclick="newAssessment()" id="btnNewAssessment" style="display:none">+ Nova avaliação</button>
+    <div class="assessment-list" id="assessmentList">
+      <div class="no-assessments">Selecione um aluno para ver as avaliações</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <div id="emptyState" class="empty-state">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      <p>Selecione um aluno e crie uma avaliação para começar.</p>
+    </div>
+
+    <div id="templateWrapper" style="display:none">
+      <!-- ACTION BAR -->
+      <div class="action-bar">
+        <div class="action-bar-left">
+          <button class="btn-gold" onclick="saveCurrentAssessment()">Salvar</button>
+          <button class="btn-outline" onclick="window.print()">Imprimir / PDF</button>
+          <label class="btn-outline" style="cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            Importar JSON
+            <input type="file" accept=".json" onchange="importJSON(event)" style="display:none">
+          </label>
+        </div>
+        <div class="action-bar-right">
+          <div class="assessment-status" id="saveStatus"><span class="dot-saved"></span> Salvo</div>
+          <button class="btn-danger btn-sm" onclick="deleteAssessment()">Excluir avaliação</button>
+        </div>
+      </div>
+
+      <!-- TEMPLATE CARD -->
+      <div class="template-card" id="templateCard">
+
+        <!-- HEADER -->
+        <div class="template-header">
+          <div class="template-title">ACOMPANHAMENTO <span>FÍSICO</span></div>
+          <div class="template-subtitle">EVOLUÇÃO &nbsp;|&nbsp; DISCIPLINA &nbsp;|&nbsp; CONSISTÊNCIA</div>
+        </div>
+
+        <!-- FRENTE -->
+        <div class="section-label"><span>Frente</span></div>
+        <div class="photo-section" id="frenteSection">
+          <!-- LEFT INFO (ANTES) -->
+          <div class="side-info">
+            <div class="field-group">
+              <div class="field-label">Data</div>
+              <input type="date" class="field-value" data-field="frente_antes_data" placeholder="__/__/____">
+            </div>
+            <div class="field-group">
+              <div class="field-label">Peso</div>
+              <input type="text" class="field-value" data-field="frente_antes_peso" placeholder="0,0 kg">
+            </div>
+            <div class="measure-row">
+              <div class="measure-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              </div>
+              <div class="measure-info">
+                <span class="measure-label">Ombros</span>
+                <input type="text" class="measure-val" data-field="frente_antes_ombros" placeholder="__ cm">
+              </div>
+            </div>
+            <div class="measure-row">
+              <div class="measure-icon">
+                <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+              </div>
+              <div class="measure-info">
+                <span class="measure-label">Cintura</span>
+                <input type="text" class="measure-val" data-field="frente_antes_cintura" placeholder="__ cm">
+              </div>
+            </div>
+          </div>
+
+          <!-- PHOTO ANTES -->
+          <div class="photo-col">
+            <div class="photo-label-tag">Antes</div>
+            <div class="photo-slot" id="slot_frente_antes">
+              <div class="photo-placeholder">
+                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                <span>Clique para adicionar foto</span>
+              </div>
+              <input type="file" accept="image/*" onchange="handlePhoto(event,'frente_antes')">
+              <button class="photo-remove" onclick="removePhoto(event,'frente_antes')">✕ remover</button>
+            </div>
+          </div>
+
+          <!-- PHOTO DEPOIS -->
+          <div class="photo-col">
+            <div class="photo-label-tag">Depois</div>
+            <div class="photo-slot" id="slot_frente_depois">
+              <div class="photo-placeholder">
+                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                <span>Clique para adicionar foto</span>
+              </div>
+              <input type="file" accept="image/*" onchange="handlePhoto(event,'frente_depois')">
+              <button class="photo-remove" onclick="removePhoto(event,'frente_depois')">✕ remover</button>
+            </div>
+          </div>
+
+          <!-- RIGHT INFO (DEPOIS) -->
+          <div class="side-info" style="text-align:right">
+            <div class="field-group">
+              <div class="field-label">Data</div>
+              <input type="date" class="field-value" data-field="frente_depois_data" placeholder="__/__/____">
+            </div>
+            <div class="field-group">
+              <div class="field-label">Peso</div>
+              <input type="text" class="field-value" data-field="frente_depois_peso" placeholder="0,0 kg">
+            </div>
+            <div class="measure-row">
+              <div class="measure-info" style="align-items:flex-end">
+                <span class="measure-label">Ombros</span>
+                <input type="text" class="measure-val" data-field="frente_depois_ombros" placeholder="__ cm" style="text-align:right">
+              </div>
+              <div class="measure-icon">
+                <svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              </div>
+            </div>
+            <div class="measure-row">
+              <div class="measure-info" style="align-items:flex-end">
+                <span class="measure-label">Cintura</span>
+                <input type="text" class="measure-val" data-field="frente_depois_cintura" placeholder="__ cm" style="text-align:right">
+              </div>
+              <div class="measure-icon">
+                <svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- COSTAS -->
+        <div class="section-label"><span>Costas</span></div>
+        <div class="photo-section">
+          <div class="side-info">
+            <div class="field-group">
+              <div class="field-label">Data</div>
+              <input type="date" class="field-value" data-field="costas_antes_data">
+            </div>
+            <div class="field-group">
+              <div class="field-label">Peso</div>
+              <input type="text" class="field-value" data-field="costas_antes_peso" placeholder="0,0 kg">
+            </div>
+            <div class="measure-row">
+              <div class="measure-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              </div>
+              <div class="measure-info">
+                <span class="measure-label">Ombros</span>
+                <input type="text" class="measure-val" data-field="costas_antes_ombros" placeholder="__ cm">
+              </div>
+            </div>
+            <div class="measure-row">
+              <div class="measure-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              </div>
+              <div class="measure-info">
+                <span class="measure-label">Coxas</span>
+                <input type="text" class="measure-val" data-field="costas_antes_coxas" placeholder="__ cm">
+              </div>
+            </div>
+          </div>
+
+          <div class="photo-col">
+            <div class="photo-label-tag">Antes</div>
+            <div class="photo-slot" id="slot_costas_antes">
+              <div class="photo-placeholder">
+                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                <span>Clique para adicionar foto</span>
+              </div>
+              <input type="file" accept="image/*" onchange="handlePhoto(event,'costas_antes')">
+              <button class="photo-remove" onclick="removePhoto(event,'costas_antes')">✕ remover</button>
+            </div>
+          </div>
+
+          <div class="photo-col">
+            <div class="photo-label-tag">Depois</div>
+            <div class="photo-slot" id="slot_costas_depois">
+              <div class="photo-placeholder">
+                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                <span>Clique para adicionar foto</span>
+              </div>
+              <input type="file" accept="image/*" onchange="handlePhoto(event,'costas_depois')">
+              <button class="photo-remove" onclick="removePhoto(event,'costas_depois')">✕ remover</button>
+            </div>
+          </div>
+
+          <div class="side-info" style="text-align:right">
+            <div class="field-group">
+              <div class="field-label">Data</div>
+              <input type="date" class="field-value" data-field="costas_depois_data">
+            </div>
+            <div class="field-group">
+              <div class="field-label">Peso</div>
+              <input type="text" class="field-value" data-field="costas_depois_peso" placeholder="0,0 kg">
+            </div>
+            <div class="measure-row">
+              <div class="measure-info" style="align-items:flex-end">
+                <span class="measure-label">Ombros</span>
+                <input type="text" class="measure-val" data-field="costas_depois_ombros" placeholder="__ cm" style="text-align:right">
+              </div>
+              <div class="measure-icon">
+                <svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              </div>
+            </div>
+            <div class="measure-row">
+              <div class="measure-info" style="align-items:flex-end">
+                <span class="measure-label">Coxas</span>
+                <input type="text" class="measure-val" data-field="costas_depois_coxas" placeholder="__ cm" style="text-align:right">
+              </div>
+              <div class="measure-icon">
+                <svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTTOM PANELS -->
+        <div class="bottom-panels">
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-icon green">
+                <svg viewBox="0 0 24 24" fill="#3a8a3a"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              </div>
+              <div class="panel-title">Pontos <span class="highlight">Positivos</span></div>
+            </div>
+            <div class="panel-rows">
+              <div class="panel-row"><div class="panel-dot green"></div><input class="panel-input" data-field="positivo_1" placeholder="Ponto positivo 1"></div>
+              <div class="panel-row"><div class="panel-dot green"></div><input class="panel-input" data-field="positivo_2" placeholder="Ponto positivo 2"></div>
+              <div class="panel-row"><div class="panel-dot green"></div><input class="panel-input" data-field="positivo_3" placeholder="Ponto positivo 3"></div>
+              <div class="panel-row"><div class="panel-dot green"></div><input class="panel-input" data-field="positivo_4" placeholder="Ponto positivo 4"></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-icon amber">
+                <svg viewBox="0 0 24 24" fill="#c08030"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+              </div>
+              <div class="panel-title">Pontos <span class="highlight">a Melhorar</span></div>
+            </div>
+            <div class="panel-rows">
+              <div class="panel-row"><div class="panel-dot amber"></div><input class="panel-input" data-field="melhorar_1" placeholder="Ponto a melhorar 1"></div>
+              <div class="panel-row"><div class="panel-dot amber"></div><input class="panel-input" data-field="melhorar_2" placeholder="Ponto a melhorar 2"></div>
+              <div class="panel-row"><div class="panel-dot amber"></div><input class="panel-input" data-field="melhorar_3" placeholder="Ponto a melhorar 3"></div>
+              <div class="panel-row"><div class="panel-dot amber"></div><input class="panel-input" data-field="melhorar_4" placeholder="Ponto a melhorar 4"></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-icon red">
+                <svg viewBox="0 0 24 24" fill="#a03030"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              </div>
+              <div class="panel-title">Próximos <span class="highlight">Ajustes</span></div>
+            </div>
+            <div class="panel-rows">
+              <div class="panel-row"><div class="panel-dot red"></div><input class="panel-input" data-field="ajuste_1" placeholder="Ajuste 1"></div>
+              <div class="panel-row"><div class="panel-dot red"></div><input class="panel-input" data-field="ajuste_2" placeholder="Ajuste 2"></div>
+              <div class="panel-row"><div class="panel-dot red"></div><input class="panel-input" data-field="ajuste_3" placeholder="Ajuste 3"></div>
+              <div class="panel-row"><div class="panel-dot red"></div><input class="panel-input" data-field="ajuste_4" placeholder="Ajuste 4"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OBS + META -->
+        <div class="bottom-info">
+          <div class="obs-section">
+            <div class="section-mini-title">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+              Observações <span class="highlight">Gerais</span>
+            </div>
+            <textarea class="textarea-field" data-field="observacoes" placeholder="Anotações gerais sobre a avaliação..."></textarea>
+          </div>
+          <div class="meta-section">
+            <div class="section-mini-title">
+              <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+              Próxima <span class="highlight">Meta</span>
+            </div>
+            <textarea class="textarea-field" data-field="proxima_meta" placeholder="Meta para o próximo período..."></textarea>
+          </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="template-footer">
+          <div class="footer-name">Personal <span>Caio Oliver</span></div>
+          <div class="footer-tagline">Consistência é o que <span>transforma.</span></div>
+        </div>
+
+      </div>
+    </div><!-- /#templateWrapper -->
+  </div><!-- /.main-content -->
+</div><!-- /.app-body -->
+
+<!-- MODAL: Novo Aluno -->
+<div class="modal-overlay" id="modalNewStudent">
+  <div class="modal">
+    <h3>Novo Aluno</h3>
+    <label>Nome completo</label>
+    <input type="text" id="inputStudentName" placeholder="Ex: João Silva" onkeydown="if(event.key==='Enter')confirmNewStudent()">
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('modalNewStudent')">Cancelar</button>
+      <button class="btn-gold" onclick="confirmNewStudent()">Criar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let db = JSON.parse(localStorage.getItem('caio_oliver_db') || '{"students":{},"assessments":{}}');
+let currentStudentId = null;
+let currentAssessmentId = null;
+let isDirty = false;
+let autoSaveTimer = null;
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function init() {
+  renderStudentSelect();
+  document.querySelectorAll('[data-field]').forEach(el => {
+    el.addEventListener('input', markDirty);
+  });
+}
+
+// ─── SAVE ─────────────────────────────────────────────────────────────────────
+function saveDB() { localStorage.setItem('caio_oliver_db', JSON.stringify(db)); }
+
+function markDirty() {
+  isDirty = true;
+  document.getElementById('saveStatus').innerHTML = '<span class="dot-unsaved"></span> Não salvo';
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(saveCurrentAssessment, 3000);
+}
+
+function saveCurrentAssessment() {
+  if (!currentStudentId || !currentAssessmentId) return;
+  const data = {};
+  document.querySelectorAll('[data-field]').forEach(el => {
+    data[el.dataset.field] = el.value || el.textContent;
+  });
+  // save photos from slots
+  ['frente_antes','frente_depois','costas_antes','costas_depois'].forEach(key => {
+    const img = document.querySelector(`#slot_${key} img`);
+    data[`photo_${key}`] = img ? img.src : '';
+  });
+  db.assessments[currentAssessmentId] = { ...db.assessments[currentAssessmentId], ...data };
+  saveDB();
+  isDirty = false;
+  document.getElementById('saveStatus').innerHTML = '<span class="dot-saved"></span> Salvo';
+  renderAssessmentList();
+}
+
+// ─── STUDENT MANAGEMENT ───────────────────────────────────────────────────────
+function renderStudentSelect() {
+  const sel = document.getElementById('studentSelect');
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">— Selecione um aluno —</option>';
+  Object.entries(db.students).sort((a,b)=>a[1].name.localeCompare(b[1].name)).forEach(([id,s]) => {
+    const opt = document.createElement('option');
+    opt.value = id; opt.textContent = s.name;
+    sel.appendChild(opt);
+  });
+  if (prev) sel.value = prev;
+}
+
+function onStudentChange() {
+  const sel = document.getElementById('studentSelect');
+  currentStudentId = sel.value || null;
+  currentAssessmentId = null;
+  document.getElementById('btnDeleteStudent').style.display = currentStudentId ? 'inline-block' : 'none';
+  document.getElementById('btnNewAssessment').style.display = currentStudentId ? 'inline-block' : 'none';
+  renderAssessmentList();
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('templateWrapper').style.display = 'none';
+}
+
+function openNewStudentModal() {
+  document.getElementById('inputStudentName').value = '';
+  document.getElementById('modalNewStudent').classList.add('open');
+  setTimeout(() => document.getElementById('inputStudentName').focus(), 100);
+}
+
+function confirmNewStudent() {
+  const name = document.getElementById('inputStudentName').value.trim();
+  if (!name) return;
+  const id = 's_' + Date.now();
+  db.students[id] = { name, createdAt: Date.now() };
+  saveDB();
+  renderStudentSelect();
+  document.getElementById('studentSelect').value = id;
+  closeModal('modalNewStudent');
+  onStudentChange();
+  newAssessment();
+}
+
+function deleteStudent() {
+  if (!currentStudentId) return;
+  const name = db.students[currentStudentId]?.name;
+  if (!confirm(`Remover o aluno "${name}" e todas as suas avaliações? Essa ação é irreversível.`)) return;
+  // delete all assessments
+  Object.entries(db.assessments).forEach(([aid, a]) => {
+    if (a.studentId === currentStudentId) delete db.assessments[aid];
+  });
+  delete db.students[currentStudentId];
+  saveDB();
+  currentStudentId = null;
+  currentAssessmentId = null;
+  renderStudentSelect();
+  document.getElementById('studentSelect').value = '';
+  onStudentChange();
+}
+
+// ─── ASSESSMENT MANAGEMENT ────────────────────────────────────────────────────
+function renderAssessmentList() {
+  const list = document.getElementById('assessmentList');
+  if (!currentStudentId) {
+    list.innerHTML = '<div class="no-assessments">Selecione um aluno para ver as avaliações</div>';
+    return;
+  }
+  const studentAssessments = Object.entries(db.assessments)
+    .filter(([,a]) => a.studentId === currentStudentId)
+    .sort((a,b) => b[1].createdAt - a[1].createdAt);
+
+  if (!studentAssessments.length) {
+    list.innerHTML = '<div class="no-assessments">Nenhuma avaliação ainda. Clique em "+ Nova avaliação"</div>';
+    return;
+  }
+  list.innerHTML = '';
+  studentAssessments.forEach(([id, a]) => {
+    const div = document.createElement('div');
+    div.className = 'assessment-item' + (id === currentAssessmentId ? ' active' : '');
+    const date = a.frente_antes_data ? formatDate(a.frente_antes_data) : formatDate2(a.createdAt);
+    const peso = a.frente_antes_peso || '';
+    div.innerHTML = `<div class="a-date">${date}</div>
+      <div class="a-student">${db.students[currentStudentId]?.name || ''}</div>
+      ${peso ? `<div class="a-weight">${peso}</div>` : ''}`;
+    div.onclick = () => loadAssessment(id);
+    list.appendChild(div);
+  });
+}
+
+function newAssessment() {
+  if (!currentStudentId) return;
+  if (isDirty && currentAssessmentId) { saveCurrentAssessment(); }
+  const id = 'a_' + Date.now();
+  db.assessments[id] = { studentId: currentStudentId, createdAt: Date.now() };
+  saveDB();
+  loadAssessment(id);
+}
+
+function loadAssessment(id) {
+  if (isDirty && currentAssessmentId) saveCurrentAssessment();
+  currentAssessmentId = id;
+  const a = db.assessments[id] || {};
+  document.querySelectorAll('[data-field]').forEach(el => {
+    el.value = a[el.dataset.field] || '';
+  });
+  // load photos
+  ['frente_antes','frente_depois','costas_antes','costas_depois'].forEach(key => {
+    const slot = document.getElementById(`slot_${key}`);
+    const existingImg = slot.querySelector('img');
+    if (existingImg) existingImg.remove();
+    if (a[`photo_${key}`]) {
+      const img = document.createElement('img');
+      img.src = a[`photo_${key}`];
+      slot.insertBefore(img, slot.firstChild);
+    }
+  });
+  isDirty = false;
+  document.getElementById('saveStatus').innerHTML = '<span class="dot-saved"></span> Salvo';
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('templateWrapper').style.display = 'block';
+  renderAssessmentList();
+}
+
+function deleteAssessment() {
+  if (!currentAssessmentId) return;
+  if (!confirm('Excluir esta avaliação? A ação é irreversível.')) return;
+  delete db.assessments[currentAssessmentId];
+  saveDB();
+  currentAssessmentId = null;
+  isDirty = false;
+  renderAssessmentList();
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('templateWrapper').style.display = 'none';
+}
+
+// ─── IMPORT JSON ─────────────────────────────────────────────────────────────
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    let data;
+    try { data = JSON.parse(e.target.result); }
+    catch { alert('Arquivo JSON inválido. Verifique o arquivo gerado pelo Claude.'); return; }
+
+    const name = (data.studentName || '').trim();
+    if (!name) { alert('O JSON não contém o nome do aluno (campo "studentName").'); return; }
+
+    // Find or create student
+    let studentId = Object.entries(db.students).find(([,s]) => s.name.toLowerCase() === name.toLowerCase())?.[0];
+    if (!studentId) {
+      studentId = 's_' + Date.now();
+      db.students[studentId] = { name, createdAt: Date.now() };
+    }
+
+    // Create new assessment
+    const assessmentId = 'a_' + Date.now();
+    db.assessments[assessmentId] = { studentId, createdAt: Date.now(), ...data };
+    saveDB();
+
+    // Select and load
+    currentStudentId = studentId;
+    renderStudentSelect();
+    document.getElementById('studentSelect').value = studentId;
+    document.getElementById('btnDeleteStudent').style.display = 'inline-block';
+    document.getElementById('btnNewAssessment').style.display = 'inline-block';
+    renderAssessmentList();
+    loadAssessment(assessmentId);
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ─── PHOTOS ───────────────────────────────────────────────────────────────────
+function handlePhoto(event, key) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const slot = document.getElementById(`slot_${key}`);
+    let img = slot.querySelector('img');
+    if (!img) { img = document.createElement('img'); slot.insertBefore(img, slot.firstChild); }
+    img.src = e.target.result;
+    markDirty();
+  };
+  reader.readAsDataURL(file);
+}
+
+function removePhoto(event, key) {
+  event.stopPropagation();
+  const slot = document.getElementById(`slot_${key}`);
+  const img = slot.querySelector('img');
+  if (img) img.remove();
+  const input = slot.querySelector('input[type=file]');
+  if (input) input.value = '';
+  markDirty();
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function formatDate(iso) {
+  if (!iso) return '';
+  const [y,m,d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+function formatDate2(ts) {
+  const d = new Date(ts);
+  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); });
+});
+
+// ─── START ────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

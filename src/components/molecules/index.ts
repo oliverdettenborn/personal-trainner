@@ -1,1 +1,6 @@
 export * from './EditScreenInfo';
+export * from './FeedbackPanel';
+export * from './MeasurementRow';
+export * from './PhotoSection';
+export * from './SectionLabel';
+

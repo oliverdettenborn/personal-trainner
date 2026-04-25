@@ -1,1 +1,1 @@
-// templates barrel
+export * from './AssessmentTemplate';

@@ -6,7 +6,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@hooks/useColorScheme';
+// Hook useColorScheme might be removed if not used elsewhere in the project.
+// If it's used, keep it. For now, assuming it might be part of default setup.
+import { useColorScheme } from '@hooks/useColorScheme'; 
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -14,8 +16,7 @@ export {
 } from 'expo-router';
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  // No initialRouteName needed if index.tsx is the direct root.
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -51,8 +52,11 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        {/* 
+          Since app/index.tsx is now the root, no explicit Stack.Screen is needed for it here.
+          If 'modal' is needed for other features, it can be added back.
+          <Stack.Screen name="modal" options={{ presentation: 'modal' }} /> 
+        */}
       </Stack>
     </ThemeProvider>
   );
