@@ -31,11 +31,6 @@ export interface Assessment {
   positivo_3?: string;
   positivo_4?: string;
   
-  melhorar_1?: string;
-  melhorar_2?: string;
-  melhorar_3?: string;
-  melhorar_4?: string;
-  
   ajuste_1?: string;
   ajuste_2?: string;
   ajuste_3?: string;

@@ -53,7 +53,6 @@ describe('AssessmentForm', () => {
 
     expect(getByTestId('mock-photo-section')).toBeTruthy();
     expect(getByTestId('mock-feedback-panel-green')).toBeTruthy();
-    expect(getByTestId('mock-feedback-panel-amber')).toBeTruthy();
     expect(getByTestId('mock-feedback-panel-red')).toBeTruthy();
   });
 

@@ -34,11 +34,8 @@ Todas as cores já estão mapeadas em `src/theme/colors.ts` (key `dark`). Usar *
 |------------------------------|---------------|
 | Panel icon green bg          | `#1a3020`     |
 | Panel icon green border      | `#2a6040`     |
-| Panel icon amber bg          | `#302010`     |
-| Panel icon amber border      | `#604020`     |
 | Panel icon red bg            | `#301010`     |
 | Panel icon red border        | `#602020`     |
-| Panel dot amber              | `#c08030`     |
 | Panel dot red                | `#a03030`     |
 | Meta section bg              | `#1a1408`     |
 | Meta textarea bg             | `#120f05`     |
@@ -401,20 +398,20 @@ Entre "Frente" e "Costas":
 
 ---
 
-### 3.10 Bottom Panels (Feedback — 3 colunas)
+### 3.10 Bottom Panels (Feedback — 2 colunas)
 
 ```
-┌───────────────────┬────────────────────┬────────────────────┐
-│ ✔ Pontos          │ ⚠ Pontos          │ ⓘ Próximos         │
-│   POSITIVOS       │   a MELHORAR       │   AJUSTES          │
-│ ● ___________     │ ● ___________      │ ● ___________      │
-│ ● ___________     │ ● ___________      │ ● ___________      │
-│ ● ___________     │ ● ___________      │ ● ___________      │
-│ ● ___________     │ ● ___________      │ ● ___________      │
-└───────────────────┴────────────────────┴────────────────────┘
+┌───────────────────┬────────────────────┐
+│ ✔ Pontos          │ ⓘ Próximos         │
+│   POSITIVOS       │   AJUSTES          │
+│ ● ___________     │ ● ___________      │
+│ ● ___________     │ ● ___________      │
+│ ● ___________     │ ● ___________      │
+│ ● ___________     │ ● ___________      │
+└───────────────────┴────────────────────┘
 ```
 
-**Container:** `display: grid`, `gridTemplateColumns: 1fr 1fr 1fr`, `borderTopWidth: 1`, `borderTopColor: borderGold`
+**Container:** `display: grid`, `gridTemplateColumns: 1fr 1fr`, `borderTopWidth: 1`, `borderTopColor: borderGold`
 
 **Panel (cada coluna):** `padding: '14px 16px'`, `borderRightWidth: 1`, `borderRightColor: border` (último sem border)
 
@@ -425,17 +422,15 @@ Entre "Frente" e "Costas":
 | Variante | background | borderColor | SVG fill |
 |----------|------------|-------------|----------|
 | green    | `#1a3020`  | `#2a6040`   | `#3a8a3a`|
-| amber    | `#302010`  | `#604020`   | `#c08030`|
 | red      | `#301010`  | `#602020`   | `#a03030`|
 
 **SVG icons dos panels:**
 - Green (check): `M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z`
-- Amber (warning triangle): `M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z`
 - Red (info circle): `M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z`
 
 **Panel Title:** `fontSize: 11`, `fontWeight: 700`, `textTransform: uppercase`, `letterSpacing: 1`
 - Parte "Pontos" / "Próximos" → cor default (text)
-- Parte "Positivos" / "a Melhorar" / "Ajustes" → `color: gold`
+- Parte "Positivos" / "Ajustes" → `color: gold`
 
 **Panel Rows:** `flexDirection: column`, `gap: 5`
 
@@ -443,7 +438,6 @@ Entre "Frente" e "Costas":
 
 **Panel Dot:** `width: 10`, `height: 10`, `borderRadius: 5`
 - green: `#3a8a3a`
-- amber: `#c08030`
 - red: `#a03030`
 
 **Panel Input:**
@@ -456,7 +450,6 @@ Entre "Frente" e "Costas":
 | Panel       | Fields                                      | Placeholder pattern         |
 |-------------|---------------------------------------------|-----------------------------|
 | Positivos   | `positivo_1..4`                             | "Ponto positivo 1..4"       |
-| A Melhorar  | `melhorar_1..4`                             | "Ponto a melhorar 1..4"     |
 | Ajustes     | `ajuste_1..4`                               | "Ajuste 1..4"               |
 
 ---
@@ -572,7 +565,6 @@ O model já está definido em `src/types/assessment.ts`. Todos os campos `data-f
 | data-field     | Panel            |
 |----------------|------------------|
 | `positivo_1..4`| Pontos Positivos |
-| `melhorar_1..4`| Pontos a Melhorar|
 | `ajuste_1..4`  | Próximos Ajustes |
 
 ### Bottom Info
@@ -660,7 +652,6 @@ Todos os ícones são SVGs inline com `viewBox="0 0 24 24"`. Extrair para consta
 | `calendar`     | Medida Cintura                | `M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z`                      |
 | `image`        | Photo placeholder             | `M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z`                                      |
 | `check`        | Panel Positivos               | `M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z`                                                                                                                 |
-| `warning`      | Panel A Melhorar              | `M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z`                                                                                                                |
 | `info`         | Panel Ajustes / Observações   | `M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z`                                                                  |
 | `person`       | Próxima Meta                  | `M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z` |
 | `download`     | Importar JSON                 | `M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z`                                                                                                                         |
@@ -739,7 +730,7 @@ Use esta checklist para validar que cada elemento está pixel-perfect:
 - [ ] Measurement rows com icon circles de 28x28
 - [ ] Measurement inputs com underline only (borderBottom)
 - [ ] Side direito com layout espelhado (text-align right, icon à direita)
-- [ ] 3 panels de feedback em grid equal columns
+- [ ] 2 panels de feedback em grid equal columns
 - [ ] Dots coloridos 10x10 nos panel rows
 - [ ] Bottom info em grid 3fr/2fr
 - [ ] Meta section com background `#1a1408`

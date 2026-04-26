@@ -35,12 +35,6 @@ export function AssessmentForm({ assessment, onUpdate }: AssessmentFormProps) {
       { value: assessment?.positivo_3 || '', placeholder: 'Ponto positivo 3', onChangeText: (t: string) => onUpdate('positivo_3', t) },
       { value: assessment?.positivo_4 || '', placeholder: 'Ponto positivo 4', onChangeText: (t: string) => onUpdate('positivo_4', t) },
     ],
-    improveItems: [
-      { value: assessment?.melhorar_1 || '', placeholder: 'Ponto a melhorar 1', onChangeText: (t: string) => onUpdate('melhorar_1', t) },
-      { value: assessment?.melhorar_2 || '', placeholder: 'Ponto a melhorar 2', onChangeText: (t: string) => onUpdate('melhorar_2', t) },
-      { value: assessment?.melhorar_3 || '', placeholder: 'Ponto a melhorar 3', onChangeText: (t: string) => onUpdate('melhorar_3', t) },
-      { value: assessment?.melhorar_4 || '', placeholder: 'Ponto a melhorar 4', onChangeText: (t: string) => onUpdate('melhorar_4', t) },
-    ],
     adjustmentItems: [
       { value: assessment?.ajuste_1 || '', placeholder: 'Ajuste 1', onChangeText: (t: string) => onUpdate('ajuste_1', t) },
       { value: assessment?.ajuste_2 || '', placeholder: 'Ajuste 2', onChangeText: (t: string) => onUpdate('ajuste_2', t) },
@@ -76,7 +70,7 @@ export function AssessmentForm({ assessment, onUpdate }: AssessmentFormProps) {
         assessmentData={assessment}
       />
 
-      {/* Feedback Panels - 3 columns */}
+      {/* Feedback Panels - 2 columns */}
       <View style={[styles.feedbackGrid, { borderTopColor: borderGold }]}>
         <View style={[styles.feedbackColumn, { borderRightColor: border }]}>
           <FeedbackPanel 
@@ -85,15 +79,6 @@ export function AssessmentForm({ assessment, onUpdate }: AssessmentFormProps) {
             svgPath={SVG_CHECK}
             dotColor="green" 
             items={feedbackPanelData.positiveItems}
-          />
-        </View>
-        <View style={[styles.feedbackColumn, { borderRightColor: border }]}>
-          <FeedbackPanel 
-            title="Pontos" 
-            highlightedTitle="a Melhorar" 
-            svgPath={SVG_WARNING}
-            dotColor="amber" 
-            items={feedbackPanelData.improveItems}
           />
         </View>
         <View style={styles.feedbackColumn}>
