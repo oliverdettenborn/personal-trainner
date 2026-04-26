@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Platform, StyleSheet, View } from 'react-native';
+import { Modal, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
 import { useThemeColor } from '../../../hooks/useThemeColor';
 import { Student } from '../../../types/assessment';
@@ -12,6 +12,8 @@ export type AppHeaderProps = {
   onAddStudent: (name: string) => void;
   onRemoveStudent: (id: string) => void;
   nativeID?: string;
+  sidebarVisible?: boolean;
+  onToggleSidebar?: () => void;
 };
 
 export function AppHeader({
@@ -21,6 +23,8 @@ export function AppHeader({
   onAddStudent,
   onRemoveStudent,
   nativeID,
+  sidebarVisible,
+  onToggleSidebar,
 }: AppHeaderProps) {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [studentName, setStudentName] = React.useState('');
@@ -46,6 +50,11 @@ export function AppHeader({
 
   return (
     <View style={[styles.container, { backgroundColor: bg2, borderBottomColor: borderGold }]} nativeID={nativeID}>
+      {onToggleSidebar && (
+        <Pressable onPress={onToggleSidebar} style={styles.menuToggle}>
+          <Text style={[styles.menuToggleIcon, { color: sidebarVisible ? gold : '#6a5a40' }]}>☰</Text>
+        </Pressable>
+      )}
       <Text style={[styles.title, { color: gold }]}>
         ACOMPANHAMENTO <Text style={{ color: text }}>FÍSICO</Text>
       </Text>
@@ -141,6 +150,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 16,
     flexWrap: 'wrap',
+  },
+  menuToggle: {
+    padding: 6,
+    marginRight: -4,
+  },
+  menuToggleIcon: {
+    fontSize: 20,
+    lineHeight: 22,
   },
   title: {
     fontSize: 18,

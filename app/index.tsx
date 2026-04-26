@@ -1,16 +1,19 @@
 import { useAssessment } from '@hooks/useAssessment';
+import { ConfirmModal } from '@molecules/ConfirmModal';
 import { ActionBar } from '@organisms/ActionBar';
 import { AppHeader } from '@organisms/AppHeader';
 import { AssessmentForm } from '@organisms/AssessmentForm';
 import { Sidebar } from '@organisms/Sidebar';
 import { AssessmentTemplate } from '@templates/AssessmentTemplate';
 import * as Sharing from 'expo-sharing';
-import html2canvas from 'html2canvas';
 import React, { useEffect, useRef, useState } from 'react';
-import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
 import { captureRef } from 'react-native-view-shot';
 import { Text } from '../src/components/atoms/Text';
+
+// html2canvas is web-only — conditional require prevents Android crash on module init
+const html2canvas = Platform.OS === 'web' ? require('html2canvas') : null;
 
 const SVG_INFO_EMPTY = "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z";
 
@@ -32,8 +35,19 @@ export default function AssessmentScreen() {
     saveManual 
   } = useAssessment();
 
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
+
   const [isSaving, setIsSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(Platform.OS === 'web');
+  const [confirmModalConfig, setConfirmModalConfig] = useState({
+    visible: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+  });
+
   const captureAreaRef = useRef<View>(null);
 
   const text3 = '#6a5a40';
@@ -92,7 +106,7 @@ export default function AssessmentScreen() {
         });
         
         return new Promise((resolve) => {
-          canvas.toBlob(async (blob) => {
+          canvas.toBlob(async (blob: Blob | null) => {
             if (blob) {
               try {
                 const item = new ClipboardItem({ 'image/png': blob });
@@ -135,24 +149,31 @@ export default function AssessmentScreen() {
         onSelectStudent={setCurrentStudentId}
         onAddStudent={addStudent}
         onRemoveStudent={(id) => {
-          if (confirm(`Remover o aluno "${db.students[id]?.name}" e todas as suas avaliações? Essa ação é irreversível.`)) {
-            removeStudent(id);
-          }
+          setConfirmModalConfig({
+            visible: true,
+            title: 'Remover Aluno',
+            message: `Deseja remover o aluno "${db.students[id]?.name}" e todas as suas avaliações? Essa ação é irreversível.`,
+            onConfirm: () => removeStudent(id),
+          });
         }}
+        sidebarVisible={sidebarVisible}
+        onToggleSidebar={() => setSidebarVisible(v => !v)}
       />
       
       <View style={styles.appBody}>
-        <Sidebar 
-          nativeID="sidebar"
-          students={Object.values(db.students)}
-          currentStudentId={currentStudentId}
-          assessments={studentAssessments}
-          currentAssessmentId={currentAssessmentId}
-          onSelectAssessment={setCurrentAssessmentId}
-          onAddAssessment={addAssessment}
-        />
-        
-        <ScrollView style={styles.mainContent} nativeID="main-content">
+        {sidebarVisible && (
+          <Sidebar
+            nativeID="sidebar"
+            students={Object.values(db.students)}
+            currentStudentId={currentStudentId}
+            assessments={studentAssessments}
+            currentAssessmentId={currentAssessmentId}
+            onSelectAssessment={(id) => { setCurrentAssessmentId(id); if (isMobile) setSidebarVisible(false); }}
+            onAddAssessment={(studentId) => { addAssessment(studentId); if (isMobile) setSidebarVisible(false); }}
+          />
+        )}
+
+        <ScrollView style={styles.mainContent} nativeID="main-content" nestedScrollEnabled>
           {currentAssessment ? (
             <>
               <ActionBar
@@ -168,26 +189,53 @@ export default function AssessmentScreen() {
                 onDownloadImage={handleDownloadImage}
                 onCopyImage={handleCopyImage}
                 onDelete={() => {
-                  if (currentAssessmentId && confirm('Excluir esta avaliação? A ação é irreversível.')) {
-                    removeAssessment(currentAssessmentId);
+                  if (currentAssessmentId) {
+                    setConfirmModalConfig({
+                      visible: true,
+                      title: 'Excluir Avaliação',
+                      message: 'Tem certeza que deseja excluir esta avaliação? A ação é irreversível.',
+                      onConfirm: () => removeAssessment(currentAssessmentId),
+                    });
                   }
                 }}
                 isSaving={isSaving}
                 status={isDirty ? 'unsaved' : 'saved'}
               />
-              
-              <View 
-                ref={captureAreaRef} 
-                nativeID="template-capture-area"
-                style={{ backgroundColor: '#0e0e0e' }}
-              >
-                <AssessmentTemplate>
-                  <AssessmentForm 
-                    assessment={currentAssessment}
-                    onUpdate={handleUpdateAssessment}
-                  />
-                </AssessmentTemplate>
-              </View>
+
+              {isMobile ? (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  nestedScrollEnabled
+                  keyboardShouldPersistTaps="handled"
+                >
+                  <View
+                    ref={captureAreaRef}
+                    nativeID="template-capture-area"
+                    style={{ backgroundColor: '#0e0e0e', width: 900 }}
+                  >
+                    <AssessmentTemplate>
+                      <AssessmentForm
+                        assessment={currentAssessment}
+                        onUpdate={handleUpdateAssessment}
+                      />
+                    </AssessmentTemplate>
+                  </View>
+                </ScrollView>
+              ) : (
+                <View
+                  ref={captureAreaRef}
+                  nativeID="template-capture-area"
+                  style={{ backgroundColor: '#0e0e0e' }}
+                >
+                  <AssessmentTemplate>
+                    <AssessmentForm
+                      assessment={currentAssessment}
+                      onUpdate={handleUpdateAssessment}
+                    />
+                  </AssessmentTemplate>
+                </View>
+              )}
             </>
           ) : (
             <View style={styles.emptyState}>
@@ -203,6 +251,14 @@ export default function AssessmentScreen() {
           )}
         </ScrollView>
       </View>
+
+      <ConfirmModal
+        visible={confirmModalConfig.visible}
+        title={confirmModalConfig.title}
+        message={confirmModalConfig.message}
+        onConfirm={confirmModalConfig.onConfirm}
+        onCancel={() => setConfirmModalConfig(prev => ({ ...prev, visible: false }))}
+      />
     </View>
   );
 }

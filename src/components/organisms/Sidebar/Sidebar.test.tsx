@@ -70,4 +70,28 @@ describe('Sidebar', () => {
 
     expect(getByText(/Nenhuma avaliação ainda/)).toBeTruthy();
   });
+
+  describe('onClose prop', () => {
+    it('does not render close button when onClose is not provided', () => {
+      const { queryByText } = render(<Sidebar {...commonProps} />);
+
+      expect(queryByText('✕')).toBeNull();
+    });
+
+    it('renders close button when onClose is provided', () => {
+      const onClose = jest.fn();
+      const { getByText } = render(<Sidebar {...commonProps} onClose={onClose} />);
+
+      expect(getByText('✕')).toBeTruthy();
+    });
+
+    it('calls onClose when close button is pressed', () => {
+      const onClose = jest.fn();
+      const { getByText } = render(<Sidebar {...commonProps} onClose={onClose} />);
+
+      fireEvent.press(getByText('✕'));
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+  });
 });

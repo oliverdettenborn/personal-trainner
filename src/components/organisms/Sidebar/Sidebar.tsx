@@ -12,6 +12,7 @@ export type SidebarProps = {
   onSelectAssessment: (id: string) => void;
   onAddAssessment: (studentId: string) => void;
   nativeID?: string;
+  onClose?: () => void;
 };
 
 export function Sidebar({
@@ -22,6 +23,7 @@ export function Sidebar({
   onSelectAssessment,
   onAddAssessment,
   nativeID,
+  onClose,
 }: SidebarProps) {
   const bg2 = useThemeColor({}, 'backgroundSecondary');
   const gold = useThemeColor({}, 'gold');
@@ -46,6 +48,11 @@ export function Sidebar({
 
   return (
     <View style={[styles.container, { backgroundColor: bg2, borderRightColor: border }]} nativeID={nativeID}>
+      {onClose && (
+        <Pressable onPress={onClose} style={styles.closeButton}>
+          <Text style={styles.closeButtonText}>✕</Text>
+        </Pressable>
+      )}
       <Text style={styles.sidebarTitle}>Avaliações</Text>
       
       {currentStudentId && (
@@ -142,5 +149,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
     paddingVertical: 20,
+  },
+  closeButton: {
+    alignSelf: 'flex-end',
+    padding: 8,
+    marginBottom: -4,
+  },
+  closeButtonText: {
+    color: '#6a5a40',
+    fontSize: 16,
+    lineHeight: 16,
   },
 });
