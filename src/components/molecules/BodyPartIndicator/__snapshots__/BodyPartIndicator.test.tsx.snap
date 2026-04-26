@@ -49,15 +49,8 @@ exports[`BodyPartIndicator renders correctly for left side 1`] = `
         ]
       }
     >
-      <Image
-        resizeMode="contain"
-        source={1}
-        style={
-          {
-            "height": 48,
-            "width": 48,
-          }
-        }
+      <View
+        testID="dummy-icon"
       />
     </View>
     <Text
@@ -178,15 +171,8 @@ exports[`BodyPartIndicator renders correctly for right side 1`] = `
         ]
       }
     >
-      <Image
-        resizeMode="contain"
-        source={1}
-        style={
-          {
-            "height": 48,
-            "width": 48,
-          }
-        }
+      <View
+        testID="dummy-icon"
       />
     </View>
     <Text

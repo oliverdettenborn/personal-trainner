@@ -1,13 +1,10 @@
 import React from 'react';
-import { ImageSourcePropType, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useThemeColor } from '../../../hooks/useThemeColor';
 import { maskDate, maskWeight } from '../../../utils/masks';
-import { Input, PhotoSlot, Text } from '../../atoms';
+import { IconCintura, IconCoxa, IconTorso, Input, PhotoSlot, Text } from '../../atoms';
 import { BodyPartIndicator } from '../BodyPartIndicator';
 import { SectionLabel } from '../SectionLabel';
-
-const ICON_CINTURA = require('../../../../assets/images/icone-cintura-v2.png');
-const ICON_TORSO = require('../../../../assets/images/icone-do-torso.png');
 
 export type PhotoSectionProps = {
   onPhotoSelected: (key: string, uri: string) => void;
@@ -21,7 +18,7 @@ type SideInfoProps = {
   side: 'left' | 'right';
   assessmentData: any;
   onFieldChange: (key: string, value: string) => void;
-  indicators: { label: string; icon: ImageSourcePropType }[];
+  indicators: { label: string; icon: React.ReactNode }[];
 };
 
 function SideInfo({ prefix, side, assessmentData, onFieldChange, indicators }: SideInfoProps) {
@@ -64,7 +61,7 @@ function SideInfo({ prefix, side, assessmentData, onFieldChange, indicators }: S
           <BodyPartIndicator
             key={index}
             label={ind.label}
-            imageSource={ind.icon}
+            icon={ind.icon}
             side={side}
           />
         ))}
@@ -82,12 +79,12 @@ export function PhotoSection({
   const text2 = useThemeColor({}, 'text2');
 
   const frenteIndicators = [
-    { label: 'Ombros', icon: ICON_TORSO },
-    { label: 'Cintura', icon: ICON_CINTURA },
+    { label: 'Ombros', icon: <IconTorso size={48} /> },
+    { label: 'Coxa', icon: <IconCoxa size={48} /> },
   ];
   const costasIndicators = [
-    { label: 'Ombros', icon: ICON_TORSO },
-    { label: 'Coxas', icon: ICON_TORSO }, // Using torso icon as placeholder for thighs
+    { label: 'Ombros', icon: <IconTorso size={48} /> },
+    { label: 'Cintura', icon: <IconCintura size={48} /> },
   ];
 
   return (

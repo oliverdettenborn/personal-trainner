@@ -1,17 +1,17 @@
 import React from 'react';
-import { Image, ImageSourcePropType, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useThemeColor } from '../../../hooks/useThemeColor';
 import { Text } from '../../atoms';
 
 export type BodyPartIndicatorProps = {
   label: string;
-  imageSource: ImageSourcePropType;
+  icon: React.ReactNode;
   side?: 'left' | 'right';
 };
 
 export function BodyPartIndicator({ 
   label, 
-  imageSource,
+  icon,
   side = 'left' 
 }: BodyPartIndicatorProps) {
   const borderGold = useThemeColor({}, 'borderGold');
@@ -20,11 +20,7 @@ export function BodyPartIndicator({
   const iconWithLabel = (
     <View style={styles.iconWrapper}>
       <View style={[styles.iconContainer, { borderColor: borderGold }]}>
-        <Image 
-          source={imageSource} 
-          style={styles.iconImage}
-          resizeMode="contain"
-        />
+        {icon}
       </View>
       <Text style={[styles.label, isRight && styles.labelRight]}>{label}</Text>
     </View>
@@ -88,10 +84,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#1a1a1a',
-  },
-  iconImage: {
-    width: 48,
-    height: 48,
   },
   label: {
     fontSize: 11,
