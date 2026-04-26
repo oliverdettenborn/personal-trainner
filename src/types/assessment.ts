@@ -12,26 +12,18 @@ export interface Assessment {
   // Medidas Frente - Antes
   frente_antes_data?: string;
   frente_antes_peso?: string;
-  frente_antes_ombros?: string;
-  frente_antes_cintura?: string;
   
   // Medidas Frente - Depois
   frente_depois_data?: string;
   frente_depois_peso?: string;
-  frente_depois_ombros?: string;
-  frente_depois_cintura?: string;
   
   // Medidas Costas - Antes
   costas_antes_data?: string;
   costas_antes_peso?: string;
-  costas_antes_ombros?: string;
-  costas_antes_coxas?: string;
   
   // Medidas Costas - Depois
   costas_depois_data?: string;
   costas_depois_peso?: string;
-  costas_depois_ombros?: string;
-  costas_depois_coxas?: string;
   
   // Feedback Panels
   positivo_1?: string;

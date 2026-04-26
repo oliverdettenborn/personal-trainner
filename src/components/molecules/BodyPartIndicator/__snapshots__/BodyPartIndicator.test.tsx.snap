@@ -1,0 +1,225 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BodyPartIndicator renders correctly for left side 1`] = `
+<View
+  style={
+    [
+      {
+        "alignItems": "center",
+        "flexDirection": "row",
+        "marginVertical": 12,
+        "width": "100%",
+      },
+      false,
+    ]
+  }
+>
+  <View
+    style={
+      {
+        "flex": 1,
+      }
+    }
+  />
+   
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "gap": 6,
+        "zIndex": 2,
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "alignItems": "center",
+            "backgroundColor": "#1a1a1a",
+            "borderRadius": 32,
+            "borderWidth": 2,
+            "height": 64,
+            "justifyContent": "center",
+            "width": 64,
+          },
+          {
+            "borderColor": "#5a4010",
+          },
+        ]
+      }
+    >
+      <Image
+        resizeMode="contain"
+        source={1}
+        style={
+          {
+            "height": 48,
+            "width": 48,
+          }
+        }
+      />
+    </View>
+    <Text
+      style={
+        [
+          {
+            "color": "#5a4010",
+          },
+          [
+            {
+              "color": "#6a5a40",
+              "fontSize": 11,
+              "fontWeight": "800",
+              "letterSpacing": 1.5,
+              "textTransform": "uppercase",
+            },
+            false,
+          ],
+        ]
+      }
+    >
+      OMBROS
+    </Text>
+  </View>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "flex": 1,
+        "height": 2,
+        "justifyContent": "center",
+        "marginTop": -16,
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "height": 2,
+            "width": "100%",
+          },
+          {
+            "backgroundColor": "#5a4010",
+          },
+        ]
+      }
+    />
+  </View>
+</View>
+`;
+
+exports[`BodyPartIndicator renders correctly for right side 1`] = `
+<View
+  style={
+    [
+      {
+        "alignItems": "center",
+        "flexDirection": "row",
+        "marginVertical": 12,
+        "width": "100%",
+      },
+      {
+        "justifyContent": "flex-end",
+      },
+    ]
+  }
+>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "flex": 1,
+        "height": 2,
+        "justifyContent": "center",
+        "marginTop": -16,
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "height": 2,
+            "width": "100%",
+          },
+          {
+            "backgroundColor": "#5a4010",
+          },
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "gap": 6,
+        "zIndex": 2,
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "alignItems": "center",
+            "backgroundColor": "#1a1a1a",
+            "borderRadius": 32,
+            "borderWidth": 2,
+            "height": 64,
+            "justifyContent": "center",
+            "width": 64,
+          },
+          {
+            "borderColor": "#5a4010",
+          },
+        ]
+      }
+    >
+      <Image
+        resizeMode="contain"
+        source={1}
+        style={
+          {
+            "height": 48,
+            "width": 48,
+          }
+        }
+      />
+    </View>
+    <Text
+      style={
+        [
+          {
+            "color": "#5a4010",
+          },
+          [
+            {
+              "color": "#6a5a40",
+              "fontSize": 11,
+              "fontWeight": "800",
+              "letterSpacing": 1.5,
+              "textTransform": "uppercase",
+            },
+            {
+              "textAlign": "center",
+            },
+          ],
+        ]
+      }
+    >
+      CINTURA
+    </Text>
+  </View>
+  <View
+    style={
+      {
+        "flex": 1,
+      }
+    }
+  />
+   
+</View>
+`;

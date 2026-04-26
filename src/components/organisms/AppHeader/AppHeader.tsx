@@ -1,5 +1,6 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Modal, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Modal, Platform, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
 import { useThemeColor } from '../../../hooks/useThemeColor';
 import { Student } from '../../../types/assessment';
@@ -26,6 +27,9 @@ export function AppHeader({
   sidebarVisible,
   onToggleSidebar,
 }: AppHeaderProps) {
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
+
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [studentName, setStudentName] = React.useState('');
 
@@ -50,16 +54,18 @@ export function AppHeader({
 
   return (
     <View style={[styles.container, { backgroundColor: bg2, borderBottomColor: borderGold }]} nativeID={nativeID}>
-      {onToggleSidebar && (
-        <Pressable onPress={onToggleSidebar} style={styles.menuToggle}>
-          <Text style={[styles.menuToggleIcon, { color: sidebarVisible ? gold : '#6a5a40' }]}>☰</Text>
-        </Pressable>
-      )}
-      <Text style={[styles.title, { color: gold }]}>
-        ACOMPANHAMENTO <Text style={{ color: text }}>FÍSICO</Text>
-      </Text>
-      
-      <View style={styles.studentBar}>
+      <View style={[styles.titleRow, isMobile && styles.titleRowFull]}>
+        {onToggleSidebar && (
+          <Pressable onPress={onToggleSidebar} style={styles.menuToggle}>
+            <Text style={[styles.menuToggleIcon, { color: sidebarVisible ? gold : '#6a5a40' }]}>☰</Text>
+          </Pressable>
+        )}
+        <Text style={[styles.title, { color: gold }]}>
+          ACOMPANHAMENTO <Text style={{ color: text }}>FÍSICO</Text>
+        </Text>
+      </View>
+
+      <View style={[styles.studentBar, isMobile && styles.studentBarFull]}>
         {/* Native <select> dropdown — matches HTML exactly */}
         {Platform.OS === 'web' ? (
           <select
@@ -92,23 +98,35 @@ export function AppHeader({
           />
         )}
 
-        <Button
-          title="+ Aluno"
-          variant="gold"
-          size="sm"
-          onPress={() => {
-            setStudentName('');
-            setIsModalOpen(true);
-          }}
-        />
-        
-        {currentStudentId && (
+        {isMobile ? (
+          <Pressable
+            onPress={() => { setStudentName(''); setIsModalOpen(true); }}
+            style={styles.iconButton}
+          >
+            <Ionicons name="person-add-outline" size={20} color="#C9963A" />
+          </Pressable>
+        ) : (
           <Button
-            title="Remover aluno"
-            variant="outline"
+            title="+ Aluno"
+            variant="gold"
             size="sm"
-            onPress={() => onRemoveStudent(currentStudentId)}
+            onPress={() => { setStudentName(''); setIsModalOpen(true); }}
           />
+        )}
+
+        {currentStudentId && (
+          isMobile ? (
+            <Pressable onPress={() => onRemoveStudent(currentStudentId)} style={styles.iconButton}>
+              <Ionicons name="person-remove-outline" size={20} color="#6a5a40" />
+            </Pressable>
+          ) : (
+            <Button
+              title="Remover aluno"
+              variant="outline"
+              size="sm"
+              onPress={() => onRemoveStudent(currentStudentId)}
+            />
+          )
         )}
       </View>
 
@@ -151,6 +169,14 @@ const styles = StyleSheet.create({
     gap: 16,
     flexWrap: 'wrap',
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  titleRowFull: {
+    width: '100%' as any,
+  },
   menuToggle: {
     padding: 6,
     marginRight: -4,
@@ -171,8 +197,15 @@ const styles = StyleSheet.create({
     flex: 1,
     flexWrap: 'wrap',
   },
+  studentBarFull: {
+    flex: 0,
+    width: '100%' as any,
+  },
   studentSelect: {
     minWidth: 180,
+  },
+  iconButton: {
+    padding: 6,
   },
   modalOverlay: {
     flex: 1,

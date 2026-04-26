@@ -549,8 +549,8 @@ O model já está definido em `src/types/assessment.ts`. Todos os campos `data-f
 |------------------------|--------|-------------------|
 | `frente_antes_data`    | date   | Frente > Antes    |
 | `frente_antes_peso`    | text   | Frente > Antes    |
-| `frente_antes_ombros`  | text   | Frente > Antes    |
-| `frente_antes_cintura` | text   | Frente > Antes    |
+| `frente_antes_ombros`  | -      | Visual Indicator Only |
+| `frente_antes_cintura` | -      | Visual Indicator Only |
 | `frente_depois_data`   | date   | Frente > Depois   |
 | `frente_depois_peso`   | text   | Frente > Depois   |
 | `frente_depois_ombros` | text   | Frente > Depois   |

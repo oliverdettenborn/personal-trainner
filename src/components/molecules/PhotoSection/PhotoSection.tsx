@@ -1,11 +1,13 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Path, Svg } from 'react-native-svg';
+import { ImageSourcePropType, StyleSheet, View } from 'react-native';
 import { useThemeColor } from '../../../hooks/useThemeColor';
 import { maskDate, maskWeight } from '../../../utils/masks';
 import { Input, PhotoSlot, Text } from '../../atoms';
-import { MeasurementRow } from '../MeasurementRow';
+import { BodyPartIndicator } from '../BodyPartIndicator';
 import { SectionLabel } from '../SectionLabel';
+
+const ICON_CINTURA = require('../../../../assets/images/icone-cintura-v2.png');
+const ICON_TORSO = require('../../../../assets/images/icone-do-torso.png');
 
 export type PhotoSectionProps = {
   onPhotoSelected: (key: string, uri: string) => void;
@@ -14,31 +16,16 @@ export type PhotoSectionProps = {
   assessmentData: any; 
 };
 
-// SVG icon paths from HTML
-const ICON_LOCATION = "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z";
-const ICON_CALENDAR = "M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z";
-
-function SvgIcon({ d, size = 14, color = '#C9963A' }: { d: string; size?: number; color?: string }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
-      <Path d={d} />
-    </Svg>
-  );
-}
-
 type SideInfoProps = {
   prefix: string;
   side: 'left' | 'right';
   assessmentData: any;
   onFieldChange: (key: string, value: string) => void;
-  measures: { label: string; field: string; iconPath: string }[];
+  indicators: { label: string; icon: ImageSourcePropType }[];
 };
 
-function SideInfo({ prefix, side, assessmentData, onFieldChange, measures }: SideInfoProps) {
-  const bg3 = useThemeColor({}, 'backgroundTertiary');
+function SideInfo({ prefix, side, assessmentData, onFieldChange, indicators }: SideInfoProps) {
   const border = useThemeColor({}, 'border');
-  const borderGold = useThemeColor({}, 'borderGold');
-  const text = useThemeColor({}, 'text');
   const isRight = side === 'right';
 
   return (
@@ -71,18 +58,17 @@ function SideInfo({ prefix, side, assessmentData, onFieldChange, measures }: Sid
         />
       </View>
 
-      {/* Measurement rows with SVG icons */}
-      {measures.map(m => (
-        <MeasurementRow
-          key={m.field}
-          label={m.label}
-          placeholder="__ cm"
-          svgPath={m.iconPath}
-          value={assessmentData[`${prefix}_${m.field}`] || ''}
-          onChangeText={(v) => onFieldChange(`${prefix}_${m.field}`, v)}
-          textAlign={side}
-        />
-      ))}
+      {/* Body Part Indicators */}
+      <View style={styles.indicatorsContainer}>
+        {indicators.map((ind, index) => (
+          <BodyPartIndicator
+            key={index}
+            label={ind.label}
+            imageSource={ind.icon}
+            side={side}
+          />
+        ))}
+      </View>
     </View>
   );
 }
@@ -95,13 +81,13 @@ export function PhotoSection({
 }: PhotoSectionProps) {
   const text2 = useThemeColor({}, 'text2');
 
-  const frenteMeasures = [
-    { label: 'Ombros', field: 'ombros', iconPath: ICON_LOCATION },
-    { label: 'Cintura', field: 'cintura', iconPath: ICON_CALENDAR },
+  const frenteIndicators = [
+    { label: 'Ombros', icon: ICON_TORSO },
+    { label: 'Cintura', icon: ICON_CINTURA },
   ];
-  const costasMeasures = [
-    { label: 'Ombros', field: 'ombros', iconPath: ICON_LOCATION },
-    { label: 'Coxas', field: 'coxas', iconPath: ICON_LOCATION },
+  const costasIndicators = [
+    { label: 'Ombros', icon: ICON_TORSO },
+    { label: 'Coxas', icon: ICON_TORSO }, // Using torso icon as placeholder for thighs
   ];
 
   return (
@@ -114,7 +100,7 @@ export function PhotoSection({
           side="left"
           assessmentData={assessmentData}
           onFieldChange={onFieldChange}
-          measures={frenteMeasures}
+          indicators={frenteIndicators}
         />
 
         <View style={styles.photoCol}>
@@ -140,7 +126,7 @@ export function PhotoSection({
           side="right"
           assessmentData={assessmentData}
           onFieldChange={onFieldChange}
-          measures={frenteMeasures}
+          indicators={frenteIndicators}
         />
       </View>
 
@@ -154,7 +140,7 @@ export function PhotoSection({
           side="left"
           assessmentData={assessmentData}
           onFieldChange={onFieldChange}
-          measures={costasMeasures}
+          indicators={costasIndicators}
         />
 
         <View style={styles.photoCol}>
@@ -180,7 +166,7 @@ export function PhotoSection({
           side="right"
           assessmentData={assessmentData}
           onFieldChange={onFieldChange}
-          measures={costasMeasures}
+          indicators={costasIndicators}
         />
       </View>
     </View>
@@ -197,10 +183,17 @@ const styles = StyleSheet.create({
   sideInfo: {
     flexDirection: 'column',
     gap: 10,
-    paddingHorizontal: 10,
     width: 160,
     flexShrink: 0,
     flexGrow: 0,
+  },
+  sideInfoLeft: {
+    paddingLeft: 10,
+    paddingRight: 0,
+  },
+  sideInfoRight: {
+    paddingLeft: 0,
+    paddingRight: 10,
   },
   fieldGroup: {
     flexDirection: 'column',
@@ -222,6 +215,10 @@ const styles = StyleSheet.create({
   },
   fieldContainer: {
     marginBottom: 0,
+  },
+  indicatorsContainer: {
+    marginTop: 10,
+    gap: 4,
   },
   photoCol: {
     flexDirection: 'column',

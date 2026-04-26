@@ -15,10 +15,10 @@ jest.mock('react-native-svg', () => {
   };
 });
 
-jest.mock('../MeasurementRow/MeasurementRow', () => {
+jest.mock('../BodyPartIndicator/BodyPartIndicator', () => {
   const { View: MockView, Text: MockText } = require('react-native');
   return {
-    MeasurementRow: ({ label }: any) => (
+    BodyPartIndicator: ({ label }: any) => (
       <MockView><MockText>{label}</MockText></MockView>
     ),
   };
