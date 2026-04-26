@@ -79,7 +79,7 @@ export function AppHeader({
               borderRadius: 6,
               fontSize: 13,
               cursor: 'pointer',
-              minWidth: 180,
+              minWidth: 160,
               fontFamily: 'inherit',
             }}
           >
@@ -195,14 +195,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     flex: 1,
-    flexWrap: 'wrap',
   },
   studentBarFull: {
     flex: 0,
     width: '100%' as any,
   },
   studentSelect: {
-    minWidth: 180,
+    minWidth: 160,
   },
   iconButton: {
     padding: 6,

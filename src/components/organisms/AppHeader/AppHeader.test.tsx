@@ -1,7 +1,14 @@
 import { fireEvent, render } from '@testing-library/react-native';
 import React from 'react';
+import { useWindowDimensions } from 'react-native';
 import { Student } from '../../../types/assessment';
 import { AppHeader } from './AppHeader';
+
+jest.mock('react-native/Libraries/Utilities/useWindowDimensions', () => ({
+  default: jest.fn(),
+}));
+
+const mockUseWindowDimensions = useWindowDimensions as jest.Mock;
 
 const mockStudents: Student[] = [
   { id: 's1', name: 'Alice', createdAt: Date.now() },
@@ -14,6 +21,10 @@ const commonProps = {
   onAddStudent: jest.fn(),
   onRemoveStudent: jest.fn(),
 };
+
+beforeEach(() => {
+  mockUseWindowDimensions.mockReturnValue({ width: 1280, height: 900 });
+});
 
 describe('AppHeader', () => {
   it('renders the app title', () => {
@@ -56,6 +67,42 @@ describe('AppHeader', () => {
 
       expect(getByText('☰')).toBeTruthy();
       expect(getByText(/ACOMPANHAMENTO/)).toBeTruthy();
+    });
+  });
+
+  describe('student action buttons — desktop', () => {
+    it('renders text buttons on desktop', () => {
+      const { getByText } = render(<AppHeader {...commonProps} />);
+
+      expect(getByText('+ Aluno')).toBeTruthy();
+    });
+
+    it('renders Remover aluno text button when student is selected on desktop', () => {
+      const { getByText } = render(
+        <AppHeader {...commonProps} currentStudentId="s1" />
+      );
+
+      expect(getByText('Remover aluno')).toBeTruthy();
+    });
+  });
+
+  describe('student action buttons — mobile', () => {
+    beforeEach(() => {
+      mockUseWindowDimensions.mockReturnValue({ width: 375, height: 812 });
+    });
+
+    it('does not render "+ Aluno" text on mobile', () => {
+      const { queryByText } = render(<AppHeader {...commonProps} />);
+
+      expect(queryByText('+ Aluno')).toBeNull();
+    });
+
+    it('does not render "Remover aluno" text on mobile', () => {
+      const { queryByText } = render(
+        <AppHeader {...commonProps} currentStudentId="s1" />
+      );
+
+      expect(queryByText('Remover aluno')).toBeNull();
     });
   });
 });
