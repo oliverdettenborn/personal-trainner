@@ -226,7 +226,7 @@ export default function AssessmentScreen() {
                 <View
                   ref={captureAreaRef}
                   nativeID="template-capture-area"
-                  style={{ backgroundColor: '#0e0e0e' }}
+                  style={{ backgroundColor: '#0e0e0e', maxWidth: 900, alignSelf: 'center', width: '100%' }}
                 >
                   <AssessmentTemplate>
                     <AssessmentForm
