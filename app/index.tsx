@@ -4,9 +4,12 @@ import { AppHeader } from '@organisms/AppHeader';
 import { AssessmentForm } from '@organisms/AssessmentForm';
 import { Sidebar } from '@organisms/Sidebar';
 import { AssessmentTemplate } from '@templates/AssessmentTemplate';
-import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import * as Sharing from 'expo-sharing';
+import html2canvas from 'html2canvas';
+import React, { useEffect, useRef, useState } from 'react';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
+import { captureRef } from 'react-native-view-shot';
 import { Text } from '../src/components/atoms/Text';
 
 const SVG_INFO_EMPTY = "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z";
@@ -32,6 +35,7 @@ export default function AssessmentScreen() {
 
   const [isSaving, setIsSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const captureAreaRef = useRef<View>(null);
 
   const text3 = '#6a5a40';
 
@@ -39,6 +43,71 @@ export default function AssessmentScreen() {
     if (currentAssessmentId) {
       updateAssessment(currentAssessmentId, { [key]: value });
       setIsDirty(true);
+    }
+  };
+
+  const handleDownloadImage = async () => {
+    if (!captureAreaRef.current) return;
+
+    try {
+      if (Platform.OS === 'web') {
+        // @ts-ignore - nativeID and DOM interaction
+        const element = document.getElementById('template-capture-area');
+        if (element) {
+          const canvas = await html2canvas(element, {
+            background: '#0e0e0e',
+            logging: false,
+            useCORS: true,
+          });
+          const link = document.createElement('a');
+          const studentName = db.students[currentStudentId!]?.name || 'Avaliacao';
+          const date = new Date(currentAssessment?.createdAt || Date.now()).toLocaleDateString().replace(/\//g, '-');
+          link.download = `Avaliacao_${studentName}_${date}.png`;
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        }
+      } else {
+        const uri = await captureRef(captureAreaRef, {
+          format: 'png',
+          quality: 1,
+        });
+        await Sharing.shareAsync(uri);
+      }
+    } catch (error) {
+      console.error('Erro ao gerar imagem:', error);
+      alert('Ocorreu um erro ao gerar a imagem.');
+    }
+  };
+
+  const handleCopyImage = async () => {
+    if (Platform.OS !== 'web') return;
+
+    try {
+      // @ts-ignore - DOM interaction
+      const element = document.getElementById('template-capture-area');
+      if (element) {
+        const canvas = await html2canvas(element, {
+          background: '#0e0e0e',
+          logging: false,
+          useCORS: true,
+        });
+        
+        canvas.toBlob(async (blob) => {
+          if (blob) {
+            try {
+              const item = new ClipboardItem({ 'image/png': blob });
+              await navigator.clipboard.write([item]);
+              alert('Imagem copiada para a área de transferência!');
+            } catch (err) {
+              console.error('Clipboard error:', err);
+              alert('Erro ao copiar imagem. Tente usar o botão de baixar.');
+            }
+          }
+        }, 'image/png');
+      }
+    } catch (error) {
+      console.error('Erro ao copiar imagem:', error);
+      alert('Erro ao gerar a imagem para cópia.');
     }
   };
 
@@ -93,11 +162,8 @@ export default function AssessmentScreen() {
                     setIsDirty(false);
                   }, 500);
                 }}
-                onPrint={() => {
-                  if (typeof window !== 'undefined') {
-                    window.print();
-                  }
-                }}
+                onDownloadImage={handleDownloadImage}
+                onCopyImage={handleCopyImage}
                 onImport={importFromJSON}
                 onDelete={() => {
                   if (currentAssessmentId && confirm('Excluir esta avaliação? A ação é irreversível.')) {
@@ -108,12 +174,18 @@ export default function AssessmentScreen() {
                 status={isDirty ? 'unsaved' : 'saved'}
               />
               
-              <AssessmentTemplate>
-                <AssessmentForm 
-                  assessment={currentAssessment}
-                  onUpdate={handleUpdateAssessment}
-                />
-              </AssessmentTemplate>
+              <View 
+                ref={captureAreaRef} 
+                nativeID="template-capture-area"
+                style={{ backgroundColor: '#0e0e0e' }}
+              >
+                <AssessmentTemplate>
+                  <AssessmentForm 
+                    assessment={currentAssessment}
+                    onUpdate={handleUpdateAssessment}
+                  />
+                </AssessmentTemplate>
+              </View>
             </>
           ) : (
             <View style={styles.emptyState}>

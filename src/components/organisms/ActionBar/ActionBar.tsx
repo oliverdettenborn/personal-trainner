@@ -6,7 +6,8 @@ import { Button, Text } from '../../atoms';
 
 export type ActionBarProps = {
   onSave?: () => void;
-  onPrint?: () => void;
+  onDownloadImage?: () => void;
+  onCopyImage?: () => void;
   onImport?: (file: File | any) => void;
   onDelete?: () => void;
   isSaving?: boolean;
@@ -16,7 +17,8 @@ export type ActionBarProps = {
 
 export function ActionBar({
   onSave,
-  onPrint,
+  onDownloadImage,
+  onCopyImage,
   onImport,
   onDelete,
   isSaving = false,
@@ -77,10 +79,18 @@ export function ActionBar({
         />
         
         <Button
-          title="Imprimir / PDF"
+          title="Baixar Imagem"
           variant="outline"
-          onPress={onPrint}
+          onPress={onDownloadImage}
         />
+
+        {Platform.OS === 'web' && (
+          <Button
+            title="Copiar Imagem"
+            variant="outline"
+            onPress={onCopyImage}
+          />
+        )}
         
         {Platform.OS === 'web' && (
           <label style={{ 
