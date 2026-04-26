@@ -100,15 +100,17 @@ export function Button({
             <ActivityIndicator color={getVariantStyles(hovered).text.color} />
           ) : (
             <>
-              <Text style={[styles.text, { fontSize }, getVariantStyles(hovered).text]}>
-                {title}
-              </Text>
+              {title ? (
+                <Text style={[styles.text, { fontSize }, getVariantStyles(hovered).text]}>
+                  {title}
+                </Text>
+              ) : null}
               {iconRight && (
                 <Ionicons 
                   name={iconRight} 
                   size={fontSize + 2} 
                   color={getVariantStyles(hovered).text.color} 
-                  style={{ marginLeft: 6 }} 
+                  style={title ? { marginLeft: 6 } : {}} 
                 />
               )}
             </>

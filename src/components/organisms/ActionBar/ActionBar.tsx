@@ -7,8 +7,7 @@ import { Button, Text } from '../../atoms';
 export type ActionBarProps = {
   onSave?: () => void;
   onDownloadImage?: () => void;
-  onCopyImage?: () => void;
-  onImport?: (file: File | any) => void;
+  onCopyImage?: () => Promise<boolean> | void;
   onDelete?: () => void;
   isSaving?: boolean;
   status?: 'saved' | 'unsaved';
@@ -19,7 +18,6 @@ export function ActionBar({
   onSave,
   onDownloadImage,
   onCopyImage,
-  onImport,
   onDelete,
   isSaving = false,
   status = 'saved',
@@ -30,6 +28,7 @@ export function ActionBar({
   const gold = useThemeColor({}, 'gold');
 
   const pulseAnim = React.useRef(new Animated.Value(1)).current;
+  const [isCopied, setIsCopied] = React.useState(false);
 
   React.useEffect(() => {
     if (status === 'unsaved') {
@@ -52,20 +51,13 @@ export function ActionBar({
     }
   }, [status, pulseAnim]);
 
-  const handleFileChange = (event: any) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      try {
-        const data = JSON.parse(e.target.result as string);
-        onImport?.(data);
-      } catch (error) {
-        console.error("Failed to parse JSON", error);
-        alert("Erro ao importar JSON. Verifique o formato do arquivo.");
-      }
-    };
-    reader.readAsText(file);
+  const handleCopyClick = async () => {
+    if (!onCopyImage) return;
+    const result = await onCopyImage();
+    if (result !== false) {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    }
   };
 
   return (
@@ -79,42 +71,19 @@ export function ActionBar({
         />
         
         <Button
-          title="Baixar Imagem"
+          title=""
           variant="outline"
           onPress={onDownloadImage}
+          iconRight="download-outline"
         />
 
         {Platform.OS === 'web' && (
           <Button
-            title="Copiar Imagem"
+            title=""
             variant="outline"
-            onPress={onCopyImage}
+            onPress={handleCopyClick}
+            iconRight={isCopied ? "checkmark-outline" : "copy-outline"}
           />
-        )}
-        
-        {Platform.OS === 'web' && (
-          <label style={{ 
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '6px 14px',
-            fontSize: 13,
-            fontWeight: '600',
-            backgroundColor: 'transparent',
-            border: '1px solid #5a4010',
-            color: '#C9963A',
-            borderRadius: 6,
-          }}>
-            <Ionicons name="cloud-download-outline" size={13} color="#C9963A" />
-            Importar JSON
-            <input
-              type="file"
-              accept=".json"
-              onChange={handleFileChange}
-              style={{ display: 'none' }}
-            />
-          </label>
         )}
       </View>
       

@@ -11,7 +11,6 @@ export type AppHeaderProps = {
   onSelectStudent: (studentId: string) => void;
   onAddStudent: (name: string) => void;
   onRemoveStudent: (id: string) => void;
-  onImportJSON: (data: any) => void;
   nativeID?: string;
 };
 
@@ -21,7 +20,6 @@ export function AppHeader({
   onSelectStudent,
   onAddStudent,
   onRemoveStudent,
-  onImportJSON,
   nativeID,
 }: AppHeaderProps) {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -31,22 +29,6 @@ export function AppHeader({
   const borderGold = useThemeColor({}, 'borderGold');
   const gold = useThemeColor({}, 'gold');
   const text = useThemeColor({}, 'text');
-
-  const handleFileChange = (event: any) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      try {
-        const data = JSON.parse(e.target.result as string);
-        onImportJSON?.(data);
-      } catch (error) {
-        console.error("Failed to parse JSON", error);
-        alert("Erro ao importar JSON. Verifique o formato do arquivo.");
-      }
-    };
-    reader.readAsText(file);
-  };
 
   const handleConfirmNewStudent = () => {
     const trimmed = studentName.trim();
@@ -118,34 +100,6 @@ export function AppHeader({
             size="sm"
             onPress={() => onRemoveStudent(currentStudentId)}
           />
-        )}
-        
-        {/* Import JSON - Web only */}
-        {Platform.OS === 'web' && (
-          <label style={{ 
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 5,
-            padding: '4px 10px',
-            fontSize: 12,
-            fontWeight: '600',
-            backgroundColor: 'transparent',
-            border: '1px solid #5a4010',
-            color: '#C9963A',
-            borderRadius: 6,
-          }}>
-            <Svg width={12} height={12} viewBox="0 0 24 24" fill="#C9963A">
-              <Path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
-            </Svg>
-            Importar JSON
-            <input
-              type="file"
-              accept=".json"
-              onChange={handleFileChange}
-              style={{ display: 'none' }}
-            />
-          </label>
         )}
       </View>
 

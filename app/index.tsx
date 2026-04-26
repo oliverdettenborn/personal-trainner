@@ -29,7 +29,6 @@ export default function AssessmentScreen() {
     addAssessment,
     updateAssessment,
     removeAssessment,
-    importFromJSON,
     saveManual 
   } = useAssessment();
 
@@ -79,8 +78,8 @@ export default function AssessmentScreen() {
     }
   };
 
-  const handleCopyImage = async () => {
-    if (Platform.OS !== 'web') return;
+  const handleCopyImage = async (): Promise<boolean> => {
+    if (Platform.OS !== 'web') return false;
 
     try {
       // @ts-ignore - DOM interaction
@@ -92,22 +91,27 @@ export default function AssessmentScreen() {
           useCORS: true,
         });
         
-        canvas.toBlob(async (blob) => {
-          if (blob) {
-            try {
-              const item = new ClipboardItem({ 'image/png': blob });
-              await navigator.clipboard.write([item]);
-              alert('Imagem copiada para a área de transferência!');
-            } catch (err) {
-              console.error('Clipboard error:', err);
-              alert('Erro ao copiar imagem. Tente usar o botão de baixar.');
+        return new Promise((resolve) => {
+          canvas.toBlob(async (blob) => {
+            if (blob) {
+              try {
+                const item = new ClipboardItem({ 'image/png': blob });
+                await navigator.clipboard.write([item]);
+                resolve(true);
+              } catch (err) {
+                console.error('Clipboard error:', err);
+                resolve(false);
+              }
+            } else {
+              resolve(false);
             }
-          }
-        }, 'image/png');
+          }, 'image/png');
+        });
       }
+      return false;
     } catch (error) {
       console.error('Erro ao copiar imagem:', error);
-      alert('Erro ao gerar a imagem para cópia.');
+      return false;
     }
   };
 
@@ -135,7 +139,6 @@ export default function AssessmentScreen() {
             removeStudent(id);
           }
         }}
-        onImportJSON={importFromJSON}
       />
       
       <View style={styles.appBody}>
@@ -164,7 +167,6 @@ export default function AssessmentScreen() {
                 }}
                 onDownloadImage={handleDownloadImage}
                 onCopyImage={handleCopyImage}
-                onImport={importFromJSON}
                 onDelete={() => {
                   if (currentAssessmentId && confirm('Excluir esta avaliação? A ação é irreversível.')) {
                     removeAssessment(currentAssessmentId);
