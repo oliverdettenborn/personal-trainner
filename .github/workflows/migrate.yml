@@ -17,4 +17,7 @@ jobs:
           version: latest
 
       - name: Apply migrations
+        # NOTE: If you are on the Supabase free tier, the direct connection (port 5432) uses IPv6 only.
+        # GitHub Actions runners often don't support IPv6. Use the Connection Pooler (Transaction Mode, port 6543)
+        # in your SUPABASE_DB_URL secret to connect via IPv4.
         run: supabase db push --db-url ${{ secrets.SUPABASE_DB_URL }}

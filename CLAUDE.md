@@ -35,6 +35,7 @@ npm test -- src/hooks/useAssessment.test.ts
 **Testing:** Unit tests use `jest-expo` preset. Integration tests use `jest.integration.config.js` (ts-jest + node) with `pg-mem` as in-memory PostgreSQL — no Docker required for CI.
 
 **CI/CD:** `.github/workflows/deploy.yml` — on push to `main`: runs tests + applies migrations (`supabase db push`) in parallel, then builds Expo web and deploys to GitHub Pages. PR checks in `pr.yml`.
+> **Note:** For GitHub Actions, ensure `SUPABASE_DB_URL` uses the **Connection Pooler (Transaction Mode, port 6543)** because the free tier direct connection (port 5432) uses IPv6, which is not supported by GHA runners.
 
 ## Environment
 
