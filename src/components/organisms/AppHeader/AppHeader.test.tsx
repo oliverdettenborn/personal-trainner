@@ -1,8 +1,12 @@
 import { fireEvent, render } from '@testing-library/react-native';
 import React from 'react';
-import { useWindowDimensions } from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 import { Student } from '../../../types/assessment';
 import { AppHeader } from './AppHeader';
+
+jest.mock('@expo/vector-icons', () => ({
+  Ionicons: 'Ionicons',
+}));
 
 jest.mock('react-native/Libraries/Utilities/useWindowDimensions', () => ({
   default: jest.fn(),

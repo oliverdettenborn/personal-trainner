@@ -2,6 +2,10 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import { PhotoSlot } from './PhotoSlot';
 
+jest.mock('@expo/vector-icons', () => ({
+  Ionicons: 'Ionicons',
+}));
+
 describe('PhotoSlot', () => {
   it('renders placeholder when no uri is provided', () => {
     const { getByText } = render(<PhotoSlot onPhotoSelected={() => {}} />);
