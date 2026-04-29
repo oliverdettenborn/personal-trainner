@@ -6,6 +6,8 @@
     "start": "expo start",
     "dev": "concurrently -n supabase,expo -c cyan,magenta \"supabase start\" \"expo start\"",
     "db": "supabase start",
+    "studio": "start http://127.0.0.1:54323",
+    "mail": "start http://127.0.0.1:54324",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
