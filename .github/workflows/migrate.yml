@@ -3,12 +3,8 @@ name: Migrations
 on:
   workflow_call:
     secrets:
-      SUPABASE_ACCESS_TOKEN:
+      SUPABASE_DB_URL:
         required: true
-    inputs:
-      SUPABASE_PROJECT_REF:
-        required: true
-        type: string
 
 jobs:
   migrate:
@@ -20,12 +16,5 @@ jobs:
         with:
           version: latest
 
-      - name: Link project
-        run: supabase link --project-ref ${{ inputs.SUPABASE_PROJECT_REF }}
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-
       - name: Apply migrations
-        run: supabase db push
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: supabase db push --db-url ${{ secrets.SUPABASE_DB_URL }}
