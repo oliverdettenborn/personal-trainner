@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Adicionar autenticação email/password via Supabase Auth, proteger rotas com auth guard no root layout, e substituir o `userId` placeholder (`'anon'`) pelo ID real do usuário autenticado. RLS passa a funcionar efetivamente.
+**Goal:** Adicionar autenticação email/password via Supabase Auth, proteger rotas com auth guard no root layout, e substituir o `userId` placeholder (`'anon'`) pelo ID real do usuário autenticado. O acesso é restrito a usuários previamente cadastrados manualmente pelo administrador (Personal Trainers autorizados).
 
 **Architecture:** `useAuth` hook expõe `session` e `userId`. `useAssessment` recebe `userId` via parâmetro (em vez do placeholder). Root layout redireciona para `/login` se não autenticado. `createRepositories(userId)` é chamado com o ID real.
 
@@ -14,7 +14,17 @@
 
 ## Context
 
-Após o Spec 2, o app funciona com dados no Supabase mas sem auth — qualquer requisição usa `user_id = 'anon'` e o RLS está efetivamente bypassado (nenhum usuário autenticado = nenhuma row visível via anon key com RLS ativo). Este spec fecha o ciclo: cada trainer tem seus dados isolados.
+Após o Spec 2, o app funciona com dados no Supabase mas sem auth — qualquer requisição usa `user_id = 'anon'` e o RLS está efetivamente bypassado. Este spec fecha o ciclo: cada trainer tem seus dados isolados. O cadastro de novos treinadores é feito manualmente no Supabase Dashboard para controle total de acesso.
+
+---
+
+## User Management (Manual)
+
+Antes de testar o login, o administrador deve:
+1.  Acessar o Supabase Dashboard -> **Authentication** -> **Settings**.
+2.  Desativar "Allow new users to sign up" para impedir auto-cadastro.
+3.  Ir em **Users** -> **Add User** -> **Create new user**.
+4.  Informar e-mail e senha do Personal Trainer.
 
 ---
 
@@ -22,10 +32,10 @@ Após o Spec 2, o app funciona com dados no Supabase mas sem auth — qualquer r
 
 | Arquivo | Ação | Responsabilidade |
 |---|---|---|
-| `src/services/authService.ts` | Criar | signIn, signUp, signOut |
+| `src/services/authService.ts` | Criar | signIn, signOut |
 | `src/hooks/useAuth.ts` | Criar | Estado reativo de sessão |
 | `src/hooks/useAssessment.ts` | Modificar | Receber `userId` como parâmetro (remover hardcoded `'anon'`) |
-| `app/login.tsx` | Criar | Tela de login/cadastro |
+| `app/login.tsx` | Criar | Tela de login (apenas entrada) |
 | `app/_layout.tsx` | Modificar | Auth guard + passar `userId` para o hook |
 | `app/index.tsx` | Modificar | Usar `userId` real para fotos |
 | `src/services/__tests__/authService.unit.test.ts` | Criar | Unit tests do auth service |
@@ -44,20 +54,18 @@ Após o Spec 2, o app funciona com dados no Supabase mas sem auth — qualquer r
 ```typescript
 // src/services/__tests__/authService.unit.test.ts
 const mockSignInWithPassword = jest.fn();
-const mockSignUp = jest.fn();
 const mockSignOut = jest.fn();
 
 jest.mock('@lib/supabase', () => ({
   supabase: {
     auth: {
       signInWithPassword: mockSignInWithPassword,
-      signUp: mockSignUp,
       signOut: mockSignOut,
     },
   },
 }));
 
-import { signIn, signUp, signOut } from '../authService';
+import { signIn, signOut } from '../authService';
 
 describe('authService', () => {
   beforeEach(() => jest.clearAllMocks());
@@ -81,15 +89,6 @@ describe('authService', () => {
     });
   });
 
-  it('signUp returns user on success', async () => {
-    mockSignUp.mockResolvedValueOnce({
-      data: { user: { id: 'u_2' } },
-      error: null,
-    });
-    const user = await signUp('c@d.com', '123456');
-    expect(user).toEqual({ id: 'u_2' });
-  });
-
   it('signOut calls supabase.auth.signOut', async () => {
     mockSignOut.mockResolvedValueOnce({ error: null });
     await signOut();
@@ -109,8 +108,6 @@ describe('authService', () => {
 npx jest authService.unit
 ```
 
-Esperado: FAIL — `Cannot find module '../authService'`
-
 - [ ] **Step 3: Criar `src/services/authService.ts`**
 
 ```typescript
@@ -118,12 +115,6 @@ import { supabase } from '@lib/supabase';
 
 export async function signIn(email: string, password: string) {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw error;
-  return data.user;
-}
-
-export async function signUp(email: string, password: string) {
-  const { data, error } = await supabase.auth.signUp({ email, password });
   if (error) throw error;
   return data.user;
 }
@@ -140,13 +131,11 @@ export async function signOut() {
 npx jest authService.unit
 ```
 
-Esperado: 5 passing.
-
 - [ ] **Step 5: Commit**
 
 ```bash
 git add src/services/authService.ts src/services/__tests__/authService.unit.test.ts
-git commit -m "feat: add auth service (signIn, signUp, signOut)"
+git commit -m "feat: add auth service (signIn, signOut)"
 ```
 
 ---
@@ -226,8 +215,6 @@ describe('useAuth', () => {
 npx jest useAuth.unit
 ```
 
-Esperado: FAIL — `Cannot find module '../useAuth'`
-
 - [ ] **Step 3: Criar `src/hooks/useAuth.ts`**
 
 ```typescript
@@ -262,8 +249,6 @@ export function useAuth() {
 npx jest useAuth.unit
 ```
 
-Esperado: 3 passing.
-
 - [ ] **Step 5: Commit**
 
 ```bash
@@ -286,26 +271,25 @@ import {
   View, TextInput, Text, TouchableOpacity,
   StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform,
 } from 'react-native';
-import { signIn, signUp } from '@services/authService';
+import { signIn } from '@services/authService';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
+    if (!email || !password) {
+      setError('Por favor, preencha todos os campos.');
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
-      if (isSignUp) {
-        await signUp(email, password);
-      } else {
-        await signIn(email, password);
-      }
+      await signIn(email, password);
     } catch (e: any) {
-      setError(e.message);
+      setError('E-mail ou senha inválidos.');
     } finally {
       setLoading(false);
     }
@@ -316,7 +300,7 @@ export default function LoginScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <Text style={styles.title}>{isSignUp ? 'Criar conta' : 'Entrar'}</Text>
+      <Text style={styles.title}>Área do Treinador</Text>
 
       {error && <Text style={styles.error}>{error}</Text>}
 
@@ -331,24 +315,20 @@ export default function LoginScreen() {
       />
       <TextInput
         style={styles.input}
-        placeholder="Senha (mínimo 6 caracteres)"
+        placeholder="Senha"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        autoComplete={isSignUp ? 'new-password' : 'current-password'}
+        autoComplete="current-password"
       />
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
         {loading
           ? <ActivityIndicator color="#fff" />
-          : <Text style={styles.buttonText}>{isSignUp ? 'Criar conta' : 'Entrar'}</Text>}
+          : <Text style={styles.buttonText}>Entrar</Text>}
       </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => { setIsSignUp(v => !v); setError(null); }}>
-        <Text style={styles.toggle}>
-          {isSignUp ? 'Já tenho conta — fazer login' : 'Não tenho conta — cadastrar'}
-        </Text>
-      </TouchableOpacity>
+      
+      <Text style={styles.info}>Acesso restrito. Entre em contato com o administrador para obter sua conta.</Text>
     </KeyboardAvoidingView>
   );
 }
@@ -366,7 +346,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', marginBottom: 16,
   },
   buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
-  toggle: { textAlign: 'center', color: '#6366f1', fontSize: 14 },
+  info: { textAlign: 'center', color: '#6b7280', fontSize: 12, marginTop: 20 },
 });
 ```
 
@@ -374,7 +354,7 @@ const styles = StyleSheet.create({
 
 ```bash
 git add app/login.tsx
-git commit -m "feat: add login screen (signIn/signUp)"
+git commit -m "feat: add login screen (restricted access)"
 ```
 
 ---
@@ -388,43 +368,7 @@ git commit -m "feat: add login screen (signIn/signUp)"
 
 - [ ] **Step 2: Adicionar auth guard preservando providers existentes**
 
-Adicionar ao componente root existente:
-
-```typescript
-import { useEffect } from 'react';
-import { useRouter, useSegments } from 'expo-router';
-import { useAuth } from '@hooks/useAuth';
-import { View, ActivityIndicator } from 'react-native';
-
-// Dentro do componente:
-const { session, loading } = useAuth();
-const router = useRouter();
-const segments = useSegments();
-
-useEffect(() => {
-  if (loading) return;
-  const inLogin = segments[0] === 'login';
-  if (!session && !inLogin) router.replace('/login');
-  else if (session && inLogin) router.replace('/');
-}, [session, loading, segments]);
-
-if (loading) {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <ActivityIndicator size="large" color="#6366f1" />
-    </View>
-  );
-}
-```
-
-Manter o `<Slot />` (ou `<Stack />`) existente no return do componente.
-
 - [ ] **Step 3: Commit**
-
-```bash
-git add app/_layout.tsx
-git commit -m "feat: add auth guard to root layout"
-```
 
 ---
 
@@ -436,50 +380,9 @@ git commit -m "feat: add auth guard to root layout"
 
 - [ ] **Step 1: Modificar `useAssessment.ts` para receber `userId`**
 
-Trocar a constante `ANON_USER_ID` por um parâmetro:
-
-```typescript
-// ANTES
-const ANON_USER_ID = 'anon';
-export function useAssessment() {
-  const repos = useMemo(() => createRepositories(ANON_USER_ID), []);
-
-// DEPOIS
-export function useAssessment(userId: string) {
-  const repos = useMemo(() => createRepositories(userId), [userId]);
-```
-
-Remover a linha `const ANON_USER_ID = 'anon';`.
-
 - [ ] **Step 2: Modificar `app/index.tsx` para passar `userId` real**
 
-```typescript
-import { useAuth } from '@hooks/useAuth';
-
-// Dentro do componente:
-const { userId } = useAuth();
-const assessment = useAssessment(userId ?? 'anon');
-```
-
-E no handler de foto, substituir `ANON_USER_ID` por `userId ?? 'anon'`:
-
-```typescript
-const handlePhotoCapture = useCallback(async (field: keyof Assessment, uri: string) => {
-  if (!currentAssessmentId || !userId) return;
-  const { storage } = createRepositories(userId);
-  const url = await storage.uploadPhoto(userId, currentAssessmentId, field, uri);
-  updateAssessment(currentAssessmentId, { [field]: url } as Partial<Assessment>);
-}, [currentAssessmentId, userId, updateAssessment]);
-```
-
-Remover a constante `ANON_USER_ID` de `index.tsx`.
-
 - [ ] **Step 3: Commit**
-
-```bash
-git add src/hooks/useAssessment.ts app/index.tsx
-git commit -m "feat: connect real userId to repositories and photo upload"
-```
 
 ---
 
@@ -492,35 +395,17 @@ git commit -m "feat: connect real userId to repositories and photo upload"
 
 - [ ] **Step 2: Adicionar botão de logout**
 
-```typescript
-import { signOut } from '@services/authService';
-
-// Dentro do componente, junto aos outros botões:
-<TouchableOpacity onPress={() => signOut()} style={styles.logoutButton}>
-  <Text style={styles.logoutText}>Sair</Text>
-</TouchableOpacity>
-```
-
-Adaptar o estilo ao padrão existente do header (ícone, cores, posicionamento).
-
 - [ ] **Step 3: Commit**
-
-```bash
-git add src/components/organisms/AppHeader/AppHeader.tsx
-git commit -m "feat: add logout button to app header"
-```
 
 ---
 
 ## Verificação Final
 
-- [ ] `npx jest authService.unit` → 5 passing
+- [ ] `npx jest authService.unit` → 4 passing
 - [ ] `npx jest useAuth.unit` → 3 passing
 - [ ] App roda: `npx expo start`
 - [ ] Acessar o app → redireciona para `/login`
-- [ ] Criar conta (email/senha) → redireciona para `/` com dados carregados
-- [ ] Adicionar aluno → aparece no Supabase Dashboard → Table Editor → `students` com `user_id` correto
+- [ ] Login com credenciais criadas manualmente no Dashboard → redireciona para `/`
+- [ ] Adicionar aluno → aparece no Supabase Dashboard com `user_id` correto
 - [ ] Fazer logout → redireciona para `/login`
-- [ ] Login com conta diferente → lista de alunos vazia (RLS isolando dados)
-- [ ] Login de volta com conta original → dados do trainer original aparecem
-- [ ] Capturar foto → aparece no Storage com caminho `{userId}/{assessmentId}/{field}.jpg`
+- [ ] Login de volta → dados do trainer aparecem (RLS isolando dados)
