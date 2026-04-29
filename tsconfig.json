@@ -9,7 +9,9 @@
       "@organisms/*": ["./src/components/organisms/*"],
       "@templates/*": ["./src/components/templates/*"],
       "@hooks/*": ["./src/hooks/*"],
-      "@theme/*": ["./src/theme/*"]
+      "@theme/*": ["./src/theme/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@services/*": ["./src/services/*"]
     }
   },
   "include": [

@@ -14,7 +14,7 @@ describe("useAssessment", () => {
   });
 
   it("adds a student and auto-creates/selects an assessment", async () => {
-    const { result } = renderHook(() => useAssessment());
+    const { result } = renderHook(() => useAssessment(null));
 
     let studentId: string = "";
     await act(async () => {
@@ -28,7 +28,7 @@ describe("useAssessment", () => {
   });
 
   it("adds an assessment and auto-selects it", async () => {
-    const { result } = renderHook(() => useAssessment());
+    const { result } = renderHook(() => useAssessment(null));
 
     let studentId: string = "";
     let secondAssessmentId: string = "";
@@ -49,7 +49,7 @@ describe("useAssessment", () => {
   });
 
   it("clears selection when removing current student", async () => {
-    const { result } = renderHook(() => useAssessment());
+    const { result } = renderHook(() => useAssessment(null));
 
     let studentId: string = "";
     await act(async () => {
@@ -65,7 +65,7 @@ describe("useAssessment", () => {
   });
 
   it("selects next assessment when removing current one", async () => {
-    const { result } = renderHook(() => useAssessment());
+    const { result } = renderHook(() => useAssessment(null));
 
     let studentId: string = "";
     let firstId: string = "";

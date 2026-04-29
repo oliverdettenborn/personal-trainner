@@ -19,6 +19,7 @@ export type AppHeaderProps = {
   onSelectStudent: (studentId: string) => void;
   onAddStudent: (name: string) => void;
   onRemoveStudent: (id: string) => void;
+  onLogout?: () => void;
   nativeID?: string;
   sidebarVisible?: boolean;
   onToggleSidebar?: () => void;
@@ -30,6 +31,7 @@ export function AppHeader({
   onSelectStudent,
   onAddStudent,
   onRemoveStudent,
+  onLogout,
   nativeID,
   sidebarVisible,
   onToggleSidebar,
@@ -166,6 +168,14 @@ export function AppHeader({
               size="sm"
               onPress={() => onRemoveStudent(currentStudentId)}
             />
+          ))}
+        {onLogout &&
+          (isMobile ? (
+            <Pressable onPress={onLogout} style={styles.iconButton}>
+              <Ionicons name="log-out-outline" size={20} color="#6a5a40" />
+            </Pressable>
+          ) : (
+            <Button title="Sair" variant="outline" size="sm" onPress={onLogout} />
           ))}
       </View>
 

@@ -5,7 +5,7 @@ import { Student, Assessment, AssessmentDB } from "../types/assessment";
 
 const STORAGE_KEY = "@caio_oliver_db";
 
-export function useAssessment() {
+export function useAssessment(_userId: string | null) {
   const [db, setDb] = useState<AssessmentDB>({ students: {}, assessments: {} });
   const [loading, setLoading] = useState(true);
   const [currentStudentId, setCurrentStudentId] = useState<string | null>(null);

@@ -1,4 +1,6 @@
 import { useAssessment } from "@hooks/useAssessment";
+import { useAuth } from "@hooks/useAuth";
+import { signOut } from "@services/authService";
 import { ConfirmModal } from "@molecules/ConfirmModal";
 import { ActionBar } from "@organisms/ActionBar";
 import { AppHeader } from "@organisms/AppHeader";
@@ -26,6 +28,7 @@ const SVG_INFO_EMPTY =
   "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z";
 
 export default function AssessmentScreen() {
+  const { userId } = useAuth();
   const {
     db,
     loading,
@@ -41,7 +44,7 @@ export default function AssessmentScreen() {
     updateAssessment,
     removeAssessment,
     saveManual,
-  } = useAssessment();
+  } = useAssessment(userId);
 
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
@@ -171,6 +174,7 @@ export default function AssessmentScreen() {
         }}
         sidebarVisible={sidebarVisible}
         onToggleSidebar={() => setSidebarVisible((v) => !v)}
+        onLogout={signOut}
       />
 
       <View style={styles.appBody}>
