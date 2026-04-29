@@ -5,6 +5,7 @@
   "scripts": {
     "start": "expo start",
     "dev": "concurrently -n supabase,expo -c cyan,magenta \"supabase start\" \"expo start\"",
+    "db": "supabase start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
