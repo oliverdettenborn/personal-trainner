@@ -6,7 +6,7 @@ import { useAuth } from '@hooks/useAuth';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const { session, loading } = useAuth();
+  const { session, loading, needsPasswordSet } = useAuth();
   const router = useRouter();
   const segments = useSegments();
 
@@ -17,9 +17,15 @@ export default function RootLayout() {
   useEffect(() => {
     if (loading) return;
     const onLogin = segments[0] === 'login';
+    const onSetPassword = segments[0] === 'set-password';
+
+    if (session && needsPasswordSet && !onSetPassword) {
+      router.replace('/set-password');
+      return;
+    }
     if (!session && !onLogin) router.replace('/login');
     if (session && onLogin) router.replace('/');
-  }, [session, loading, segments]);
+  }, [session, loading, needsPasswordSet, segments]);
 
   return <Slot />;
 }

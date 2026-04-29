@@ -3,15 +3,17 @@ jest.mock('@lib/supabase', () => ({
     auth: {
       signInWithPassword: jest.fn(),
       signOut: jest.fn(),
+      updateUser: jest.fn(),
     },
   },
 }));
 
 import { supabase } from '@lib/supabase';
-import { signIn, signOut } from '../authService';
+import { signIn, signOut, updatePassword } from '../authService';
 
 const mockSignIn = supabase.auth.signInWithPassword as jest.Mock;
 const mockSignOut = supabase.auth.signOut as jest.Mock;
+const mockUpdateUser = supabase.auth.updateUser as jest.Mock;
 
 describe('authService', () => {
   beforeEach(() => jest.clearAllMocks());
@@ -36,5 +38,16 @@ describe('authService', () => {
   it('signOut throws on error', async () => {
     mockSignOut.mockResolvedValueOnce({ error: { message: 'network error' } });
     await expect(signOut()).rejects.toMatchObject({ message: 'network error' });
+  });
+
+  it('updatePassword calls updateUser with password', async () => {
+    mockUpdateUser.mockResolvedValueOnce({ data: {}, error: null });
+    await updatePassword('newpass123');
+    expect(mockUpdateUser).toHaveBeenCalledWith({ password: 'newpass123' });
+  });
+
+  it('updatePassword throws on error', async () => {
+    mockUpdateUser.mockResolvedValueOnce({ error: { message: 'weak password' } });
+    await expect(updatePassword('123')).rejects.toMatchObject({ message: 'weak password' });
   });
 });
