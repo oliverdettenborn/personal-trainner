@@ -19,15 +19,8 @@ export interface Assessment {
   back_after_date?: string;
   back_after_weight?: string;
 
-  positive_1?: string;
-  positive_2?: string;
-  positive_3?: string;
-  positive_4?: string;
-
-  adjustment_1?: string;
-  adjustment_2?: string;
-  adjustment_3?: string;
-  adjustment_4?: string;
+  positive_items?: string[];
+  adjustment_items?: string[];
 
   notes?: string;
   next_goal?: string;

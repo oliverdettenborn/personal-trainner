@@ -52,9 +52,9 @@ export default function AssessmentScreen() {
 
   const text3 = '#6a5a40';
 
-  const handleUpdateAssessment = (key: string, value: string) => {
+  const handleUpdateAssessment = (key: string, value: string | string[]) => {
     if (currentAssessmentId) {
-      updateAssessment(currentAssessmentId, { [key]: value });
+      updateAssessment(currentAssessmentId, { [key]: value } as Partial<import('../src/types/assessment').Assessment>);
       setIsDirty(true);
     }
   };

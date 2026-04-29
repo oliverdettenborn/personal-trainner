@@ -50,8 +50,8 @@ describe('Schema Integration', () => {
     expect(cols).toContain('photo_front_after');
     expect(cols).toContain('photo_back_before');
     expect(cols).toContain('photo_back_after');
-    expect(cols).toContain('positive_1');
-    expect(cols).toContain('adjustment_1');
+    expect(cols).toContain('positive_items');
+    expect(cols).toContain('adjustment_items');
     expect(cols).toContain('notes');
     expect(cols).toContain('next_goal');
   });

@@ -16,7 +16,7 @@ const SVG_PERSON = "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5
 
 type AssessmentFormProps = {
   assessment: Assessment;
-  onUpdate: (key: string, value: string) => void;
+  onUpdate: (key: string, value: string | string[]) => void;
 };
 
 export function AssessmentForm({ assessment, onUpdate }: AssessmentFormProps) {
@@ -28,19 +28,28 @@ export function AssessmentForm({ assessment, onUpdate }: AssessmentFormProps) {
   const text3 = '#6a5a40';
   const gold = useThemeColor({}, 'gold');
 
+  const positives = assessment?.positive_items ?? [];
+  const adjustments = assessment?.adjustment_items ?? [];
+
   const feedbackPanelData = {
-    positiveItems: [
-      { value: assessment?.positive_1 || '', placeholder: 'Ponto positivo 1', onChangeText: (t: string) => onUpdate('positive_1', t) },
-      { value: assessment?.positive_2 || '', placeholder: 'Ponto positivo 2', onChangeText: (t: string) => onUpdate('positive_2', t) },
-      { value: assessment?.positive_3 || '', placeholder: 'Ponto positivo 3', onChangeText: (t: string) => onUpdate('positive_3', t) },
-      { value: assessment?.positive_4 || '', placeholder: 'Ponto positivo 4', onChangeText: (t: string) => onUpdate('positive_4', t) },
-    ],
-    adjustmentItems: [
-      { value: assessment?.adjustment_1 || '', placeholder: 'Ajuste 1', onChangeText: (t: string) => onUpdate('adjustment_1', t) },
-      { value: assessment?.adjustment_2 || '', placeholder: 'Ajuste 2', onChangeText: (t: string) => onUpdate('adjustment_2', t) },
-      { value: assessment?.adjustment_3 || '', placeholder: 'Ajuste 3', onChangeText: (t: string) => onUpdate('adjustment_3', t) },
-      { value: assessment?.adjustment_4 || '', placeholder: 'Ajuste 4', onChangeText: (t: string) => onUpdate('adjustment_4', t) },
-    ],
+    positiveItems: [0, 1, 2, 3].map(i => ({
+      value: positives[i] ?? '',
+      placeholder: `Ponto positivo ${i + 1}`,
+      onChangeText: (t: string) => {
+        const next = [...positives];
+        next[i] = t;
+        onUpdate('positive_items', next);
+      },
+    })),
+    adjustmentItems: [0, 1, 2, 3].map(i => ({
+      value: adjustments[i] ?? '',
+      placeholder: `Ajuste ${i + 1}`,
+      onChangeText: (t: string) => {
+        const next = [...adjustments];
+        next[i] = t;
+        onUpdate('adjustment_items', next);
+      },
+    })),
   };
 
   return (

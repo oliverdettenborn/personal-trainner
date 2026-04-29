@@ -39,7 +39,7 @@ const mockAssessment: Assessment = {
   id: 'a1',
   studentId: 's1',
   createdAt: Date.now(),
-  positive_1: 'Good work',
+  positive_items: ['Good work'],
 };
 
 describe('AssessmentForm', () => {
