@@ -65,6 +65,9 @@ enable_confirmations = false
 timebox = "24h"
 inactivity_timeout = "8h"
 
+[edge_runtime]
+enabled = false
+
 [analytics]
 enabled = false
 port = 54327
