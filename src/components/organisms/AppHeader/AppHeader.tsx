@@ -169,15 +169,13 @@ export function AppHeader({
               onPress={() => onRemoveStudent(currentStudentId)}
             />
           ))}
-        {onLogout &&
-          (isMobile ? (
-            <Pressable onPress={onLogout} style={styles.iconButton}>
-              <Ionicons name="log-out-outline" size={20} color="#6a5a40" />
-            </Pressable>
-          ) : (
-            <Button title="Sair" variant="outline" size="sm" onPress={onLogout} />
-          ))}
       </View>
+
+      {onLogout && (
+        <Pressable onPress={onLogout} style={styles.iconButton}>
+          <Ionicons name="log-out-outline" size={20} color="#6a5a40" />
+        </Pressable>
+      )}
 
       {/* Modal: Novo Aluno */}
       <Modal
