@@ -1,23 +1,24 @@
-import { act, renderHook } from '@testing-library/react-native';
-import { useAssessment } from './useAssessment';
+import { act, renderHook } from "@testing-library/react-native";
+
+import { useAssessment } from "./useAssessment";
 
 // Mock do AsyncStorage
-jest.mock('@react-native-async-storage/async-storage', () => ({
+jest.mock("@react-native-async-storage/async-storage", () => ({
   getItem: jest.fn(),
   setItem: jest.fn(),
 }));
 
-describe('useAssessment', () => {
+describe("useAssessment", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('adds a student and auto-creates/selects an assessment', async () => {
+  it("adds a student and auto-creates/selects an assessment", async () => {
     const { result } = renderHook(() => useAssessment());
 
-    let studentId: string = '';
+    let studentId: string = "";
     await act(async () => {
-      studentId = result.current.addStudent('John Doe');
+      studentId = result.current.addStudent("John Doe");
     });
 
     expect(result.current.currentStudentId).toBe(studentId);
@@ -26,14 +27,14 @@ describe('useAssessment', () => {
     expect(result.current.studentAssessments.length).toBe(1);
   });
 
-  it('adds an assessment and auto-selects it', async () => {
+  it("adds an assessment and auto-selects it", async () => {
     const { result } = renderHook(() => useAssessment());
 
-    let studentId: string = '';
-    let secondAssessmentId: string = '';
-    
+    let studentId: string = "";
+    let secondAssessmentId: string = "";
+
     await act(async () => {
-      studentId = result.current.addStudent('John Doe');
+      studentId = result.current.addStudent("John Doe");
     });
 
     await act(async () => {
@@ -42,15 +43,17 @@ describe('useAssessment', () => {
 
     expect(result.current.currentAssessmentId).toBe(secondAssessmentId);
     expect(result.current.studentAssessments.length).toBe(2);
-    expect(result.current.studentAssessments.map(a => a.id)).toContain(secondAssessmentId);
+    expect(result.current.studentAssessments.map((a) => a.id)).toContain(
+      secondAssessmentId,
+    );
   });
 
-  it('clears selection when removing current student', async () => {
+  it("clears selection when removing current student", async () => {
     const { result } = renderHook(() => useAssessment());
 
-    let studentId: string = '';
+    let studentId: string = "";
     await act(async () => {
-      studentId = result.current.addStudent('John Doe');
+      studentId = result.current.addStudent("John Doe");
     });
 
     await act(async () => {
@@ -61,23 +64,23 @@ describe('useAssessment', () => {
     expect(result.current.currentAssessmentId).toBeNull();
   });
 
-  it('selects next assessment when removing current one', async () => {
+  it("selects next assessment when removing current one", async () => {
     const { result } = renderHook(() => useAssessment());
 
-    let studentId: string = '';
-    let firstId: string = '';
-    let secondId: string = '';
-    
+    let studentId: string = "";
+    let firstId: string = "";
+    let secondId: string = "";
+
     await act(async () => {
-      studentId = result.current.addStudent('John Doe');
+      studentId = result.current.addStudent("John Doe");
     });
-    
+
     firstId = result.current.currentAssessmentId!;
 
     await act(async () => {
       secondId = result.current.addAssessment(studentId);
     });
-    
+
     expect(result.current.currentAssessmentId).toBe(secondId);
 
     await act(async () => {

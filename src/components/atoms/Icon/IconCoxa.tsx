@@ -1,21 +1,33 @@
-import React from 'react';
-import { Path, Svg, SvgProps, Circle, G } from 'react-native-svg';
+import React from "react";
+import { Path, Svg, SvgProps, Circle, G } from "react-native-svg";
 
 interface IconProps extends SvgProps {
   color?: string;
   size?: number;
 }
 
-export function IconCoxa({ color = '#BE8B5E', size = 120, ...props }: IconProps) {
+export function IconCoxa({
+  color = "#BE8B5E",
+  size = 120,
+  ...props
+}: IconProps) {
   return (
-    <Svg
-      viewBox="0 0 120 120"
-      width={size}
-      height={size}
-      {...props}
-    >
-      <Circle cx="60" cy="60" r="55" fill="none" stroke={color} strokeWidth="2.5" />
-      <G fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <Svg viewBox="0 0 120 120" width={size} height={size} {...props}>
+      <Circle
+        cx="60"
+        cy="60"
+        r="55"
+        fill="none"
+        stroke={color}
+        strokeWidth="2.5"
+      />
+      <G
+        fill="none"
+        stroke={color}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <Path d="M 40,16 C 20,35 25,75 34,106" />
         <Path d="M 80,16 C 100,35 95,75 86,106" />
         <Path d="M 60,52 L 60,55" />

@@ -1,21 +1,33 @@
-import React from 'react';
-import { Path, Svg, SvgProps, Circle, G } from 'react-native-svg';
+import React from "react";
+import { Path, Svg, SvgProps, Circle, G } from "react-native-svg";
 
 interface IconProps extends SvgProps {
   color?: string;
   size?: number;
 }
 
-export function IconTorso({ color = '#BE8B5E', size = 120, ...props }: IconProps) {
+export function IconTorso({
+  color = "#BE8B5E",
+  size = 120,
+  ...props
+}: IconProps) {
   return (
-    <Svg
-      viewBox="0 0 120 120"
-      width={size}
-      height={size}
-      {...props}
-    >
-      <Circle cx="60" cy="60" r="55" fill="none" stroke={color} strokeWidth="2.5" />
-      <G fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <Svg viewBox="0 0 120 120" width={size} height={size} {...props}>
+      <Circle
+        cx="60"
+        cy="60"
+        r="55"
+        fill="none"
+        stroke={color}
+        strokeWidth="2.5"
+      />
+      <G
+        fill="none"
+        stroke={color}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <Path d="M 52,18 L 52,24 Q 52,28 46,28" />
         <Path d="M 68,18 L 68,24 Q 68,28 74,28" />
         <Path d="M 44,34 Q 52,32 58,36" />

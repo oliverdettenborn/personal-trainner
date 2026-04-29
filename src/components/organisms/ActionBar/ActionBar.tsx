@@ -1,8 +1,8 @@
-import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import { Animated, Platform, StyleSheet, View } from 'react-native';
-import { useThemeColor } from '../../../hooks/useThemeColor';
-import { Button, Text } from '../../atoms';
+import React from "react";
+import { Animated, Platform, StyleSheet, View } from "react-native";
+
+import { useThemeColor } from "../../../hooks/useThemeColor";
+import { Button, Text } from "../../atoms";
 
 export type ActionBarProps = {
   onSave?: () => void;
@@ -10,7 +10,7 @@ export type ActionBarProps = {
   onCopyImage?: () => Promise<boolean> | void;
   onDelete?: () => void;
   isSaving?: boolean;
-  status?: 'saved' | 'unsaved';
+  status?: "saved" | "unsaved";
   nativeID?: string;
 };
 
@@ -20,18 +20,18 @@ export function ActionBar({
   onCopyImage,
   onDelete,
   isSaving = false,
-  status = 'saved',
+  status = "saved",
   nativeID,
 }: ActionBarProps) {
-  const text3 = '#6a5a40';
-  const success = useThemeColor({}, 'success');
-  const gold = useThemeColor({}, 'gold');
+  const text3 = "#6a5a40";
+  const success = useThemeColor({}, "success");
+  const gold = useThemeColor({}, "gold");
 
   const pulseAnim = React.useRef(new Animated.Value(1)).current;
   const [isCopied, setIsCopied] = React.useState(false);
 
   React.useEffect(() => {
-    if (status === 'unsaved') {
+    if (status === "unsaved") {
       const pulse = Animated.loop(
         Animated.sequence([
           Animated.timing(pulseAnim, {
@@ -44,7 +44,7 @@ export function ActionBar({
             duration: 750,
             useNativeDriver: true,
           }),
-        ])
+        ]),
       );
       pulse.start();
       return () => pulse.stop();
@@ -69,7 +69,7 @@ export function ActionBar({
           onPress={onSave}
           disabled={isSaving}
         />
-        
+
         <Button
           title=""
           variant="outline"
@@ -77,7 +77,7 @@ export function ActionBar({
           iconRight="download-outline"
         />
 
-        {Platform.OS === 'web' && (
+        {Platform.OS === "web" && (
           <Button
             title=""
             variant="outline"
@@ -86,23 +86,23 @@ export function ActionBar({
           />
         )}
       </View>
-      
+
       <View style={styles.rightSection}>
         <View style={styles.statusContainer}>
-          <Animated.View 
+          <Animated.View
             style={[
-              styles.dot, 
-              { 
-                backgroundColor: status === 'saved' ? success : gold,
-                opacity: status === 'unsaved' ? pulseAnim : 1,
-              }
-            ]} 
+              styles.dot,
+              {
+                backgroundColor: status === "saved" ? success : gold,
+                opacity: status === "unsaved" ? pulseAnim : 1,
+              },
+            ]}
           />
           <Text style={[styles.statusText, { color: text3 }]}>
-            {status === 'saved' ? 'Salvo' : 'Não salvo'}
+            {status === "saved" ? "Salvo" : "Não salvo"}
           </Text>
         </View>
-        
+
         <Button
           title="Excluir avaliação"
           variant="danger"
@@ -116,31 +116,31 @@ export function ActionBar({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 8,
     marginBottom: 16,
-    alignItems: 'center',
-    flexWrap: 'wrap',
+    alignItems: "center",
+    flexWrap: "wrap",
     maxWidth: 900,
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    marginLeft: "auto",
+    marginRight: "auto",
     paddingHorizontal: 20,
-    width: '100%',
+    width: "100%",
   },
   leftSection: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 8,
     flex: 1,
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
   },
   rightSection: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
   statusContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 6,
   },
   statusText: {

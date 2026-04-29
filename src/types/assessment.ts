@@ -4,8 +4,8 @@ export interface Student {
   createdAt: number;
 }
 
-export type SnapshotSide = 'front' | 'back' | 'side' | 'other';
-export type SnapshotMoment = 'before' | 'after' | 'during';
+export type SnapshotSide = "front" | "back" | "side" | "other";
+export type SnapshotMoment = "before" | "after" | "during";
 
 export interface AssessmentSnapshot {
   id: string;

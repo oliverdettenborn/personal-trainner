@@ -1,25 +1,26 @@
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import { Input } from './Input';
+import { render, fireEvent } from "@testing-library/react-native";
+import React from "react";
 
-describe('Input', () => {
-  it('renders correctly', () => {
+import { Input } from "./Input";
+
+describe("Input", () => {
+  it("renders correctly", () => {
     const { getByPlaceholderText } = render(<Input placeholder="Type here" />);
-    expect(getByPlaceholderText('Type here')).toBeTruthy();
+    expect(getByPlaceholderText("Type here")).toBeTruthy();
   });
 
-  it('updates value when text changes', () => {
+  it("updates value when text changes", () => {
     const onChangeTextMock = jest.fn();
     const { getByPlaceholderText } = render(
-      <Input placeholder="Search" onChangeText={onChangeTextMock} />
+      <Input placeholder="Search" onChangeText={onChangeTextMock} />,
     );
-    
-    fireEvent.changeText(getByPlaceholderText('Search'), 'Hello');
-    expect(onChangeTextMock).toHaveBeenCalledWith('Hello');
+
+    fireEvent.changeText(getByPlaceholderText("Search"), "Hello");
+    expect(onChangeTextMock).toHaveBeenCalledWith("Hello");
   });
 
-  it('renders with label if provided', () => {
+  it("renders with label if provided", () => {
     const { getByText } = render(<Input label="Name" />);
-    expect(getByText('Name')).toBeTruthy();
+    expect(getByText("Name")).toBeTruthy();
   });
 });

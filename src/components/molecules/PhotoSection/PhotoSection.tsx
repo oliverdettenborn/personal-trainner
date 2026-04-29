@@ -1,10 +1,18 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { useThemeColor } from '../../../hooks/useThemeColor';
-import { maskDate, maskWeight } from '../../../utils/masks';
-import { IconCintura, IconCoxa, IconTorso, Input, PhotoSlot, Text } from '../../atoms';
-import { BodyPartIndicator } from '../BodyPartIndicator';
-import { SectionLabel } from '../SectionLabel';
+import React from "react";
+import { StyleSheet, View } from "react-native";
+
+import { useThemeColor } from "../../../hooks/useThemeColor";
+import { maskDate, maskWeight } from "../../../utils/masks";
+import {
+  IconCintura,
+  IconCoxa,
+  IconTorso,
+  Input,
+  PhotoSlot,
+  Text,
+} from "../../atoms";
+import { BodyPartIndicator } from "../BodyPartIndicator";
+import { SectionLabel } from "../SectionLabel";
 
 export type PhotoSectionProps = {
   onPhotoSelected: (key: string, uri: string) => void;
@@ -15,42 +23,60 @@ export type PhotoSectionProps = {
 
 type SideInfoProps = {
   prefix: string;
-  side: 'left' | 'right';
+  side: "left" | "right";
   assessmentData: any;
   onFieldChange: (key: string, value: string) => void;
   indicators: { label: string; icon: React.ReactNode }[];
 };
 
-function SideInfo({ prefix, side, assessmentData, onFieldChange, indicators }: SideInfoProps) {
-  const border = useThemeColor({}, 'border');
-  const isRight = side === 'right';
+function SideInfo({
+  prefix,
+  side,
+  assessmentData,
+  onFieldChange,
+  indicators,
+}: SideInfoProps) {
+  const border = useThemeColor({}, "border");
+  const isRight = side === "right";
 
   return (
     <View style={styles.sideInfo}>
       {/* Date - boxed field */}
       <View style={styles.fieldGroup}>
-        <Text style={[styles.fieldLabel, isRight && styles.fieldLabelRight]}>Data</Text>
+        <Text style={[styles.fieldLabel, isRight && styles.fieldLabelRight]}>
+          Data
+        </Text>
         <Input
           variant="boxed"
           placeholder="__/__/____"
-          value={assessmentData[`${prefix}_date`] || ''}
+          value={assessmentData[`${prefix}_date`] || ""}
           onChangeText={(v) => onFieldChange(`${prefix}_date`, maskDate(v))}
           keyboardType="numeric"
-          style={[styles.fieldValue, { borderColor: border }, isRight && { textAlign: 'right' }]}
+          style={[
+            styles.fieldValue,
+            { borderColor: border },
+            isRight && { textAlign: "right" },
+          ]}
           containerStyle={styles.fieldContainer}
         />
       </View>
 
       {/* Weight - boxed field */}
       <View style={styles.fieldGroup}>
-        <Text style={[styles.fieldLabel, isRight && styles.fieldLabelRight]}>Peso</Text>
+        <Text style={[styles.fieldLabel, isRight && styles.fieldLabelRight]}>
+          Peso
+        </Text>
         <Input
           variant="boxed"
           placeholder="0,0 kg"
-          value={assessmentData[`${prefix}_weight`] || ''}
+          value={assessmentData[`${prefix}_weight`] || ""}
           onChangeText={(v) => onFieldChange(`${prefix}_weight`, maskWeight(v))}
           keyboardType="numeric"
-          style={[styles.fieldValue, { borderColor: border }, isRight && { textAlign: 'right' }]}
+          style={[
+            styles.fieldValue,
+            { borderColor: border },
+            isRight && { textAlign: "right" },
+          ]}
           containerStyle={styles.fieldContainer}
         />
       </View>
@@ -74,17 +100,17 @@ export function PhotoSection({
   onPhotoSelected,
   onRemovePhoto,
   onFieldChange,
-  assessmentData
+  assessmentData,
 }: PhotoSectionProps) {
-  const text2 = useThemeColor({}, 'text2');
+  const text2 = useThemeColor({}, "text2");
 
   const frontIndicators = [
-    { label: 'Ombros', icon: <IconTorso size={48} /> },
-    { label: 'Coxa', icon: <IconCoxa size={48} /> },
+    { label: "Ombros", icon: <IconTorso size={48} /> },
+    { label: "Coxa", icon: <IconCoxa size={48} /> },
   ];
   const backIndicators = [
-    { label: 'Ombros', icon: <IconTorso size={48} /> },
-    { label: 'Cintura', icon: <IconCintura size={48} /> },
+    { label: "Ombros", icon: <IconTorso size={48} /> },
+    { label: "Cintura", icon: <IconCintura size={48} /> },
   ];
 
   return (
@@ -104,8 +130,10 @@ export function PhotoSection({
           <Text style={[styles.photoLabel, { color: text2 }]}>Antes</Text>
           <PhotoSlot
             uri={assessmentData.photo_front_before}
-            onPhotoSelected={(uri) => onPhotoSelected('photo_front_before', uri)}
-            onRemove={() => onRemovePhoto('photo_front_before')}
+            onPhotoSelected={(uri) =>
+              onPhotoSelected("photo_front_before", uri)
+            }
+            onRemove={() => onRemovePhoto("photo_front_before")}
           />
         </View>
 
@@ -113,8 +141,8 @@ export function PhotoSection({
           <Text style={[styles.photoLabel, { color: text2 }]}>Depois</Text>
           <PhotoSlot
             uri={assessmentData.photo_front_after}
-            onPhotoSelected={(uri) => onPhotoSelected('photo_front_after', uri)}
-            onRemove={() => onRemovePhoto('photo_front_after')}
+            onPhotoSelected={(uri) => onPhotoSelected("photo_front_after", uri)}
+            onRemove={() => onRemovePhoto("photo_front_after")}
           />
         </View>
 
@@ -144,8 +172,8 @@ export function PhotoSection({
           <Text style={[styles.photoLabel, { color: text2 }]}>Antes</Text>
           <PhotoSlot
             uri={assessmentData.photo_back_before}
-            onPhotoSelected={(uri) => onPhotoSelected('photo_back_before', uri)}
-            onRemove={() => onRemovePhoto('photo_back_before')}
+            onPhotoSelected={(uri) => onPhotoSelected("photo_back_before", uri)}
+            onRemove={() => onRemovePhoto("photo_back_before")}
           />
         </View>
 
@@ -153,8 +181,8 @@ export function PhotoSection({
           <Text style={[styles.photoLabel, { color: text2 }]}>Depois</Text>
           <PhotoSlot
             uri={assessmentData.photo_back_after}
-            onPhotoSelected={(uri) => onPhotoSelected('photo_back_after', uri)}
-            onRemove={() => onRemovePhoto('photo_back_after')}
+            onPhotoSelected={(uri) => onPhotoSelected("photo_back_after", uri)}
+            onRemove={() => onRemovePhoto("photo_back_after")}
           />
         </View>
 
@@ -172,13 +200,13 @@ export function PhotoSection({
 
 const styles = StyleSheet.create({
   photoRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 0,
     padding: 16,
-    backgroundColor: '#181818',
+    backgroundColor: "#181818",
   },
   sideInfo: {
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 10,
     width: 160,
     flexShrink: 0,
@@ -193,19 +221,19 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   fieldGroup: {
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 4,
-    width: '100%',
+    width: "100%",
   },
   fieldLabel: {
     fontSize: 10,
-    fontWeight: '700',
-    color: '#6a5a40',
-    textTransform: 'uppercase',
+    fontWeight: "700",
+    color: "#6a5a40",
+    textTransform: "uppercase",
     letterSpacing: 1,
   },
   fieldLabelRight: {
-    textAlign: 'right',
+    textAlign: "right",
   },
   fieldValue: {
     fontSize: 13,
@@ -218,20 +246,20 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   photoCol: {
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 8,
-    alignItems: 'center',
+    alignItems: "center",
     flex: 1,
     minWidth: 0,
   },
   photoLabel: {
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 2,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
   },
   divider: {
     height: 1,
-    backgroundColor: '#5a4010',
+    backgroundColor: "#5a4010",
   },
 });

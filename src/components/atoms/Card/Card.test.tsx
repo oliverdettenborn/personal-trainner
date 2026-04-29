@@ -1,15 +1,16 @@
-import React from 'react';
-import { render } from '@testing-library/react-native';
-import { Card } from './Card';
-import { Text } from '../Text';
+import { render } from "@testing-library/react-native";
+import React from "react";
 
-describe('Card', () => {
-  it('renders children correctly', () => {
+import { Card } from "./Card";
+import { Text } from "../Text";
+
+describe("Card", () => {
+  it("renders children correctly", () => {
     const { getByText } = render(
       <Card>
         <Text>Card Content</Text>
-      </Card>
+      </Card>,
     );
-    expect(getByText('Card Content')).toBeTruthy();
+    expect(getByText("Card Content")).toBeTruthy();
   });
 });

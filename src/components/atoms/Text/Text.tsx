@@ -1,5 +1,5 @@
-import { Text as RNText, TextProps as RNTextProps } from 'react-native';
-import { useThemeColor } from '@hooks/useThemeColor';
+import { useThemeColor } from "@hooks/useThemeColor";
+import { Text as RNText, TextProps as RNTextProps } from "react-native";
 
 export type TextProps = RNTextProps & {
   lightColor?: string;
@@ -7,10 +7,10 @@ export type TextProps = RNTextProps & {
 };
 
 export function Text({ style, lightColor, darkColor, ...rest }: TextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
   return <RNText style={[{ color }, style]} {...rest} />;
 }
 
 export function MonoText(props: TextProps) {
-  return <Text {...props} style={[props.style, { fontFamily: 'SpaceMono' }]} />;
+  return <Text {...props} style={[props.style, { fontFamily: "SpaceMono" }]} />;
 }

@@ -1,31 +1,39 @@
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import { PhotoSlot } from './PhotoSlot';
+import { render, fireEvent } from "@testing-library/react-native";
+import React from "react";
 
-jest.mock('@expo/vector-icons', () => ({
-  Ionicons: 'Ionicons',
+import { PhotoSlot } from "./PhotoSlot";
+
+jest.mock("@expo/vector-icons", () => ({
+  Ionicons: "Ionicons",
 }));
 
-describe('PhotoSlot', () => {
-  it('renders placeholder when no uri is provided', () => {
+describe("PhotoSlot", () => {
+  it("renders placeholder when no uri is provided", () => {
     const { getByText } = render(<PhotoSlot onPhotoSelected={() => {}} />);
-    expect(getByText('Clique para adicionar foto')).toBeTruthy();
+    expect(getByText("Clique para adicionar foto")).toBeTruthy();
   });
 
-  it('renders image when uri is provided', () => {
+  it("renders image when uri is provided", () => {
     const { getByTestId } = render(
-      <PhotoSlot uri="https://example.com/photo.jpg" onPhotoSelected={() => {}} />
+      <PhotoSlot
+        uri="https://example.com/photo.jpg"
+        onPhotoSelected={() => {}}
+      />,
     );
-    expect(getByTestId('photo-image')).toBeTruthy();
+    expect(getByTestId("photo-image")).toBeTruthy();
   });
 
-  it('calls onRemove when remove button is pressed', () => {
+  it("calls onRemove when remove button is pressed", () => {
     const onRemoveMock = jest.fn();
     const { getByText } = render(
-      <PhotoSlot uri="https://example.com/photo.jpg" onPhotoSelected={() => {}} onRemove={onRemoveMock} />
+      <PhotoSlot
+        uri="https://example.com/photo.jpg"
+        onPhotoSelected={() => {}}
+        onRemove={onRemoveMock}
+      />,
     );
-    
-    fireEvent.press(getByText('✕ remover'));
+
+    fireEvent.press(getByText("✕ remover"));
     expect(onRemoveMock).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,15 +1,10 @@
-import React from 'react';
-import { 
-  TextInput, 
-  TextInputProps, 
-  StyleSheet, 
-  View, 
-  TextStyle 
-} from 'react-native';
-import { Text } from '../Text';
-import { useThemeColor } from '../../../hooks/useThemeColor';
+import React from "react";
+import { TextInput, TextInputProps, StyleSheet, View } from "react-native";
 
-export type InputVariant = 'boxed' | 'minimal';
+import { useThemeColor } from "../../../hooks/useThemeColor";
+import { Text } from "../Text";
+
+export type InputVariant = "boxed" | "minimal";
 
 export type InputProps = TextInputProps & {
   label?: string;
@@ -17,19 +12,18 @@ export type InputProps = TextInputProps & {
   containerStyle?: any;
 };
 
-export function Input({ 
-  label, 
-  variant = 'boxed', 
-  containerStyle, 
-  style, 
-  ...rest 
+export function Input({
+  label,
+  variant = "boxed",
+  containerStyle,
+  style,
+  ...rest
 }: InputProps) {
-  const textBeige = useThemeColor({}, 'text');
-  const borderGold = useThemeColor({}, 'borderGold');
-  const bgTertiary = useThemeColor({}, 'backgroundTertiary');
-  const gold = useThemeColor({}, 'gold');
+  const textBeige = useThemeColor({}, "text");
+  const borderGold = useThemeColor({}, "borderGold");
+  const bgTertiary = useThemeColor({}, "backgroundTertiary");
 
-  const isMinimal = variant === 'minimal';
+  const isMinimal = variant === "minimal";
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -37,10 +31,13 @@ export function Input({
       <TextInput
         style={[
           styles.input,
-          { color: textBeige },
           isMinimal ? styles.inputMinimal : styles.inputBoxed,
-          !isMinimal && { backgroundColor: bgTertiary, borderColor: borderGold },
-          isMinimal && { borderBottomColor: borderGold },
+          {
+            color: textBeige,
+            borderColor: isMinimal ? "transparent" : borderGold,
+            borderBottomColor: borderGold,
+            backgroundColor: isMinimal ? "transparent" : bgTertiary,
+          },
           style,
         ]}
         placeholderTextColor="#6a5a40"
@@ -52,16 +49,15 @@ export function Input({
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    width: "100%",
     marginBottom: 12,
   },
   label: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#6a5a40',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
+    fontSize: 11,
+    fontWeight: "600",
     marginBottom: 4,
+    opacity: 0.8,
+    textTransform: "uppercase",
   },
   input: {
     fontSize: 14,

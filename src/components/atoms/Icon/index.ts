@@ -1,3 +1,3 @@
-export * from './IconTorso';
-export * from './IconCintura';
-export * from './IconCoxa';
+export * from "./IconTorso";
+export * from "./IconCintura";
+export * from "./IconCoxa";

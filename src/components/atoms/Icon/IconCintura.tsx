@@ -1,21 +1,33 @@
-import React from 'react';
-import { Path, Svg, SvgProps, Circle, G } from 'react-native-svg';
+import React from "react";
+import { Path, Svg, SvgProps, Circle, G } from "react-native-svg";
 
 interface IconProps extends SvgProps {
   color?: string;
   size?: number;
 }
 
-export function IconCintura({ color = '#BE8B5E', size = 120, ...props }: IconProps) {
+export function IconCintura({
+  color = "#BE8B5E",
+  size = 120,
+  ...props
+}: IconProps) {
   return (
-    <Svg
-      viewBox="0 0 120 120"
-      width={size}
-      height={size}
-      {...props}
-    >
-      <Circle cx="60" cy="60" r="55" fill="none" stroke={color} strokeWidth="2.5" />
-      <G fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <Svg viewBox="0 0 120 120" width={size} height={size} {...props}>
+      <Circle
+        cx="60"
+        cy="60"
+        r="55"
+        fill="none"
+        stroke={color}
+        strokeWidth="2.5"
+      />
+      <G
+        fill="none"
+        stroke={color}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <Path d="M 42,20 C 50,45 46,65 32,106" />
         <Path d="M 78,20 C 70,45 74,65 88,106" />
         <Path d="M 37,70 Q 60,78 83,70" />
