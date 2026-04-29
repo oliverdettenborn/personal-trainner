@@ -10,7 +10,6 @@ const ddlPath = path.join(
 function loadDb() {
   const db = newDb();
   const ddl = fs.readFileSync(ddlPath, 'utf-8');
-  // pg-mem doesn't support auth.users FK — strip it
   const sanitized = ddl
     .replace(/REFERENCES auth\.users\(id\) ON DELETE CASCADE/g, '')
     .replace(/REFERENCES auth\.users\(id\)/g, '');
@@ -18,45 +17,75 @@ function loadDb() {
   return db;
 }
 
+function columns(db: ReturnType<typeof loadDb>, table: string): string[] {
+  return db.public
+    .many(
+      `SELECT column_name FROM information_schema.columns
+       WHERE table_name = '${table}' ORDER BY column_name`,
+    )
+    .map((r: any) => r.column_name);
+}
+
 describe('Schema Integration', () => {
   const db = loadDb();
 
   it('students table has required columns', () => {
-    const cols = db.public
-      .many(`
-        SELECT column_name FROM information_schema.columns
-        WHERE table_name = 'students' ORDER BY column_name
-      `)
-      .map((r: any) => r.column_name);
-
+    const cols = columns(db, 'students');
     expect(cols).toContain('id');
     expect(cols).toContain('user_id');
     expect(cols).toContain('name');
     expect(cols).toContain('created_at');
   });
 
-  it('assessments table has all required columns', () => {
-    const cols = db.public
-      .many(`
-        SELECT column_name FROM information_schema.columns
-        WHERE table_name = 'assessments' ORDER BY column_name
-      `)
-      .map((r: any) => r.column_name);
-
+  it('assessments table has required columns', () => {
+    const cols = columns(db, 'assessments');
     expect(cols).toContain('id');
     expect(cols).toContain('student_id');
     expect(cols).toContain('user_id');
-    expect(cols).toContain('photo_front_before');
-    expect(cols).toContain('photo_front_after');
-    expect(cols).toContain('photo_back_before');
-    expect(cols).toContain('photo_back_after');
-    expect(cols).toContain('positive_items');
-    expect(cols).toContain('adjustment_items');
     expect(cols).toContain('notes');
     expect(cols).toContain('next_goal');
   });
 
-  it('assessments.student_id enforces FK to students.id', () => {
+  it('assessment_snapshots table has required columns', () => {
+    const cols = columns(db, 'assessment_snapshots');
+    expect(cols).toContain('id');
+    expect(cols).toContain('assessment_id');
+    expect(cols).toContain('side');
+    expect(cols).toContain('moment');
+    expect(cols).toContain('photo_url');
+    expect(cols).toContain('date');
+    expect(cols).toContain('weight');
+  });
+
+  it('assessment_metrics table has required columns', () => {
+    const cols = columns(db, 'assessment_metrics');
+    expect(cols).toContain('id');
+    expect(cols).toContain('assessment_id');
+    expect(cols).toContain('name');
+    expect(cols).toContain('value');
+    expect(cols).toContain('unit');
+    expect(cols).toContain('position');
+  });
+
+  it('assessment_feedback table has required columns', () => {
+    const cols = columns(db, 'assessment_feedback');
+    expect(cols).toContain('id');
+    expect(cols).toContain('assessment_id');
+    expect(cols).toContain('category');
+    expect(cols).toContain('content');
+    expect(cols).toContain('position');
+  });
+
+  it('assessment_snapshots enforces FK to assessments', () => {
+    expect(() => {
+      db.public.none(`
+        INSERT INTO assessment_snapshots (id, assessment_id, side, moment)
+        VALUES ('s1', 'nonexistent-assessment', 'front', 'before')
+      `);
+    }).toThrow();
+  });
+
+  it('assessments enforces FK to students', () => {
     expect(() => {
       db.public.none(`
         INSERT INTO assessments (id, user_id, student_id, created_at)
