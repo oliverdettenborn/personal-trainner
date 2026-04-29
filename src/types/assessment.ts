@@ -4,27 +4,59 @@ export interface Student {
   createdAt: number;
 }
 
+export type SnapshotSide = 'front' | 'back' | 'side' | 'other';
+export type SnapshotMoment = 'before' | 'after' | 'during';
+
+export interface AssessmentSnapshot {
+  id: string;
+  assessmentId: string;
+  side: SnapshotSide;
+  moment: SnapshotMoment;
+  photoUrl?: string;
+  date?: string; // YYYY-MM-DD from Postgres DATE
+  weight?: number; // float from Postgres FLOAT
+}
+
+export interface AssessmentMetric {
+  id: string;
+  assessmentId: string;
+  name: string;
+  value: number; // float from Postgres FLOAT
+  unit?: string;
+  position: number;
+}
+
+export interface AssessmentFeedback {
+  id: string;
+  assessmentId: string;
+  category: string;
+  content: string;
+  position: number;
+}
+
 export interface Assessment {
   id: string;
   studentId: string;
   createdAt: number;
+  notes?: string;
+  next_goal?: string;
 
+  // For the extensible model
+  snapshots?: AssessmentSnapshot[];
+  metrics?: AssessmentMetric[];
+  feedback?: AssessmentFeedback[];
+
+  // Legacy fields (kept for backward compatibility during migration)
   front_before_date?: string;
   front_before_weight?: string;
   front_after_date?: string;
   front_after_weight?: string;
-
   back_before_date?: string;
   back_before_weight?: string;
   back_after_date?: string;
   back_after_weight?: string;
-
   positive_items?: string[];
   adjustment_items?: string[];
-
-  notes?: string;
-  next_goal?: string;
-
   photo_front_before?: string;
   photo_front_after?: string;
   photo_back_before?: string;

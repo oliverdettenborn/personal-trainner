@@ -73,8 +73,8 @@ O usuário já criou o projeto no Supabase. Falta: inicializar o CLI localmente,
 ### Task 2 — Migration DDL
 
 1. `supabase migration new create_tables`
-2. Escrever SQL no arquivo gerado: tabelas `students` e `assessments` com PKs, FKs e todos os campos da spec
-3. Commit: `chore: migration - create students and assessments tables`
+2. Escrever SQL no arquivo gerado: tabelas `students`, `assessments`, `assessment_snapshots`, `assessment_metrics` e `assessment_feedback` com PKs, FKs e tipagem correta (FLOAT/DATE).
+3. Commit: `chore: migration - create extensible assessment tables`
 
 ### Task 3 — Migration RLS
 

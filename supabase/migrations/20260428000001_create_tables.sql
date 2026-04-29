@@ -18,11 +18,11 @@ CREATE TABLE assessments (
 CREATE TABLE assessment_snapshots (
   id            TEXT    PRIMARY KEY,
   assessment_id TEXT    NOT NULL REFERENCES assessments(id) ON DELETE CASCADE,
-  side          TEXT    NOT NULL CHECK (side IN ('front', 'back')),
-  moment        TEXT    NOT NULL CHECK (moment IN ('before', 'after')),
+  side          TEXT    NOT NULL,
+  moment        TEXT    NOT NULL,
   photo_url     TEXT,
-  date          TEXT,
-  weight        TEXT,
+  date          DATE,
+  weight        FLOAT,
   UNIQUE (assessment_id, side, moment)
 );
 
@@ -31,7 +31,7 @@ CREATE TABLE assessment_metrics (
   id            TEXT    PRIMARY KEY,
   assessment_id TEXT    NOT NULL REFERENCES assessments(id) ON DELETE CASCADE,
   name          TEXT    NOT NULL,
-  value         TEXT    NOT NULL,
+  value         FLOAT   NOT NULL,
   unit          TEXT,
   position      INTEGER NOT NULL DEFAULT 0
 );
@@ -40,7 +40,7 @@ CREATE TABLE assessment_metrics (
 CREATE TABLE assessment_feedback (
   id            TEXT    PRIMARY KEY,
   assessment_id TEXT    NOT NULL REFERENCES assessments(id) ON DELETE CASCADE,
-  category      TEXT    NOT NULL CHECK (category IN ('positive', 'adjustment')),
+  category      TEXT    NOT NULL,
   content       TEXT    NOT NULL,
   position      INTEGER NOT NULL DEFAULT 0
 );

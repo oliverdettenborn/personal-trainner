@@ -76,6 +76,42 @@ describe('Schema Integration', () => {
     expect(cols).toContain('position');
   });
 
+  it('assessment_metrics accepts numeric values and unit strings', () => {
+    // Need a student and assessment first due to FKs
+    db.public.none(`
+      INSERT INTO students (id, user_id, name, created_at)
+      VALUES ('s_test', 'b2e1e2a0-0000-0000-0000-000000000001', 'Test Student', 1);
+      INSERT INTO assessments (id, user_id, student_id, created_at)
+      VALUES ('a_test', 'b2e1e2a0-0000-0000-0000-000000000001', 's_test', 1);
+    `);
+
+    expect(() => {
+      db.public.none(`
+        INSERT INTO assessment_metrics (id, assessment_id, name, value, unit, position)
+        VALUES ('m1', 'a_test', 'Weight', 85.5, 'kg', 0)
+      `);
+    }).not.toThrow();
+    
+    const res = db.public.one(`SELECT value, unit FROM assessment_metrics WHERE id = 'm1'`);
+    expect(Number(res.value)).toBe(85.5);
+    expect(res.unit).toBe('kg');
+  });
+
+  it('assessment_snapshots accepts numeric weight and date', () => {
+    expect(() => {
+      db.public.none(`
+        INSERT INTO assessment_snapshots (id, assessment_id, side, moment, weight, date)
+        VALUES ('snap1', 'a_test', 'front', 'before', 86.2, '2026-04-28')
+      `);
+    }).not.toThrow();
+    
+    const res = db.public.one(`SELECT weight, date FROM assessment_snapshots WHERE id = 'snap1'`);
+    expect(Number(res.weight)).toBe(86.2);
+    // pg-mem might return date as string or Date object depending on config, 
+    // but we just want to ensure it accepted it.
+    expect(res.date).toBeDefined();
+  });
+
   it('assessment_snapshots enforces FK to assessments', () => {
     expect(() => {
       db.public.none(`
