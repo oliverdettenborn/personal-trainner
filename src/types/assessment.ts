@@ -8,43 +8,34 @@ export interface Assessment {
   id: string;
   studentId: string;
   createdAt: number;
-  
-  // Medidas Frente - Antes
-  frente_antes_data?: string;
-  frente_antes_peso?: string;
-  
-  // Medidas Frente - Depois
-  frente_depois_data?: string;
-  frente_depois_peso?: string;
-  
-  // Medidas Costas - Antes
-  costas_antes_data?: string;
-  costas_antes_peso?: string;
-  
-  // Medidas Costas - Depois
-  costas_depois_data?: string;
-  costas_depois_peso?: string;
-  
-  // Feedback Panels
-  positivo_1?: string;
-  positivo_2?: string;
-  positivo_3?: string;
-  positivo_4?: string;
-  
-  ajuste_1?: string;
-  ajuste_2?: string;
-  ajuste_3?: string;
-  ajuste_4?: string;
-  
-  // Observações e Metas
-  observacoes?: string;
-  proxima_meta?: string;
-  
-  // Fotos
-  photo_frente_antes?: string;
-  photo_frente_depois?: string;
-  photo_costas_antes?: string;
-  photo_costas_depois?: string;
+
+  front_before_date?: string;
+  front_before_weight?: string;
+  front_after_date?: string;
+  front_after_weight?: string;
+
+  back_before_date?: string;
+  back_before_weight?: string;
+  back_after_date?: string;
+  back_after_weight?: string;
+
+  positive_1?: string;
+  positive_2?: string;
+  positive_3?: string;
+  positive_4?: string;
+
+  adjustment_1?: string;
+  adjustment_2?: string;
+  adjustment_3?: string;
+  adjustment_4?: string;
+
+  notes?: string;
+  next_goal?: string;
+
+  photo_front_before?: string;
+  photo_front_after?: string;
+  photo_back_before?: string;
+  photo_back_after?: string;
 }
 
 export interface AssessmentDB {

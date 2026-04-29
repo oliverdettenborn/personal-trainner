@@ -30,16 +30,16 @@ export function AssessmentForm({ assessment, onUpdate }: AssessmentFormProps) {
 
   const feedbackPanelData = {
     positiveItems: [
-      { value: assessment?.positivo_1 || '', placeholder: 'Ponto positivo 1', onChangeText: (t: string) => onUpdate('positivo_1', t) },
-      { value: assessment?.positivo_2 || '', placeholder: 'Ponto positivo 2', onChangeText: (t: string) => onUpdate('positivo_2', t) },
-      { value: assessment?.positivo_3 || '', placeholder: 'Ponto positivo 3', onChangeText: (t: string) => onUpdate('positivo_3', t) },
-      { value: assessment?.positivo_4 || '', placeholder: 'Ponto positivo 4', onChangeText: (t: string) => onUpdate('positivo_4', t) },
+      { value: assessment?.positive_1 || '', placeholder: 'Ponto positivo 1', onChangeText: (t: string) => onUpdate('positive_1', t) },
+      { value: assessment?.positive_2 || '', placeholder: 'Ponto positivo 2', onChangeText: (t: string) => onUpdate('positive_2', t) },
+      { value: assessment?.positive_3 || '', placeholder: 'Ponto positivo 3', onChangeText: (t: string) => onUpdate('positive_3', t) },
+      { value: assessment?.positive_4 || '', placeholder: 'Ponto positivo 4', onChangeText: (t: string) => onUpdate('positive_4', t) },
     ],
     adjustmentItems: [
-      { value: assessment?.ajuste_1 || '', placeholder: 'Ajuste 1', onChangeText: (t: string) => onUpdate('ajuste_1', t) },
-      { value: assessment?.ajuste_2 || '', placeholder: 'Ajuste 2', onChangeText: (t: string) => onUpdate('ajuste_2', t) },
-      { value: assessment?.ajuste_3 || '', placeholder: 'Ajuste 3', onChangeText: (t: string) => onUpdate('ajuste_3', t) },
-      { value: assessment?.ajuste_4 || '', placeholder: 'Ajuste 4', onChangeText: (t: string) => onUpdate('ajuste_4', t) },
+      { value: assessment?.adjustment_1 || '', placeholder: 'Ajuste 1', onChangeText: (t: string) => onUpdate('adjustment_1', t) },
+      { value: assessment?.adjustment_2 || '', placeholder: 'Ajuste 2', onChangeText: (t: string) => onUpdate('adjustment_2', t) },
+      { value: assessment?.adjustment_3 || '', placeholder: 'Ajuste 3', onChangeText: (t: string) => onUpdate('adjustment_3', t) },
+      { value: assessment?.adjustment_4 || '', placeholder: 'Ajuste 4', onChangeText: (t: string) => onUpdate('adjustment_4', t) },
     ],
   };
 
@@ -47,8 +47,8 @@ export function AssessmentForm({ assessment, onUpdate }: AssessmentFormProps) {
     <View style={[styles.container, { backgroundColor: bg2 }]}>
       {/* Template Header */}
       <View style={[
-        styles.header, 
-        { 
+        styles.header,
+        {
           borderBottomColor: borderGold,
           // @ts-ignore - Web-specific gradient
           backgroundImage: 'linear-gradient(180deg, #1a1408 0%, #181818 100%)',
@@ -58,7 +58,7 @@ export function AssessmentForm({ assessment, onUpdate }: AssessmentFormProps) {
           ACOMPANHAMENTO <Text style={{ color: gold }}>FÍSICO</Text>
         </Text>
         <Text style={[styles.headerSubtitle, { color: text3 }]}>
-          EVOLUÇÃO{'\u00A0\u00A0'}|{'\u00A0\u00A0'}DISCIPLINA{'\u00A0\u00A0'}|{'\u00A0\u00A0'}CONSISTÊNCIA
+          EVOLUÇÃO{'  '}|{'  '}DISCIPLINA{'  '}|{'  '}CONSISTÊNCIA
         </Text>
       </View>
 
@@ -73,20 +73,20 @@ export function AssessmentForm({ assessment, onUpdate }: AssessmentFormProps) {
       {/* Feedback Panels - 2 columns */}
       <View style={[styles.feedbackGrid, { borderTopColor: borderGold }]}>
         <View style={[styles.feedbackColumn, { borderRightColor: border }]}>
-          <FeedbackPanel 
-            title="Pontos" 
-            highlightedTitle="Positivos" 
+          <FeedbackPanel
+            title="Pontos"
+            highlightedTitle="Positivos"
             svgPath={SVG_CHECK}
-            dotColor="green" 
+            dotColor="green"
             items={feedbackPanelData.positiveItems}
           />
         </View>
         <View style={styles.feedbackColumn}>
-          <FeedbackPanel 
-            title="Próximos" 
-            highlightedTitle="Ajustes" 
+          <FeedbackPanel
+            title="Próximos"
+            highlightedTitle="Ajustes"
             svgPath={SVG_INFO}
-            dotColor="red" 
+            dotColor="red"
             items={feedbackPanelData.adjustmentItems}
           />
         </View>
@@ -107,8 +107,8 @@ export function AssessmentForm({ assessment, onUpdate }: AssessmentFormProps) {
           <Input
             variant="boxed"
             placeholder="Anotações gerais sobre a avaliação..."
-            value={assessment?.observacoes || ''}
-            onChangeText={(t) => onUpdate('observacoes', t)}
+            value={assessment?.notes || ''}
+            onChangeText={(t) => onUpdate('notes', t)}
             multiline
             numberOfLines={4}
             containerStyle={styles.textareaContainer}
@@ -129,8 +129,8 @@ export function AssessmentForm({ assessment, onUpdate }: AssessmentFormProps) {
           <Input
             variant="boxed"
             placeholder="Meta para o próximo período..."
-            value={assessment?.proxima_meta || ''}
-            onChangeText={(t) => onUpdate('proxima_meta', t)}
+            value={assessment?.next_goal || ''}
+            onChangeText={(t) => onUpdate('next_goal', t)}
             multiline
             numberOfLines={4}
             containerStyle={styles.textareaContainer}

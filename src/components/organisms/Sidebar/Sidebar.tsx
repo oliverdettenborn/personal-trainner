@@ -34,7 +34,7 @@ export function Sidebar({
   const currentStudent = students.find(s => s.id === currentStudentId);
 
   const formatDate = (assessment: Assessment) => {
-    const v = assessment.frente_antes_data;
+    const v = assessment.front_before_date;
     if (v) {
       if (v.includes('-')) {
         const [y, m, d] = v.split('-');
@@ -80,8 +80,8 @@ export function Sidebar({
             >
               <Text style={styles.assessmentDate}>{formatDate(assessment)}</Text>
               <Text style={styles.assessmentStudent}>{currentStudent?.name}</Text>
-              {assessment.frente_antes_peso ? (
-                <Text style={styles.assessmentWeight}>{assessment.frente_antes_peso}</Text>
+              {assessment.front_before_weight ? (
+                <Text style={styles.assessmentWeight}>{assessment.front_before_weight}</Text>
               ) : null}
             </Pressable>
           ))

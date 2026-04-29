@@ -10,7 +10,7 @@ const ddlPath = path.join(
 function loadDb() {
   const db = newDb();
   const ddl = fs.readFileSync(ddlPath, 'utf-8');
-  // pg-mem doesn't support auth.users FK — replace with a mock users table
+  // pg-mem doesn't support auth.users FK — strip it
   const sanitized = ddl
     .replace(/REFERENCES auth\.users\(id\) ON DELETE CASCADE/g, '')
     .replace(/REFERENCES auth\.users\(id\)/g, '');
@@ -46,14 +46,14 @@ describe('Schema Integration', () => {
     expect(cols).toContain('id');
     expect(cols).toContain('student_id');
     expect(cols).toContain('user_id');
-    expect(cols).toContain('photo_frente_antes');
-    expect(cols).toContain('photo_frente_depois');
-    expect(cols).toContain('photo_costas_antes');
-    expect(cols).toContain('photo_costas_depois');
-    expect(cols).toContain('positivo_1');
-    expect(cols).toContain('ajuste_1');
-    expect(cols).toContain('observacoes');
-    expect(cols).toContain('proxima_meta');
+    expect(cols).toContain('photo_front_before');
+    expect(cols).toContain('photo_front_after');
+    expect(cols).toContain('photo_back_before');
+    expect(cols).toContain('photo_back_after');
+    expect(cols).toContain('positive_1');
+    expect(cols).toContain('adjustment_1');
+    expect(cols).toContain('notes');
+    expect(cols).toContain('next_goal');
   });
 
   it('assessments.student_id enforces FK to students.id', () => {

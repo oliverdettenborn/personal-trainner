@@ -9,8 +9,8 @@ const mockStudents: Student[] = [
 ];
 
 const mockAssessments: Assessment[] = [
-  { id: 'a1', studentId: 's1', createdAt: 1704067200000, frente_antes_data: '2024-01-01' },
-  { id: 'a2', studentId: 's1', createdAt: 1706745600000, frente_antes_data: '2024-02-01' },
+  { id: 'a1', studentId: 's1', createdAt: 1704067200000, front_before_date: '2024-01-01' },
+  { id: 'a2', studentId: 's1', createdAt: 1706745600000, front_before_date: '2024-02-01' },
 ];
 
 const commonProps = {
@@ -32,7 +32,7 @@ describe('Sidebar', () => {
     expect(getAllByText('Alice').length).toBe(2);
   });
 
-  it('formats dates as DD/MM/YYYY from frente_antes_data', () => {
+  it('formats dates as DD/MM/YYYY from front_before_date', () => {
     const { getByText } = render(<Sidebar {...commonProps} />);
 
     expect(getByText('01/01/2024')).toBeTruthy();

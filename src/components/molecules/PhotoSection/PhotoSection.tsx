@@ -10,7 +10,7 @@ export type PhotoSectionProps = {
   onPhotoSelected: (key: string, uri: string) => void;
   onRemovePhoto: (key: string) => void;
   onFieldChange: (key: string, value: string) => void;
-  assessmentData: any; 
+  assessmentData: any;
 };
 
 type SideInfoProps = {
@@ -27,28 +27,28 @@ function SideInfo({ prefix, side, assessmentData, onFieldChange, indicators }: S
 
   return (
     <View style={styles.sideInfo}>
-      {/* Data - boxed field */}
+      {/* Date - boxed field */}
       <View style={styles.fieldGroup}>
         <Text style={[styles.fieldLabel, isRight && styles.fieldLabelRight]}>Data</Text>
         <Input
           variant="boxed"
           placeholder="__/__/____"
-          value={assessmentData[`${prefix}_data`] || ''}
-          onChangeText={(v) => onFieldChange(`${prefix}_data`, maskDate(v))}
+          value={assessmentData[`${prefix}_date`] || ''}
+          onChangeText={(v) => onFieldChange(`${prefix}_date`, maskDate(v))}
           keyboardType="numeric"
           style={[styles.fieldValue, { borderColor: border }, isRight && { textAlign: 'right' }]}
           containerStyle={styles.fieldContainer}
         />
       </View>
 
-      {/* Peso - boxed field */}
+      {/* Weight - boxed field */}
       <View style={styles.fieldGroup}>
         <Text style={[styles.fieldLabel, isRight && styles.fieldLabelRight]}>Peso</Text>
         <Input
           variant="boxed"
           placeholder="0,0 kg"
-          value={assessmentData[`${prefix}_peso`] || ''}
-          onChangeText={(v) => onFieldChange(`${prefix}_peso`, maskWeight(v))}
+          value={assessmentData[`${prefix}_weight`] || ''}
+          onChangeText={(v) => onFieldChange(`${prefix}_weight`, maskWeight(v))}
           keyboardType="numeric"
           style={[styles.fieldValue, { borderColor: border }, isRight && { textAlign: 'right' }]}
           containerStyle={styles.fieldContainer}
@@ -70,19 +70,19 @@ function SideInfo({ prefix, side, assessmentData, onFieldChange, indicators }: S
   );
 }
 
-export function PhotoSection({ 
+export function PhotoSection({
   onPhotoSelected,
   onRemovePhoto,
   onFieldChange,
-  assessmentData 
+  assessmentData
 }: PhotoSectionProps) {
   const text2 = useThemeColor({}, 'text2');
 
-  const frenteIndicators = [
+  const frontIndicators = [
     { label: 'Ombros', icon: <IconTorso size={48} /> },
     { label: 'Coxa', icon: <IconCoxa size={48} /> },
   ];
-  const costasIndicators = [
+  const backIndicators = [
     { label: 'Ombros', icon: <IconTorso size={48} /> },
     { label: 'Cintura', icon: <IconCintura size={48} /> },
   ];
@@ -93,37 +93,37 @@ export function PhotoSection({
 
       <View style={styles.photoRow}>
         <SideInfo
-          prefix="frente_antes"
+          prefix="front_before"
           side="left"
           assessmentData={assessmentData}
           onFieldChange={onFieldChange}
-          indicators={frenteIndicators}
+          indicators={frontIndicators}
         />
 
         <View style={styles.photoCol}>
           <Text style={[styles.photoLabel, { color: text2 }]}>Antes</Text>
-          <PhotoSlot 
-            uri={assessmentData.photo_frente_antes}
-            onPhotoSelected={(uri) => onPhotoSelected('photo_frente_antes', uri)}
-            onRemove={() => onRemovePhoto('photo_frente_antes')}
+          <PhotoSlot
+            uri={assessmentData.photo_front_before}
+            onPhotoSelected={(uri) => onPhotoSelected('photo_front_before', uri)}
+            onRemove={() => onRemovePhoto('photo_front_before')}
           />
         </View>
 
         <View style={styles.photoCol}>
           <Text style={[styles.photoLabel, { color: text2 }]}>Depois</Text>
-          <PhotoSlot 
-            uri={assessmentData.photo_frente_depois}
-            onPhotoSelected={(uri) => onPhotoSelected('photo_frente_depois', uri)}
-            onRemove={() => onRemovePhoto('photo_frente_depois')}
+          <PhotoSlot
+            uri={assessmentData.photo_front_after}
+            onPhotoSelected={(uri) => onPhotoSelected('photo_front_after', uri)}
+            onRemove={() => onRemovePhoto('photo_front_after')}
           />
         </View>
 
         <SideInfo
-          prefix="frente_depois"
+          prefix="front_after"
           side="right"
           assessmentData={assessmentData}
           onFieldChange={onFieldChange}
-          indicators={frenteIndicators}
+          indicators={frontIndicators}
         />
       </View>
 
@@ -133,37 +133,37 @@ export function PhotoSection({
 
       <View style={styles.photoRow}>
         <SideInfo
-          prefix="costas_antes"
+          prefix="back_before"
           side="left"
           assessmentData={assessmentData}
           onFieldChange={onFieldChange}
-          indicators={costasIndicators}
+          indicators={backIndicators}
         />
 
         <View style={styles.photoCol}>
           <Text style={[styles.photoLabel, { color: text2 }]}>Antes</Text>
-          <PhotoSlot 
-            uri={assessmentData.photo_costas_antes}
-            onPhotoSelected={(uri) => onPhotoSelected('photo_costas_antes', uri)}
-            onRemove={() => onRemovePhoto('photo_costas_antes')}
+          <PhotoSlot
+            uri={assessmentData.photo_back_before}
+            onPhotoSelected={(uri) => onPhotoSelected('photo_back_before', uri)}
+            onRemove={() => onRemovePhoto('photo_back_before')}
           />
         </View>
 
         <View style={styles.photoCol}>
           <Text style={[styles.photoLabel, { color: text2 }]}>Depois</Text>
-          <PhotoSlot 
-            uri={assessmentData.photo_costas_depois}
-            onPhotoSelected={(uri) => onPhotoSelected('photo_costas_depois', uri)}
-            onRemove={() => onRemovePhoto('photo_costas_depois')}
+          <PhotoSlot
+            uri={assessmentData.photo_back_after}
+            onPhotoSelected={(uri) => onPhotoSelected('photo_back_after', uri)}
+            onRemove={() => onRemovePhoto('photo_back_after')}
           />
         </View>
 
         <SideInfo
-          prefix="costas_depois"
+          prefix="back_after"
           side="right"
           assessmentData={assessmentData}
           onFieldChange={onFieldChange}
-          indicators={costasIndicators}
+          indicators={backIndicators}
         />
       </View>
     </View>
@@ -225,13 +225,13 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   photoLabel: {
-    fontSize: 11, 
-    fontWeight: '700', 
-    letterSpacing: 2, 
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 2,
     textTransform: 'uppercase',
   },
-  divider: { 
-    height: 1, 
+  divider: {
+    height: 1,
     backgroundColor: '#5a4010',
   },
 });

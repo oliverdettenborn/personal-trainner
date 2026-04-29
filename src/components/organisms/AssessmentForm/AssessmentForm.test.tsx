@@ -18,7 +18,7 @@ jest.mock('../../molecules/PhotoSection/PhotoSection', () => {
   return {
     PhotoSection: ({ assessmentData }: any) => (
       <MockView testID="mock-photo-section">
-        <MockText>{assessmentData?.frente_antes_data || 'No Date'}</MockText>
+        <MockText>{assessmentData?.front_before_date || 'No Date'}</MockText>
       </MockView>
     ),
   };
@@ -39,7 +39,7 @@ const mockAssessment: Assessment = {
   id: 'a1',
   studentId: 's1',
   createdAt: Date.now(),
-  positivo_1: 'Good work',
+  positive_1: 'Good work',
 };
 
 describe('AssessmentForm', () => {
