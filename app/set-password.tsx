@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Button } from '@atoms/Button';
 import { Input } from '@atoms/Input';
 import { Text } from '@atoms/Text';
@@ -7,6 +8,7 @@ import { useThemeColor } from '@hooks/useThemeColor';
 import { updatePassword } from '@services/authService';
 
 export default function SetPasswordScreen() {
+  const router = useRouter();
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,9 +37,9 @@ export default function SetPasswordScreen() {
     setError(null);
     try {
       await updatePassword(password);
+      router.replace('/');
     } catch {
       setError('Não foi possível salvar a senha. Tente novamente.');
-    } finally {
       setLoading(false);
     }
   };
