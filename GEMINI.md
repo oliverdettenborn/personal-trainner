@@ -2,6 +2,36 @@
 
 This file provides guidance to Gemini CLI when working with code in this repository.
 
+## Architecture — Atomic Design (MANDATORY)
+
+**Layer hierarchy:** `atoms/` → `molecules/` → `organisms/` → `templates/`
+
+**Screen files (`app/*.tsx`) MUST be thin wrappers:**
+- Compose templates + organisms only
+- NO `useState`, NO inline styles, NO business logic
+- All state/logic lives in organisms or hooks
+
+**Component placement rules:**
+| Layer | What goes here | Examples |
+|-------|---------------|----------|
+| `src/components/atoms/` | Stateless primitives, no business logic | Button, Input, Text, Card, PhotoSlot |
+| `src/components/molecules/` | 2+ atoms combined, minimal local state | PhotoSection, ConfirmModal, SectionLabel |
+| `src/components/organisms/` | Feature-complete with own state/logic | LoginForm, SetPasswordForm, AssessmentForm, ActionBar |
+| `src/components/templates/` | Layout wrappers, receive children | AuthTemplate, AssessmentTemplate |
+
+**Example — correct screen:**
+```tsx
+export default function LoginScreen() {
+  return (
+    <AuthTemplate>
+      <LoginForm onSubmit={signIn} />
+    </AuthTemplate>
+  );
+}
+```
+
+**Test IDs:** Always use `testID` prop (not `nativeID`). Cypress selector: `[data-testid="..."]`. Jest/RNTL: `getByTestId()`.
+
 ## Quality & Testing Standards
 
 **BDD & E2E Mandate:**
@@ -17,6 +47,6 @@ This file provides guidance to Gemini CLI when working with code in this reposit
 
 1.  **Research:** Map the feature and dependencies.
 2.  **BDD Specification:** Create/Update `docs/bdd/<feature-name>.md`.
-3.  **Implementation:** Build the feature following the project's architectural patterns.
+3.  **Implementation:** Build the feature following atomic design (organism for logic, template for layout, thin screen).
 4.  **E2E Testing:** Write and run Cypress/Maestro tests to verify the BDD scenarios.
 5.  **Validation:** Ensure all tests pass in the targeted environments.

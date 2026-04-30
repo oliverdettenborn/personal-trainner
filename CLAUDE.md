@@ -22,7 +22,33 @@ npm test -- src/hooks/useAssessment.test.ts
 
 **Stack:** React Native + Expo Router, TypeScript strict, AsyncStorage (current), Supabase (in progress).
 
-**Atomic design:** `src/components/atoms/` → `molecules/` → `organisms/` → `templates/`. The main screen (`app/index.tsx`) composes organisms: `AppHeader`, `Sidebar`, `AssessmentForm`, `ActionBar`.
+**Atomic design:** `src/components/atoms/` → `molecules/` → `organisms/` → `templates/`. Screen files in `app/` MUST be thin — they compose templates + organisms, delegate ALL logic/state to organisms or hooks. NO inline styles, NO useState, NO business logic in screen files.
+
+**Component rules:**
+- `atoms/` — Stateless primitives (Button, Input, Text, Card, PhotoSlot). No business logic.
+- `molecules/` — Combine 2+ atoms with minimal local state (PhotoSection, ConfirmModal, SectionLabel).
+- `organisms/` — Feature-complete sections with their own state/logic (LoginForm, AssessmentForm, ActionBar, Sidebar).
+- `templates/` — Layout wrappers that define page structure (AuthTemplate, AssessmentTemplate). Receive children, no business logic.
+
+**Screen pattern (app/*.tsx):**
+```tsx
+// CORRECT — thin screen, delegates everything
+export default function LoginScreen() {
+  return (
+    <AuthTemplate>
+      <LoginForm onSubmit={signIn} />
+    </AuthTemplate>
+  );
+}
+
+// WRONG — logic, state, and styles directly in screen file
+export default function LoginScreen() {
+  const [email, setEmail] = useState('');
+  // ... 80 lines of UI code
+}
+```
+
+**Test IDs:** Use `testID` prop (not `nativeID`) for test selectors. Cypress uses `[data-testid="..."]`, Jest/RNTL uses `getByTestId()`. Reserve `nativeID` only for functional DOM access (e.g. `document.getElementById`).
 
 **State:** `src/hooks/useAssessment.ts` owns all app state — students + assessments in a single `AssessmentDB` record, persisted to AsyncStorage with a 3s debounce. All state mutations go through this hook.
 

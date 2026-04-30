@@ -1,0 +1,39 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "module": "commonjs",
+        "target": "ES2020",
+        "esModuleInterop": true,
+        "types": [
+            "jest",
+            "node"
+        ],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "./*"
+            ],
+            "@atoms/*": [
+                "./src/components/atoms/*"
+            ],
+            "@molecules/*": [
+                "./src/components/molecules/*"
+            ],
+            "@organisms/*": [
+                "./src/components/organisms/*"
+            ],
+            "@templates/*": [
+                "./src/components/templates/*"
+            ],
+            "@hooks/*": [
+                "./src/hooks/*"
+            ],
+            "@theme/*": [
+                "./src/theme/*"
+            ]
+        }
+    },
+    "include": [
+        "src/repositories/__tests__/**/*.ts"
+    ]
+}

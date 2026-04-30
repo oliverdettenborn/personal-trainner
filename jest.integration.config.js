@@ -1,7 +1,9 @@
 module.exports = {
-  preset: 'ts-jest',
   testEnvironment: 'node',
   testMatch: ['**/__tests__/*.integration.test.ts'],
+  transform: {
+    '^.+\\.ts$': ['ts-jest', { tsconfig: 'tsconfig.integration.json' }],
+  },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
     '^@atoms/(.*)$': '<rootDir>/src/components/atoms/$1',
