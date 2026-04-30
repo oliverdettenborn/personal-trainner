@@ -75,6 +75,7 @@ export function ActionBar({
           variant="outline"
           onPress={onDownloadImage}
           iconRight="download-outline"
+          testID="download-button"
         />
 
         {Platform.OS === "web" && (
@@ -83,6 +84,7 @@ export function ActionBar({
             variant="outline"
             onPress={handleCopyClick}
             iconRight={isCopied ? "checkmark-outline" : "copy-outline"}
+            testID="copy-button"
           />
         )}
       </View>

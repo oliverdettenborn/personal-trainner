@@ -23,7 +23,7 @@ export default function RootLayout() {
       router.replace('/set-password');
       return;
     }
-    if (!session && !onLogin) router.replace('/login');
+    if (!session && !onLogin && !needsPasswordSet) router.replace('/login');
     if (session && onLogin) router.replace('/');
   }, [session, loading, needsPasswordSet, segments]);
 

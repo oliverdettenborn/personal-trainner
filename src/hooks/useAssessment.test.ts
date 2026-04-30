@@ -89,4 +89,18 @@ describe("useAssessment", () => {
 
     expect(result.current.currentAssessmentId).toBe(firstId);
   });
+
+  it("calls AsyncStorage.setItem when saveManual is called", async () => {
+    const AsyncStorage = require("@react-native-async-storage/async-storage");
+    const { result } = renderHook(() => useAssessment(null));
+
+    await act(async () => {
+      result.current.saveManual();
+    });
+
+    expect(AsyncStorage.setItem).toHaveBeenCalledWith(
+      "@caio_oliver_db",
+      JSON.stringify({ students: {}, assessments: {} }),
+    );
+  });
 });

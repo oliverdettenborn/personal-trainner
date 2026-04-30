@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react-native";
+import { fireEvent, render } from "@testing-library/react-native";
 import React from "react";
 
 import { AssessmentForm } from "./AssessmentForm";
@@ -71,5 +71,31 @@ describe("AssessmentForm", () => {
 
     expect(getByPlaceholderText(/Anotações gerais/)).toBeTruthy();
     expect(getByPlaceholderText(/Meta para o próximo/)).toBeTruthy();
+  });
+
+  it("calls onUpdate when notes are changed", () => {
+    const onUpdate = jest.fn();
+    const { getByPlaceholderText } = render(
+      <AssessmentForm assessment={mockAssessment} onUpdate={onUpdate} />,
+    );
+
+    fireEvent.changeText(
+      getByPlaceholderText(/Anotações gerais/),
+      "New notes",
+    );
+    expect(onUpdate).toHaveBeenCalledWith("notes", "New notes");
+  });
+
+  it("calls onUpdate when next_goal is changed", () => {
+    const onUpdate = jest.fn();
+    const { getByPlaceholderText } = render(
+      <AssessmentForm assessment={mockAssessment} onUpdate={onUpdate} />,
+    );
+
+    fireEvent.changeText(
+      getByPlaceholderText(/Meta para o próximo/),
+      "New goal",
+    );
+    expect(onUpdate).toHaveBeenCalledWith("next_goal", "New goal");
   });
 });

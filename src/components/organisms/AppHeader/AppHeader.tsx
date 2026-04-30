@@ -172,7 +172,11 @@ export function AppHeader({
       </View>
 
       {onLogout && (
-        <Pressable onPress={onLogout} style={styles.iconButton}>
+        <Pressable
+          onPress={onLogout}
+          style={styles.iconButton}
+          testID="logout-button"
+        >
           <Ionicons name="log-out-outline" size={20} color="#6a5a40" />
         </Pressable>
       )}

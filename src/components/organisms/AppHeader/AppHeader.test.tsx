@@ -39,6 +39,24 @@ describe("AppHeader", () => {
     expect(getByText("FÍSICO")).toBeTruthy();
   });
 
+  it("calls onLogout when logout button is pressed", () => {
+    const onLogout = jest.fn();
+    const { getByTestId } = render(
+      <AppHeader {...commonProps} onLogout={onLogout} />,
+    );
+
+    // The Ionicons is rendered inside a Pressable.
+    // We can find it by its mock name if we use testID or similar,
+    // but here we can look for the Pressable that contains the icon.
+    // Since it's the only one with log-out-outline (mocked as string),
+    // we can try to find by icon name if we set it up.
+    // Let's use getByRole or just wrap it in a testID in the component if needed.
+    // For now, let's see if we can find it by its icon name mock.
+    const logoutBtn = getByTestId("logout-button");
+    fireEvent.press(logoutBtn);
+    expect(onLogout).toHaveBeenCalledTimes(1);
+  });
+
   describe("sidebar toggle button", () => {
     it("does not render toggle button when onToggleSidebar is not provided", () => {
       const { queryByText } = render(<AppHeader {...commonProps} />);
@@ -100,6 +118,36 @@ describe("AppHeader", () => {
       );
 
       expect(getByText("Remover aluno")).toBeTruthy();
+    });
+
+    it("calls onRemoveStudent when Remover aluno is pressed", () => {
+      const onRemoveStudent = jest.fn();
+      const { getByText } = render(
+        <AppHeader
+          {...commonProps}
+          currentStudentId="s1"
+          onRemoveStudent={onRemoveStudent}
+        />,
+      );
+
+      fireEvent.press(getByText("Remover aluno"));
+      expect(onRemoveStudent).toHaveBeenCalledWith("s1");
+    });
+
+    it("opens modal and calls onAddStudent when + Aluno is pressed", () => {
+      const onAddStudent = jest.fn();
+      const { getByText, getByPlaceholderText } = render(
+        <AppHeader {...commonProps} onAddStudent={onAddStudent} />,
+      );
+
+      fireEvent.press(getByText("+ Aluno"));
+
+      // Modal should be visible
+      const input = getByPlaceholderText("Ex: João Silva");
+      fireEvent.changeText(input, "New Student");
+
+      fireEvent.press(getByText("Criar"));
+      expect(onAddStudent).toHaveBeenCalledWith("New Student");
     });
   });
 
