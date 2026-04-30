@@ -19,7 +19,6 @@
     "typecheck:cypress": "tsc -p cypress/tsconfig.json",
     "test:e2e": "wait-on tcp:127.0.0.1:8081 --timeout 5000 && cypress open || start-server-and-test 'npm run web' tcp:127.0.0.1:8081 'cypress open'",
     "test:e2e:run": "wait-on tcp:127.0.0.1:8081 --timeout 5000 && cypress run || start-server-and-test 'npm run web' tcp:127.0.0.1:8081 'cypress run'",
-    "test:e2e:ci": "npm run test:e2e:run",
     "prepare": "husky"
   },
   "dependencies": {

@@ -1,1 +1,1 @@
-npm test -- --passWithNoTests --ci
+npm test -- --passWithNoTests --ci && npm run test:e2e:run
