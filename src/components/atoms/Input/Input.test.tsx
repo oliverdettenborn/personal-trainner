@@ -23,4 +23,16 @@ describe("Input", () => {
     const { getByText } = render(<Input label="Name" />);
     expect(getByText("Name")).toBeTruthy();
   });
+
+  it("renders error message when error prop is provided", () => {
+    const { getByText } = render(
+      <Input placeholder="Weight" error="O peso é obrigatório" />,
+    );
+    expect(getByText("O peso é obrigatório")).toBeTruthy();
+  });
+
+  it("does not render error text when error is undefined", () => {
+    const { queryByText } = render(<Input placeholder="Weight" />);
+    expect(queryByText("O peso é obrigatório")).toBeNull();
+  });
 });

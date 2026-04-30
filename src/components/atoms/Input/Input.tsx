@@ -10,6 +10,7 @@ export type InputProps = TextInputProps & {
   label?: string;
   variant?: InputVariant;
   containerStyle?: any;
+  error?: string;
   testID?: string;
 };
 
@@ -18,6 +19,7 @@ export function Input({
   variant = "boxed",
   containerStyle,
   style,
+  error,
   testID,
   ...rest
 }: InputProps) {
@@ -40,12 +42,16 @@ export function Input({
             borderBottomColor: borderGold,
             backgroundColor: isMinimal ? "transparent" : bgTertiary,
           },
+          error
+            ? { borderColor: "#d32f2f", borderBottomColor: "#d32f2f" }
+            : undefined,
           style,
         ]}
         placeholderTextColor="#6a5a40"
         testID={testID}
         {...rest}
       />
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
 }
@@ -75,5 +81,10 @@ const styles = StyleSheet.create({
     height: 28,
     borderBottomWidth: 1,
     paddingHorizontal: 0,
+  },
+  errorText: {
+    color: "#d32f2f",
+    fontSize: 11,
+    marginTop: 2,
   },
 });

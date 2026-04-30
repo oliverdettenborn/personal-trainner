@@ -9,12 +9,14 @@ type UseImageCaptureOptions = {
   captureRef: RefObject<View | null>;
   elementId: string;
   fileName: string;
+  onError?: (message: string) => void;
 };
 
 export function useImageCapture({
   captureRef: ref,
   elementId,
   fileName,
+  onError,
 }: UseImageCaptureOptions) {
   const download = async () => {
     if (!ref.current) return;
@@ -40,7 +42,7 @@ export function useImageCapture({
       }
     } catch (error) {
       console.error("Erro ao gerar imagem:", error);
-      alert("Ocorreu um erro ao gerar a imagem.");
+      onError?.("Ocorreu um erro ao gerar a imagem.");
     }
   };
 

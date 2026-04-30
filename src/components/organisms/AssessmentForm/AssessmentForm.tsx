@@ -20,9 +20,14 @@ const SVG_PERSON =
 type AssessmentFormProps = {
   assessment: Assessment;
   onUpdate: (key: string, value: string | string[]) => void;
+  weightError?: string;
 };
 
-export function AssessmentForm({ assessment, onUpdate }: AssessmentFormProps) {
+export function AssessmentForm({
+  assessment,
+  onUpdate,
+  weightError,
+}: AssessmentFormProps) {
   const bg2 = useThemeColor({}, "backgroundSecondary");
   const bg3 = useThemeColor({}, "backgroundTertiary");
   const borderGold = useThemeColor({}, "borderGold");
@@ -83,6 +88,7 @@ export function AssessmentForm({ assessment, onUpdate }: AssessmentFormProps) {
         onRemovePhoto={(key) => onUpdate(key, "")}
         onFieldChange={onUpdate}
         assessmentData={assessment}
+        weightError={weightError}
       />
 
       {/* Feedback Panels - 2 columns */}

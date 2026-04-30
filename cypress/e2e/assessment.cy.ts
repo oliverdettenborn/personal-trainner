@@ -34,14 +34,10 @@ describe("Physical Assessment Flow", () => {
       );
 
     // And I click the "Salvar Avaliação" button
-    const alertStub = cy.stub();
-    cy.on("window:alert", alertStub);
     cy.contains("Salvar Avaliação").click();
 
-    // Then I should see a success message "Avaliação salva com sucesso"
-    cy.should(() => {
-      expect(alertStub).to.be.calledWith("Avaliação salva com sucesso");
-    });
+    // Then I should see a success toast "Avaliação salva com sucesso"
+    cy.contains("Avaliação salva com sucesso").should("be.visible");
 
     // And the assessment should be listed in the student's history
     cy.get('[data-testid="sidebar"]').within(() => {
@@ -59,14 +55,10 @@ describe("Physical Assessment Flow", () => {
     cy.get('input[placeholder="0,0 kg"]').first().clear();
 
     // And I click the "Salvar Avaliação" button
-    const alertStub = cy.stub();
-    cy.on("window:alert", alertStub);
     cy.contains("Salvar Avaliação").click();
 
-    // Then I should see a validation error "O peso é obrigatório"
-    cy.should(() => {
-      expect(alertStub).to.be.calledWith("O peso é obrigatório");
-    });
+    // Then I should see a validation error "O peso é obrigatório" inline
+    cy.contains("O peso é obrigatório").should("be.visible");
   });
 
   it("Scenario: Automatic data persistence (Draft)", () => {

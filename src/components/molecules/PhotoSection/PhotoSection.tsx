@@ -19,6 +19,7 @@ export type PhotoSectionProps = {
   onRemovePhoto: (key: string) => void;
   onFieldChange: (key: string, value: string) => void;
   assessmentData: any;
+  weightError?: string;
 };
 
 type SideInfoProps = {
@@ -27,6 +28,7 @@ type SideInfoProps = {
   assessmentData: any;
   onFieldChange: (key: string, value: string) => void;
   indicators: { label: string; icon: React.ReactNode }[];
+  weightError?: string;
 };
 
 function SideInfo({
@@ -35,6 +37,7 @@ function SideInfo({
   assessmentData,
   onFieldChange,
   indicators,
+  weightError,
 }: SideInfoProps) {
   const border = useThemeColor({}, "border");
   const isRight = side === "right";
@@ -72,6 +75,7 @@ function SideInfo({
           value={assessmentData[`${prefix}_weight`] || ""}
           onChangeText={(v) => onFieldChange(`${prefix}_weight`, maskWeight(v))}
           keyboardType="numeric"
+          error={weightError}
           style={[
             styles.fieldValue,
             { borderColor: border },
@@ -121,6 +125,7 @@ export function PhotoSection({
   onRemovePhoto,
   onFieldChange,
   assessmentData,
+  weightError,
 }: PhotoSectionProps) {
   const text2 = useThemeColor({}, "text2");
 
@@ -144,6 +149,7 @@ export function PhotoSection({
           assessmentData={assessmentData}
           onFieldChange={onFieldChange}
           indicators={frontIndicators}
+          weightError={weightError}
         />
 
         <View style={styles.photoCol}>

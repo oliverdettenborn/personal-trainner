@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Platform,
   ScrollView,
@@ -11,10 +11,12 @@ import { useAssessment } from "../../../hooks/useAssessment";
 import { useAuth } from "../../../hooks/useAuth";
 import { useConfirmModal } from "../../../hooks/useConfirmModal";
 import { useImageCapture } from "../../../hooks/useImageCapture";
+import { useToast } from "../../../hooks/useToast";
 import { signOut } from "../../../services/authService";
 import { Assessment } from "../../../types/assessment";
 import { ConfirmModal } from "../../molecules/ConfirmModal";
 import { EmptyState } from "../../molecules/EmptyState";
+import { Toast } from "../../molecules/Toast";
 import { ActionBar } from "../ActionBar";
 import { AppHeader } from "../AppHeader";
 import { AssessmentContent } from "../AssessmentContent";
@@ -45,9 +47,25 @@ export function AssessmentDashboard() {
   const [isSaving, setIsSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(Platform.OS === "web");
+  const [weightError, setWeightError] = useState("");
 
   const captureAreaRef = useRef<View>(null);
+  const dirtyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const confirm = useConfirmModal();
+  const { toast, show: showToast } = useToast();
+
+  // Sync isDirty with the autosave debounce (3s in useAssessment)
+  useEffect(() => {
+    if (isDirty) {
+      if (dirtyTimerRef.current) clearTimeout(dirtyTimerRef.current);
+      dirtyTimerRef.current = setTimeout(() => {
+        setIsDirty(false);
+      }, 3500);
+    }
+    return () => {
+      if (dirtyTimerRef.current) clearTimeout(dirtyTimerRef.current);
+    };
+  }, [isDirty]);
 
   const studentName = currentStudentId
     ? db.students[currentStudentId]?.name || "Avaliacao"
@@ -60,6 +78,7 @@ export function AssessmentDashboard() {
     captureRef: captureAreaRef,
     elementId: "template-capture-area",
     fileName: `Avaliacao_${studentName}_${assessmentDate}`,
+    onError: (msg) => showToast(msg, "error"),
   });
 
   const handleUpdate = (key: string, value: string | string[]) => {
@@ -73,15 +92,16 @@ export function AssessmentDashboard() {
 
   const handleSave = () => {
     if (!currentAssessment?.front_before_weight) {
-      alert("O peso é obrigatório");
+      setWeightError("O peso é obrigatório");
       return;
     }
+    setWeightError("");
     setIsSaving(true);
     saveManual();
     setTimeout(() => {
       setIsSaving(false);
       setIsDirty(false);
-      alert("Avaliação salva com sucesso");
+      showToast("Avaliação salva com sucesso", "success");
     }, 500);
   };
 
@@ -157,6 +177,7 @@ export function AssessmentDashboard() {
                 onUpdate={handleUpdate}
                 captureRef={captureAreaRef}
                 isMobile={isMobile}
+                weightError={weightError}
               />
             </>
           ) : (
@@ -172,6 +193,8 @@ export function AssessmentDashboard() {
         onConfirm={confirm.config.onConfirm}
         onCancel={confirm.hide}
       />
+
+      <Toast toast={toast} testID="toast" />
     </View>
   );
 }

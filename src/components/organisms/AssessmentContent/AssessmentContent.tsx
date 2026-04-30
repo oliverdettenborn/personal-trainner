@@ -10,6 +10,7 @@ type Props = {
   onUpdate: (key: string, value: string | string[]) => void;
   captureRef: RefObject<View | null>;
   isMobile: boolean;
+  weightError?: string;
 };
 
 export function AssessmentContent({
@@ -17,6 +18,7 @@ export function AssessmentContent({
   onUpdate,
   captureRef,
   isMobile,
+  weightError,
 }: Props) {
   if (isMobile) {
     return (
@@ -32,7 +34,11 @@ export function AssessmentContent({
           style={{ backgroundColor: "#0e0e0e", width: 900 }}
         >
           <AssessmentTemplate>
-            <AssessmentForm assessment={assessment} onUpdate={onUpdate} />
+            <AssessmentForm
+              assessment={assessment}
+              onUpdate={onUpdate}
+              weightError={weightError}
+            />
           </AssessmentTemplate>
         </View>
       </ScrollView>
@@ -51,7 +57,11 @@ export function AssessmentContent({
       }}
     >
       <AssessmentTemplate>
-        <AssessmentForm assessment={assessment} onUpdate={onUpdate} />
+        <AssessmentForm
+          assessment={assessment}
+          onUpdate={onUpdate}
+          weightError={weightError}
+        />
       </AssessmentTemplate>
     </View>
   );
