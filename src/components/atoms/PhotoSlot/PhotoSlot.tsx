@@ -2,11 +2,11 @@ import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import React from "react";
 import {
-  View,
   Image,
-  TouchableOpacity,
-  StyleSheet,
   Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 import { useThemeColor } from "../../../hooks/useThemeColor";
@@ -17,7 +17,7 @@ export type PhotoSlotProps = {
   label?: string;
   onPhotoSelected: (uri: string) => void;
   onRemove?: () => void;
-  nativeID?: string;
+  testID?: string;
 };
 
 export function PhotoSlot({
@@ -25,7 +25,7 @@ export function PhotoSlot({
   label,
   onPhotoSelected,
   onRemove,
-  nativeID,
+  testID,
 }: PhotoSlotProps) {
   const bgTertiary = useThemeColor({}, "backgroundTertiary");
   const borderGold = useThemeColor({}, "borderGold");
@@ -55,7 +55,7 @@ export function PhotoSlot({
       {label && <Text style={styles.label}>{label}</Text>}
       <Pressable
         onPress={pickImage}
-        nativeID={nativeID}
+        testID={testID}
         style={[
           styles.slot,
           { backgroundColor: bgTertiary, borderColor: borderGold },

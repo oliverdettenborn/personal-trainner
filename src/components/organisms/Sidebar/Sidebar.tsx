@@ -12,7 +12,7 @@ export type SidebarProps = {
   currentAssessmentId: string | null;
   onSelectAssessment: (id: string) => void;
   onAddAssessment: (studentId: string) => void;
-  nativeID?: string;
+  testID?: string;
   onClose?: () => void;
 };
 
@@ -23,7 +23,7 @@ export function Sidebar({
   currentAssessmentId,
   onSelectAssessment,
   onAddAssessment,
-  nativeID,
+  testID,
   onClose,
 }: SidebarProps) {
   const bg2 = useThemeColor({}, "backgroundSecondary");
@@ -51,7 +51,7 @@ export function Sidebar({
         styles.container,
         { backgroundColor: bg2, borderRightColor: border },
       ]}
-      nativeID={nativeID}
+      testID={testID}
     >
       {onClose && (
         <Pressable onPress={onClose} style={styles.closeButton}>

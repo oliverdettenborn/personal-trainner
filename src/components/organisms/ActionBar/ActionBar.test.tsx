@@ -4,6 +4,13 @@ import { Platform } from "react-native";
 
 import { ActionBar } from "./ActionBar";
 
+jest.mock("@expo/vector-icons", () => {
+  const { Text } = require("react-native");
+  return {
+    Ionicons: ({ name }: { name: string }) => <Text>{name}</Text>,
+  };
+});
+
 const commonProps = {
   onSave: jest.fn(),
   onDownloadImage: jest.fn(),
@@ -14,19 +21,27 @@ const commonProps = {
 describe("ActionBar", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
+  });
+
+  afterEach(async () => {
+    await act(async () => {
+      jest.runOnlyPendingTimers();
+    });
+    jest.useRealTimers();
   });
 
   it("renders Save and Delete buttons", () => {
     const { getByText } = render(<ActionBar {...commonProps} />);
 
-    expect(getByText("Salvar")).toBeTruthy();
+    expect(getByText("Salvar Avaliação")).toBeTruthy();
     expect(getByText("Excluir avaliação")).toBeTruthy();
   });
 
   it("calls onSave when Salvar is pressed", () => {
     const { getByText } = render(<ActionBar {...commonProps} />);
 
-    fireEvent.press(getByText("Salvar"));
+    fireEvent.press(getByText("Salvar Avaliação"));
     expect(commonProps.onSave).toHaveBeenCalledTimes(1);
   });
 

@@ -14,7 +14,6 @@ export function AssessmentTemplate({ children }: AssessmentTemplateProps) {
     <View
       style={[styles.card, { borderColor: borderGold }]}
       testID="template-card"
-      nativeID="template-card"
     >
       {children}
     </View>

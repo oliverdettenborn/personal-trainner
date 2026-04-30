@@ -21,7 +21,7 @@ describe("Physical Assessment Flow", () => {
 
     // And I upload a front photo
     // Click the slot to trigger the hidden input creation (common in some web implementations)
-    cy.get("#photo-slot-front-before").click();
+    cy.get('[data-testid="photo-slot-front-before"]').click();
     cy.get('input[type="file"]')
       .first()
       .selectFile(
@@ -44,7 +44,7 @@ describe("Physical Assessment Flow", () => {
     });
 
     // And the assessment should be listed in the student's history
-    cy.get("#sidebar").within(() => {
+    cy.get('[data-testid="sidebar"]').within(() => {
       cy.contains("João Silva").should("be.visible");
       cy.contains("80,5 kg").should("be.visible");
     });

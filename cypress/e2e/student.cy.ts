@@ -44,7 +44,7 @@ describe("Student Management Flow", () => {
     cy.get("select").select("s1");
 
     // Then I should see the assessment history for "João Silva" in the sidebar
-    cy.get("#sidebar").within(() => {
+    cy.get('[data-testid="sidebar"]').within(() => {
       cy.contains("João Silva").should("be.visible");
       cy.contains("80 kg").should("be.visible");
     });

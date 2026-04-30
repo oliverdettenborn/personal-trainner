@@ -1,5 +1,5 @@
 import React from "react";
-import { TextInput, TextInputProps, StyleSheet, View } from "react-native";
+import { StyleSheet, TextInput, TextInputProps, View } from "react-native";
 
 import { useThemeColor } from "../../../hooks/useThemeColor";
 import { Text } from "../Text";
@@ -10,7 +10,6 @@ export type InputProps = TextInputProps & {
   label?: string;
   variant?: InputVariant;
   containerStyle?: any;
-  nativeID?: string;
   testID?: string;
 };
 
@@ -19,7 +18,6 @@ export function Input({
   variant = "boxed",
   containerStyle,
   style,
-  nativeID,
   testID,
   ...rest
 }: InputProps) {
@@ -45,7 +43,6 @@ export function Input({
           style,
         ]}
         placeholderTextColor="#6a5a40"
-        nativeID={nativeID}
         testID={testID}
         {...rest}
       />

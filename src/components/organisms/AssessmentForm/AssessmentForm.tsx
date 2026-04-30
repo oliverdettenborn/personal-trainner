@@ -127,7 +127,7 @@ export function AssessmentForm({ assessment, onUpdate }: AssessmentFormProps) {
             multiline
             numberOfLines={4}
             containerStyle={styles.textareaContainer}
-            nativeID="assessment-notes"
+            testID="assessment-notes"
             style={[
               styles.textarea,
               { borderColor: border, backgroundColor: bg3, color: text },

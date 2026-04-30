@@ -159,7 +159,7 @@ export default function AssessmentScreen() {
   return (
     <View style={styles.wrapper}>
       <AppHeader
-        nativeID="app-header"
+        testID="app-header"
         currentStudentId={currentStudentId}
         students={Object.values(db.students)}
         onSelectStudent={setCurrentStudentId}
@@ -180,7 +180,7 @@ export default function AssessmentScreen() {
       <View style={styles.appBody}>
         {sidebarVisible && (
           <Sidebar
-            nativeID="sidebar"
+            testID="sidebar"
             students={Object.values(db.students)}
             currentStudentId={currentStudentId}
             assessments={studentAssessments}
@@ -204,7 +204,7 @@ export default function AssessmentScreen() {
           {currentAssessment ? (
             <>
               <ActionBar
-                nativeID="action-bar"
+                testID="action-bar"
                 onSave={() => {
                   if (!currentAssessment?.front_before_weight) {
                     alert("O peso é obrigatório");

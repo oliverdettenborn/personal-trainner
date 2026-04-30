@@ -1,5 +1,15 @@
 describe("Set Password Flow", () => {
   beforeEach(() => {
+    // Ignore React hydration errors (expected with ?type=recovery query param)
+    cy.on("uncaught:exception", (err) => {
+      if (
+        err.message.includes("Minified React error #418") ||
+        err.message.includes("Hydration")
+      ) {
+        return false;
+      }
+    });
+
     // Inject a fake session into localStorage
     const fakeSession = {
       access_token: "fake-token",
@@ -10,9 +20,6 @@ describe("Set Password Flow", () => {
       expires_at: Math.floor(Date.now() / 1000) + 3600,
     };
 
-    // We'll set it for the fixed key
-    localStorage.setItem("sb-auth-token", JSON.stringify(fakeSession));
-
     // Intercept the user call
     cy.intercept("GET", "**/auth/v1/user*", {
       statusCode: 200,
@@ -20,7 +27,6 @@ describe("Set Password Flow", () => {
     }).as("getUser");
 
     // Intercept ANY PUT to the auth user endpoint
-    // Supabase v2 returns the user object directly or in a data wrapper
     cy.intercept("PUT", "**/auth/v1/user*", {
       statusCode: 200,
       body: {
@@ -32,7 +38,12 @@ describe("Set Password Flow", () => {
       },
     }).as("updatePassword");
 
-    cy.visit("/set-password?type=recovery", { failOnStatusCode: false });
+    cy.visit("/set-password?type=recovery", {
+      failOnStatusCode: false,
+      onBeforeLoad(win) {
+        win.localStorage.setItem("sb-auth-token", JSON.stringify(fakeSession));
+      },
+    });
     cy.url().should("include", "/set-password");
     // Ensure the form is loaded and wait for layout to settle
     cy.contains("Nova senha").should("be.visible");

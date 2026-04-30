@@ -21,7 +21,6 @@ export type ButtonProps = PressableProps & {
   loading?: boolean;
   size?: "sm" | "md";
   iconRight?: keyof typeof Ionicons.glyphMap;
-  nativeID?: string;
   testID?: string;
 };
 
@@ -33,7 +32,6 @@ export function Button({
   style,
   disabled,
   iconRight,
-  nativeID,
   testID,
   ...rest
 }: ButtonProps) {
@@ -98,7 +96,6 @@ export function Button({
           typeof style === "function" ? style(state) : style,
         ]}
         disabled={disabled || loading}
-        nativeID={nativeID}
         testID={testID}
         {...rest}
       >

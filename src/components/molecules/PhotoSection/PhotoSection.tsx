@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import { useThemeColor } from "../../../hooks/useThemeColor";
-import { maskDate, maskWeight, maskCm } from "../../../utils/masks";
+import { maskCm, maskDate, maskWeight } from "../../../utils/masks";
 import {
   IconCintura,
   IconCoxa,
@@ -149,7 +149,7 @@ export function PhotoSection({
         <View style={styles.photoCol}>
           <Text style={[styles.photoLabel, { color: text2 }]}>Antes</Text>
           <PhotoSlot
-            nativeID="photo-slot-front-before"
+            testID="photo-slot-front-before"
             uri={assessmentData.photo_front_before}
             onPhotoSelected={(uri) =>
               onPhotoSelected("photo_front_before", uri)
@@ -161,7 +161,7 @@ export function PhotoSection({
         <View style={styles.photoCol}>
           <Text style={[styles.photoLabel, { color: text2 }]}>Depois</Text>
           <PhotoSlot
-            nativeID="photo-slot-front-after"
+            testID="photo-slot-front-after"
             uri={assessmentData.photo_front_after}
             onPhotoSelected={(uri) => onPhotoSelected("photo_front_after", uri)}
             onRemove={() => onRemovePhoto("photo_front_after")}

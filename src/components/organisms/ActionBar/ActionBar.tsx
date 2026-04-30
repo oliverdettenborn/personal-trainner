@@ -11,7 +11,7 @@ export type ActionBarProps = {
   onDelete?: () => void;
   isSaving?: boolean;
   status?: "saved" | "unsaved";
-  nativeID?: string;
+  testID?: string;
 };
 
 export function ActionBar({
@@ -21,7 +21,7 @@ export function ActionBar({
   onDelete,
   isSaving = false,
   status = "saved",
-  nativeID,
+  testID,
 }: ActionBarProps) {
   const text3 = "#6a5a40";
   const success = useThemeColor({}, "success");
@@ -61,14 +61,14 @@ export function ActionBar({
   };
 
   return (
-    <View style={styles.container} nativeID={nativeID}>
+    <View style={styles.container} testID={testID}>
       <View style={styles.leftSection}>
         <Button
           title={isSaving ? "Salvando..." : "Salvar Avaliação"}
           variant="gold"
           onPress={onSave}
           disabled={isSaving}
-          nativeID="save-button"
+          testID="save-button"
         />
 
         <Button
@@ -76,7 +76,7 @@ export function ActionBar({
           variant="outline"
           onPress={onDownloadImage}
           iconRight="download-outline"
-          nativeID="download-button"
+          testID="download-button"
         />
 
         {Platform.OS === "web" && (
@@ -85,7 +85,7 @@ export function ActionBar({
             variant="outline"
             onPress={handleCopyClick}
             iconRight={isCopied ? "checkmark-outline" : "copy-outline"}
-            nativeID="copy-button"
+            testID="copy-button"
           />
         )}
       </View>

@@ -20,7 +20,7 @@ export type AppHeaderProps = {
   onAddStudent: (name: string) => void;
   onRemoveStudent: (id: string) => void;
   onLogout?: () => void;
-  nativeID?: string;
+  testID?: string;
   sidebarVisible?: boolean;
   onToggleSidebar?: () => void;
 };
@@ -32,7 +32,7 @@ export function AppHeader({
   onAddStudent,
   onRemoveStudent,
   onLogout,
-  nativeID,
+  testID,
   sidebarVisible,
   onToggleSidebar,
 }: AppHeaderProps) {
@@ -67,7 +67,7 @@ export function AppHeader({
         styles.container,
         { backgroundColor: bg2, borderBottomColor: borderGold },
       ]}
-      nativeID={nativeID}
+      testID={testID}
     >
       <View style={[styles.titleRow, isMobile && styles.titleRowFull]}>
         {onToggleSidebar && (

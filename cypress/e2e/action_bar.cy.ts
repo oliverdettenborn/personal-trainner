@@ -12,7 +12,7 @@ describe("Physical Assessment ActionBar Actions", () => {
     cy.contains("Salvo").should("be.visible");
 
     // Type into the notes field (force because it's clipped by parent overflow)
-    cy.get("#assessment-notes").type("Obs", { force: true });
+    cy.get('[data-testid="assessment-notes"]').type("Obs", { force: true });
 
     // Status should change to "Não salvo" after input
     cy.contains("Não salvo").should("be.visible");
@@ -26,7 +26,7 @@ describe("Physical Assessment ActionBar Actions", () => {
     // but we can at least check if the button exists and is clickable
     // The actual download involves creating an <a> tag and clicking it on web.
 
-    cy.get("#download-button").should("be.visible").click();
+    cy.get('[data-testid="download-button"]').should("be.visible").click();
 
     // In our implementation, handleDownloadImage is called.
     // Since we can't easily verify the file system, we check if it doesn't crash
@@ -40,13 +40,13 @@ describe("Physical Assessment ActionBar Actions", () => {
     });
 
     // Copy button only appears on Web
-    cy.get("#copy-button").should("be.visible").click();
+    cy.get('[data-testid="copy-button"]').should("be.visible").click();
 
     // Should show checkmark icon or success state
     // According to ActionBar.tsx: isCopied ? "checkmark-outline" : "copy-outline"
     // In Cypress/React Native Web, this maps to an SVG or specific icon class
     // We can check if the button remains visible and clickable
-    cy.get("#copy-button").should("be.visible");
+    cy.get('[data-testid="copy-button"]').should("be.visible");
   });
 
   it("should open delete confirmation modal and delete assessment", () => {
