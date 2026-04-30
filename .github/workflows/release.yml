@@ -21,23 +21,27 @@ jobs:
   checks:
     uses: ./.github/workflows/checks.yml
 
-  migrate:
+  # E2E Tests run in parallel after basic checks
+  e2e-web:
     needs: checks
-    uses: ./.github/workflows/migrate.yml
-    secrets:
-      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+    uses: ./.github/workflows/e2e-web.yml
 
+  # Production Build runs in parallel with E2E to save time
   build:
-    needs: migrate
+    needs: checks
     uses: ./.github/workflows/build-web.yml
     with:
       EXPO_PUBLIC_SUPABASE_URL: ${{ vars.EXPO_PUBLIC_SUPABASE_URL }}
       EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
 
-  e2e-web:
-    needs: build
-    uses: ./.github/workflows/e2e-web.yml
+  # Migrate ONLY IF E2E passes, and MUST finish before deploy
+  migrate:
+    needs: [checks, e2e-web]
+    uses: ./.github/workflows/migrate.yml
+    secrets:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
 
+  # Deploy only after Build AND Migrate are successful
   deploy:
-    needs: e2e-web
+    needs: [build, migrate]
     uses: ./.github/workflows/deploy-pages.yml

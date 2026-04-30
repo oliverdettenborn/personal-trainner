@@ -35,7 +35,7 @@ npm test -- src/hooks/useAssessment.test.ts
 **Testing:** Unit tests use `jest-expo` preset. Integration tests use `jest.integration.config.js` (ts-jest + node) with `pg-mem` as in-memory PostgreSQL — no Docker required for CI.
 
 **CI/CD:** 
-- `release.yml`: Runs on push to `main`. Executes `checks.yml`, `migrate.yml`, `build-web.yml`, and `e2e-web.yml` before deploying via `deploy-pages.yml`.
+- `release.yml`: Runs on push to `main`. Executes `checks.yml` -> (Parallel: `e2e-web.yml`, `build-web.yml`) -> `migrate.yml` (depends on E2Es) -> `deploy-pages.yml` (depends on migrate & build).
 - `pr.yml`: Runs on pull requests. Executes `checks.yml`, `build-test` (with placeholders), and `e2e-web.yml`.
 - **Note:** For GitHub Actions, ensure `SUPABASE_DB_URL` uses the **Connection Pooler (Transaction Mode, port 6543)**.
 
