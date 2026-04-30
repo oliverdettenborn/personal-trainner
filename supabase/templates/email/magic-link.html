@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .header { background-color: #0e0e0e; padding: 30px; text-align: center; border-bottom: 4px solid #C9963A; }
+    .content { padding: 40px 30px; text-align: center; color: #333333; }
+    .footer { background-color: #f5f5f5; padding: 20px; text-align: center; font-size: 12px; color: #999999; }
+    h1 { color: #C9963A; font-size: 24px; margin-bottom: 20px; text-transform: uppercase; }
+    p { line-height: 1.6; margin-bottom: 30px; color: #555555; }
+    .button { 
+      background-color: #C9963A; 
+      color: #ffffff !important; 
+      padding: 15px 30px; 
+      text-decoration: none; 
+      border-radius: 5px; 
+      font-weight: bold; 
+      display: inline-block;
+    }
+    .secondary-text { margin-top: 30px; font-size: 14px; color: #888; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2 style="color: #C9963A; margin: 0; text-transform: uppercase; letter-spacing: 2px;">Personal Trainer</h2>
+    </div>
+    <div class="content">
+      <h1>Seu Acesso Rápido</h1>
+      <p>Clique no botão abaixo para entrar na sua conta instantaneamente, sem precisar de senha:</p>
+      <a href="{{ .ConfirmationURL }}" class="button">Entrar no App</a>
+      <p class="secondary-text">Este link é válido por tempo limitado. Se você não solicitou este acesso, apenas ignore este e-mail.</p>
+    </div>
+    <div class="footer">
+      &copy; 2026 Personal Trainer. Foco, Força e Performance.
+    </div>
+  </div>
+</body>
+</html>
