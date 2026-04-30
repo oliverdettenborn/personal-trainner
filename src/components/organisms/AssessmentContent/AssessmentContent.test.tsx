@@ -1,8 +1,8 @@
 import { render } from "@testing-library/react-native";
 import React from "react";
 
-import { AssessmentContent } from "./AssessmentContent";
 import { Assessment } from "../../../types/assessment";
+import { AssessmentContent } from "./AssessmentContent";
 
 jest.mock("react-native-svg", () => {
   const { View: MockView } = require("react-native");
