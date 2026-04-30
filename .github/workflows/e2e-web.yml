@@ -37,22 +37,16 @@ jobs:
           echo "EXPO_PUBLIC_SUPABASE_ANON_KEY=$(supabase status -o json | jq -r '.ANON_KEY')" >> $GITHUB_ENV
 
       - name: Build Web App
-        run: |
-          npx expo export -p web
-          # Align directory structure with experimental.baseUrl in app.json
-          mkdir -p dist_tmp/personal-trainner
-          cp -r dist/* dist_tmp/personal-trainner/
-          rm -rf dist
-          mv dist_tmp dist
+        run: npx expo export -p web
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
           # We use the built dist folder to be faster and more stable in CI
           start: npx serve -s dist -p 8081
-          wait-on: 'http://localhost:8081/personal-trainner'
+          wait-on: 'http://127.0.0.1:8081'
           browser: chrome
-          config: baseUrl=http://localhost:8081/personal-trainner
+          config: baseUrl=http://127.0.0.1:8081
 
       - name: Upload Screenshots
         uses: actions/upload-artifact@v4

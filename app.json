@@ -34,8 +34,7 @@
       "expo-secure-store"
     ],
     "experiments": {
-      "typedRoutes": true,
-      "baseUrl": "/personal-trainner"
+      "typedRoutes": true
     }
   }
 }
