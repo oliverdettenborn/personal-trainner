@@ -10,7 +10,7 @@
     "mail": "start http://127.0.0.1:54324",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web",
+    "web": "expo start --web --port 8081",
     "test": "jest",
     "test:integration": "jest --config jest.integration.config.js",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\"",
