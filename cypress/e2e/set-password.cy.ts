@@ -2,25 +2,16 @@ describe("Set Password Flow", () => {
   beforeEach(() => {
     // Inject a fake session into localStorage
     const fakeSession = {
-      currentSession: {
-        access_token: "fake-token",
-        refresh_token: "fake-refresh",
-        expires_in: 3600,
-        token_type: "bearer",
-        user: { id: "u_123", email: "trainer@example.com" },
-      },
-      expiresAt: Date.now() + 3600000,
+      access_token: "fake-token",
+      refresh_token: "fake-refresh",
+      expires_in: 3600,
+      token_type: "bearer",
+      user: { id: "u_123", email: "trainer@example.com" },
+      expires_at: Math.floor(Date.now() / 1000) + 3600,
     };
 
-    // We'll set it for multiple possible keys to be sure
-    const keys = [
-      "sb-auth-token",
-      "sb-127-0-0-1-auth-token",
-      "sb-localhost-auth-token",
-    ];
-    keys.forEach((key) => {
-      localStorage.setItem(key, JSON.stringify(fakeSession));
-    });
+    // We'll set it for the fixed key
+    localStorage.setItem("sb-auth-token", JSON.stringify(fakeSession));
 
     // Intercept the user call
     cy.intercept("GET", "**/auth/v1/user*", {
@@ -29,13 +20,23 @@ describe("Set Password Flow", () => {
     }).as("getUser");
 
     // Intercept ANY PUT to the auth user endpoint
+    // Supabase v2 returns the user object directly or in a data wrapper
     cy.intercept("PUT", "**/auth/v1/user*", {
       statusCode: 200,
-      body: { user: { id: "u_123", email: "trainer@example.com" } },
+      body: {
+        id: "u_123",
+        email: "trainer@example.com",
+        user_metadata: {},
+        aud: "authenticated",
+        role: "authenticated",
+      },
     }).as("updatePassword");
 
     cy.visit("/set-password?type=recovery", { failOnStatusCode: false });
     cy.url().should("include", "/set-password");
+    // Ensure the form is loaded and wait for layout to settle
+    cy.contains("Nova senha").should("be.visible");
+    cy.wait(500); // Small stability wait
   });
 
   it("should show validation error for empty fields", () => {
@@ -60,12 +61,22 @@ describe("Set Password Flow", () => {
     cy.contains("As senhas não coincidem.").should("be.visible");
   });
 
-  it.skip("should update password successfully", () => {
+  it("should update password successfully", () => {
     cy.get("input").eq(0).type("newpassword123");
     cy.get("input").eq(1).type("newpassword123");
-    
+
     // Force click to avoid detachment issues
     cy.contains("Salvar senha").click({ force: true });
+
+    // Wait for the intercept and validate
+    cy.wait("@updatePassword").then((interception) => {
+      console.log("Cypress Interception:", interception);
+      expect(interception.request.body).to.have.property(
+        "password",
+        "newpassword123",
+      );
+      expect(interception.response?.statusCode).to.eq(200);
+    });
 
     // Expecting a redirect away from the set-password page
     cy.url().should("not.include", "/set-password");

@@ -48,7 +48,10 @@ describe("Login Flow", () => {
     cy.get("input").eq(1).type("password123");
     cy.contains("Entrar").click();
 
-    cy.wait("@signIn");
+    cy.wait("@signIn").then((interception) => {
+      expect(interception.request.body.email).to.eq("trainer@example.com");
+      expect(interception.response?.statusCode).to.eq(200);
+    });
     // After login, it should redirect to home
     cy.url().should("eq", Cypress.config().baseUrl + "/");
   });

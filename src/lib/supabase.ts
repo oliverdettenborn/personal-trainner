@@ -31,5 +31,12 @@ const storage =
 export const supabase = createClient(
   process.env.EXPO_PUBLIC_SUPABASE_URL!,
   process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!,
-  { auth: { storage, autoRefreshToken: true, persistSession: true } },
+  {
+    auth: {
+      storage,
+      autoRefreshToken: true,
+      persistSession: true,
+      storageKey: "sb-auth-token",
+    },
+  },
 );

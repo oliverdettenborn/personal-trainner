@@ -38,7 +38,7 @@ export default function SetPasswordScreen() {
     try {
       await updatePassword(password);
       router.replace("/");
-    } catch {
+    } catch (err) {
       setError("Não foi possível salvar a senha. Tente novamente.");
       setLoading(false);
     }
