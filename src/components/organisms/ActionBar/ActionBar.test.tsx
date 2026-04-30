@@ -31,7 +31,7 @@ describe("ActionBar", () => {
   });
 
   it("shows Salvando... and disables button when isSaving is true", () => {
-    const { getByText } = render(<ActionBar {...commonProps} isSaving={true} />);
+    const { getByText } = render(<ActionBar {...commonProps} isSaving />);
 
     expect(getByText("Salvando...")).toBeTruthy();
     fireEvent.press(getByText("Salvando..."));
@@ -51,7 +51,9 @@ describe("ActionBar", () => {
   });
 
   it("shows 'Não salvo' status when status is unsaved", () => {
-    const { getByText } = render(<ActionBar {...commonProps} status="unsaved" />);
+    const { getByText } = render(
+      <ActionBar {...commonProps} status="unsaved" />,
+    );
     expect(getByText("Não salvo")).toBeTruthy();
   });
 
@@ -87,4 +89,3 @@ describe("ActionBar", () => {
     });
   });
 });
-

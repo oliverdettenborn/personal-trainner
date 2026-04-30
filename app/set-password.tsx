@@ -1,45 +1,45 @@
-import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Button } from '@atoms/Button';
-import { Input } from '@atoms/Input';
-import { Text } from '@atoms/Text';
-import { useThemeColor } from '@hooks/useThemeColor';
-import { updatePassword } from '@services/authService';
+import { Button } from "@atoms/Button";
+import { Input } from "@atoms/Input";
+import { Text } from "@atoms/Text";
+import { useThemeColor } from "@hooks/useThemeColor";
+import { updatePassword } from "@services/authService";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 
 export default function SetPasswordScreen() {
   const router = useRouter();
-  const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const bg = useThemeColor({}, 'background');
-  const gold = useThemeColor({}, 'gold');
-  const text = useThemeColor({}, 'text');
-  const text3 = useThemeColor({}, 'text3');
-  const danger = useThemeColor({}, 'danger');
+  const bg = useThemeColor({}, "background");
+  const gold = useThemeColor({}, "gold");
+  const text = useThemeColor({}, "text");
+  const text3 = useThemeColor({}, "text3");
+  const danger = useThemeColor({}, "danger");
 
   const handleSubmit = async () => {
     if (!password || !confirm) {
-      setError('Por favor, preencha todos os campos.');
+      setError("Por favor, preencha todos os campos.");
       return;
     }
     if (password.length < 8) {
-      setError('A senha deve ter no mínimo 8 caracteres.');
+      setError("A senha deve ter no mínimo 8 caracteres.");
       return;
     }
     if (password !== confirm) {
-      setError('As senhas não coincidem.');
+      setError("As senhas não coincidem.");
       return;
     }
     setLoading(true);
     setError(null);
     try {
       await updatePassword(password);
-      router.replace('/');
+      router.replace("/");
     } catch {
-      setError('Não foi possível salvar a senha. Tente novamente.');
+      setError("Não foi possível salvar a senha. Tente novamente.");
       setLoading(false);
     }
   };
@@ -47,7 +47,7 @@ export default function SetPasswordScreen() {
   return (
     <KeyboardAvoidingView
       style={[styles.container, { backgroundColor: bg }]}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.inner}>
         <Text style={[styles.title, { color: gold }]}>
@@ -58,7 +58,9 @@ export default function SetPasswordScreen() {
           Crie uma senha para acessar o app nas próximas vezes.
         </Text>
 
-        {error && <Text style={[styles.error, { color: danger }]}>{error}</Text>}
+        {error && (
+          <Text style={[styles.error, { color: danger }]}>{error}</Text>
+        )}
 
         <Input
           label="Nova senha"
@@ -95,21 +97,21 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   inner: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 28,
     maxWidth: 400,
-    width: '100%',
-    alignSelf: 'center',
+    width: "100%",
+    alignSelf: "center",
   },
   title: {
     fontSize: 22,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 1,
     marginBottom: 8,
-    textAlign: 'center',
+    textAlign: "center",
   },
-  subtitle: { textAlign: 'center', fontSize: 13, marginBottom: 28 },
-  error: { marginBottom: 12, textAlign: 'center', fontSize: 14 },
+  subtitle: { textAlign: "center", fontSize: 13, marginBottom: 28 },
+  error: { marginBottom: 12, textAlign: "center", fontSize: 14 },
   field: { marginBottom: 12 },
   button: { marginTop: 4 },
 });

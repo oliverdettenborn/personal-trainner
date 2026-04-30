@@ -1,11 +1,11 @@
 import { useAssessment } from "@hooks/useAssessment";
 import { useAuth } from "@hooks/useAuth";
-import { signOut } from "@services/authService";
 import { ConfirmModal } from "@molecules/ConfirmModal";
 import { ActionBar } from "@organisms/ActionBar";
 import { AppHeader } from "@organisms/AppHeader";
 import { AssessmentForm } from "@organisms/AssessmentForm";
 import { Sidebar } from "@organisms/Sidebar";
+import { signOut } from "@services/authService";
 import { AssessmentTemplate } from "@templates/AssessmentTemplate";
 import * as Sharing from "expo-sharing";
 import React, { useEffect, useRef, useState } from "react";

@@ -1,8 +1,8 @@
 import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import React from "react";
 
-import SetPasswordScreen from "../set-password";
 import { updatePassword } from "../../src/services/authService";
+import SetPasswordScreen from "../set-password";
 
 jest.mock("../../src/services/authService", () => ({
   updatePassword: jest.fn(),
@@ -40,14 +40,19 @@ describe("SetPasswordScreen", () => {
     fireEvent.press(getByText("Salvar senha"));
 
     await waitFor(() => {
-      expect(getByText("A senha deve ter no mínimo 8 caracteres.")).toBeTruthy();
+      expect(
+        getByText("A senha deve ter no mínimo 8 caracteres."),
+      ).toBeTruthy();
     });
   });
 
   it("shows error when passwords do not match", async () => {
     const { getByText, getByPlaceholderText } = render(<SetPasswordScreen />);
 
-    fireEvent.changeText(getByPlaceholderText("Mínimo 8 caracteres"), "password123");
+    fireEvent.changeText(
+      getByPlaceholderText("Mínimo 8 caracteres"),
+      "password123",
+    );
     fireEvent.changeText(getByPlaceholderText("Repita a senha"), "password456");
     fireEvent.press(getByText("Salvar senha"));
 
@@ -60,7 +65,10 @@ describe("SetPasswordScreen", () => {
     (updatePassword as jest.Mock).mockResolvedValue({});
     const { getByText, getByPlaceholderText } = render(<SetPasswordScreen />);
 
-    fireEvent.changeText(getByPlaceholderText("Mínimo 8 caracteres"), "password123");
+    fireEvent.changeText(
+      getByPlaceholderText("Mínimo 8 caracteres"),
+      "password123",
+    );
     fireEvent.changeText(getByPlaceholderText("Repita a senha"), "password123");
     fireEvent.press(getByText("Salvar senha"));
 

@@ -1,8 +1,8 @@
 import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import React from "react";
 
-import LoginScreen from "../login";
 import { signIn } from "../../src/services/authService";
+import LoginScreen from "../login";
 
 jest.mock("../../src/services/authService", () => ({
   signIn: jest.fn(),
@@ -37,7 +37,10 @@ describe("LoginScreen", () => {
     (signIn as jest.Mock).mockResolvedValue({ id: "u1" });
     const { getByText, getByPlaceholderText } = render(<LoginScreen />);
 
-    fireEvent.changeText(getByPlaceholderText("seu@email.com"), "test@test.com");
+    fireEvent.changeText(
+      getByPlaceholderText("seu@email.com"),
+      "test@test.com",
+    );
     fireEvent.changeText(getByPlaceholderText("••••••••"), "password123");
     fireEvent.press(getByText("Entrar"));
 
@@ -50,7 +53,10 @@ describe("LoginScreen", () => {
     (signIn as jest.Mock).mockRejectedValue(new Error("Invalid"));
     const { getByText, getByPlaceholderText } = render(<LoginScreen />);
 
-    fireEvent.changeText(getByPlaceholderText("seu@email.com"), "test@test.com");
+    fireEvent.changeText(
+      getByPlaceholderText("seu@email.com"),
+      "test@test.com",
+    );
     fireEvent.changeText(getByPlaceholderText("••••••••"), "wrong");
     fireEvent.press(getByText("Entrar"));
 

@@ -40,11 +40,7 @@ describe("ConfirmModal", () => {
 
   it("uses custom button labels", () => {
     const { getByText } = render(
-      <ConfirmModal
-        {...commonProps}
-        confirmText="Yes"
-        cancelText="No"
-      />,
+      <ConfirmModal {...commonProps} confirmText="Yes" cancelText="No" />,
     );
 
     expect(getByText("Yes")).toBeTruthy();

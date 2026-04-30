@@ -79,10 +79,7 @@ describe("AssessmentForm", () => {
       <AssessmentForm assessment={mockAssessment} onUpdate={onUpdate} />,
     );
 
-    fireEvent.changeText(
-      getByPlaceholderText(/Anotações gerais/),
-      "New notes",
-    );
+    fireEvent.changeText(getByPlaceholderText(/Anotações gerais/), "New notes");
     expect(onUpdate).toHaveBeenCalledWith("notes", "New notes");
   });
 
