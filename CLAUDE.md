@@ -37,6 +37,10 @@ npm test -- src/hooks/useAssessment.test.ts
 **CI/CD:** `.github/workflows/deploy.yml` — on push to `main`: runs tests + applies migrations (`supabase db push`) in parallel, then builds Expo web and deploys to GitHub Pages. PR checks in `pr.yml`.
 > **Note:** For GitHub Actions, ensure `SUPABASE_DB_URL` uses the **Connection Pooler (Transaction Mode, port 6543)** because the free tier direct connection (port 5432) uses IPv6, which is not supported by GHA runners.
 
+## Quality & Testing
+
+**BDD & E2E:** When creating a new feature, ALWAYS write its BDD scenarios in a dedicated file inside `docs/bdd/` and implement the corresponding E2E tests (Cypress for Web, and eventually Maestro for Mobile). Every feature must be validated by an E2E test before being considered complete.
+
 ## Environment
 
 Local `.env` (not committed):

@@ -17,3 +17,7 @@ jobs:
     with:
       EXPO_PUBLIC_SUPABASE_URL: "https://placeholder.supabase.co"
       EXPO_PUBLIC_SUPABASE_ANON_KEY: "placeholder"
+
+  e2e-web:
+    needs: checks
+    uses: ./.github/workflows/e2e-web.yml

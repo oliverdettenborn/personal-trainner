@@ -1,0 +1,50 @@
+name: E2E Tests (Web)
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Web App
+        run: npx expo export -p web
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          # We use the built dist folder to be faster and more stable in CI
+          start: npx serve -s dist -p 8081
+          wait-on: 'http://localhost:8081'
+          browser: chrome
+        env:
+          # Use placeholder keys for E2E if needed
+          EXPO_PUBLIC_SUPABASE_URL: "https://placeholder.supabase.co"
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: "placeholder"
+
+      - name: Upload Screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
+      - name: Upload Videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos

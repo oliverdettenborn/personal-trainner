@@ -43,3 +43,7 @@ yarn-error.*
 .env
 supabase/.branches/
 supabase/.temp/
+
+# Cypress
+cypress/screenshots/
+cypress/videos/

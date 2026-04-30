@@ -15,6 +15,9 @@
     "test:integration": "jest --config jest.integration.config.js",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\"",
     "typecheck": "tsc --noEmit",
+    "test:e2e": "cypress open",
+    "test:e2e:headless": "cypress run",
+    "test:e2e:ci": "start-server-and-test 'npm run web' http://localhost:8081 test:e2e:headless",
     "prepare": "husky"
   },
   "dependencies": {
@@ -56,6 +59,7 @@
     "@typescript-eslint/eslint-plugin": "^8.59.1",
     "@typescript-eslint/parser": "^8.59.1",
     "concurrently": "^9.2.1",
+    "cypress": "^15.14.2",
     "eslint": "^8.57.0",
     "eslint-config-universe": "^15.0.3",
     "husky": "^9.1.7",
@@ -63,6 +67,8 @@
     "jest-expo": "~54.0.4",
     "pg-mem": "^3.0.14",
     "react-test-renderer": "^19.1.0",
+    "serve": "^14.2.6",
+    "start-server-and-test": "^3.0.2",
     "ts-jest": "^29.4.9",
     "typescript": "~5.9.2"
   },
