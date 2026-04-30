@@ -47,6 +47,9 @@ jobs:
           wait-on: 'http://localhost:8081'
           browser: chrome
 
+      - name: Upload Screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
         with:
           name: cypress-screenshots
           path: cypress/screenshots

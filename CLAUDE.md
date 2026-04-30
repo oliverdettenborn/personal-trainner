@@ -34,12 +34,17 @@ npm test -- src/hooks/useAssessment.test.ts
 
 **Testing:** Unit tests use `jest-expo` preset. Integration tests use `jest.integration.config.js` (ts-jest + node) with `pg-mem` as in-memory PostgreSQL — no Docker required for CI.
 
-**CI/CD:** `.github/workflows/deploy.yml` — on push to `main`: runs tests + applies migrations (`supabase db push`) in parallel, then builds Expo web and deploys to GitHub Pages. PR checks in `pr.yml`.
-> **Note:** For GitHub Actions, ensure `SUPABASE_DB_URL` uses the **Connection Pooler (Transaction Mode, port 6543)** because the free tier direct connection (port 5432) uses IPv6, which is not supported by GHA runners.
+**CI/CD:** 
+- `release.yml`: Runs on push to `main`. Executes `checks.yml`, `migrate.yml`, `build-web.yml`, and `e2e-web.yml` before deploying via `deploy-pages.yml`.
+- `pr.yml`: Runs on pull requests. Executes `checks.yml`, `build-test` (with placeholders), and `e2e-web.yml`.
+- **Note:** For GitHub Actions, ensure `SUPABASE_DB_URL` uses the **Connection Pooler (Transaction Mode, port 6543)**.
 
 ## Quality & Testing
 
-**BDD & E2E:** When creating a new feature, ALWAYS write its BDD scenarios in a dedicated file inside `docs/bdd/` and implement the corresponding E2E tests (Cypress for Web, and eventually Maestro for Mobile). Every feature must be validated by an E2E test before being considered complete.
+**BDD & E2E:** 
+- When creating a new feature, ALWAYS write its BDD scenarios in a dedicated file inside `docs/bdd/` and implement the corresponding E2E tests (Cypress for Web, and eventually Maestro for Mobile). 
+- **E2E Isolation:** E2E tests **MUST** always run against an isolated local Supabase stack (using `supabase start` in CI). NEVER use production or staging credentials for E2E.
+- Every feature must be validated by an E2E test before being considered complete.
 
 ## Environment
 

@@ -7,6 +7,7 @@ This file provides guidance to Gemini CLI when working with code in this reposit
 **BDD & E2E Mandate:**
 - When creating a new feature, you **MUST** first write its BDD scenarios in a dedicated file inside `docs/bdd/`.
 - Every feature **MUST** have corresponding E2E tests (Cypress for Web, and eventually Maestro for Mobile).
+- **E2E Isolation:** E2E tests **MUST** always run against an isolated local Supabase stack (using `supabase start`). Never point E2E tests to production or staging databases.
 - No feature is considered complete until it passes its E2E validation.
 
 **CI & Migrations:**
