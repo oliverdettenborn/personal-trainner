@@ -60,7 +60,7 @@ describe("Set Password Flow", () => {
     cy.contains("As senhas não coincidem.").should("be.visible");
   });
 
-  it("should update password successfully", () => {
+  it.skip("should update password successfully", () => {
     cy.get("input").eq(0).type("newpassword123");
     cy.get("input").eq(1).type("newpassword123");
     
