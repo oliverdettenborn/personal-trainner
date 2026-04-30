@@ -25,3 +25,9 @@
   Given I am not logged in
   When I try to access the home page "/"
   Then I should be redirected to the login page "/login"
+
+## Scenario: Login Failure with Empty Fields
+  Given I am on the login page
+  When I click the "Entrar" button without filling any fields
+  Then I should see an error message "Por favor, preencha todos os campos."
+  And I should remain on the login page

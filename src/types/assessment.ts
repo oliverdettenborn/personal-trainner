@@ -49,12 +49,16 @@ export interface Assessment {
   // Legacy fields (kept for backward compatibility during migration)
   front_before_date?: string;
   front_before_weight?: string;
+  front_before_cintura?: string;
   front_after_date?: string;
   front_after_weight?: string;
+  front_after_cintura?: string;
   back_before_date?: string;
   back_before_weight?: string;
+  back_before_cintura?: string;
   back_after_date?: string;
   back_after_weight?: string;
+  back_after_cintura?: string;
   positive_items?: string[];
   adjustment_items?: string[];
   photo_front_before?: string;

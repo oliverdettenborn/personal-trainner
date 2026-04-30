@@ -17,6 +17,7 @@ export type PhotoSlotProps = {
   label?: string;
   onPhotoSelected: (uri: string) => void;
   onRemove?: () => void;
+  nativeID?: string;
 };
 
 export function PhotoSlot({
@@ -24,6 +25,7 @@ export function PhotoSlot({
   label,
   onPhotoSelected,
   onRemove,
+  nativeID,
 }: PhotoSlotProps) {
   const bgTertiary = useThemeColor({}, "backgroundTertiary");
   const borderGold = useThemeColor({}, "borderGold");
@@ -53,6 +55,7 @@ export function PhotoSlot({
       {label && <Text style={styles.label}>{label}</Text>}
       <Pressable
         onPress={pickImage}
+        nativeID={nativeID}
         style={[
           styles.slot,
           { backgroundColor: bgTertiary, borderColor: borderGold },

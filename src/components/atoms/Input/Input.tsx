@@ -10,6 +10,8 @@ export type InputProps = TextInputProps & {
   label?: string;
   variant?: InputVariant;
   containerStyle?: any;
+  nativeID?: string;
+  testID?: string;
 };
 
 export function Input({
@@ -17,6 +19,8 @@ export function Input({
   variant = "boxed",
   containerStyle,
   style,
+  nativeID,
+  testID,
   ...rest
 }: InputProps) {
   const textBeige = useThemeColor({}, "text");
@@ -41,6 +45,8 @@ export function Input({
           style,
         ]}
         placeholderTextColor="#6a5a40"
+        nativeID={nativeID}
+        testID={testID}
         {...rest}
       />
     </View>

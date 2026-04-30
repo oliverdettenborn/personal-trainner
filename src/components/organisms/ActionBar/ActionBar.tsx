@@ -64,10 +64,11 @@ export function ActionBar({
     <View style={styles.container} nativeID={nativeID}>
       <View style={styles.leftSection}>
         <Button
-          title={isSaving ? "Salvando..." : "Salvar"}
+          title={isSaving ? "Salvando..." : "Salvar Avaliação"}
           variant="gold"
           onPress={onSave}
           disabled={isSaving}
+          nativeID="save-button"
         />
 
         <Button
@@ -75,7 +76,7 @@ export function ActionBar({
           variant="outline"
           onPress={onDownloadImage}
           iconRight="download-outline"
-          testID="download-button"
+          nativeID="download-button"
         />
 
         {Platform.OS === "web" && (
@@ -84,7 +85,7 @@ export function ActionBar({
             variant="outline"
             onPress={handleCopyClick}
             iconRight={isCopied ? "checkmark-outline" : "copy-outline"}
-            testID="copy-button"
+            nativeID="copy-button"
           />
         )}
       </View>

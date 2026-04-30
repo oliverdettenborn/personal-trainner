@@ -206,11 +206,16 @@ export default function AssessmentScreen() {
               <ActionBar
                 nativeID="action-bar"
                 onSave={() => {
+                  if (!currentAssessment?.front_before_weight) {
+                    alert("O peso é obrigatório");
+                    return;
+                  }
                   setIsSaving(true);
                   saveManual();
                   setTimeout(() => {
                     setIsSaving(false);
                     setIsDirty(false);
+                    alert("Avaliação salva com sucesso");
                   }, 500);
                 }}
                 onDownloadImage={handleDownloadImage}
