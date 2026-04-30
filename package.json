@@ -78,5 +78,8 @@
     "preset": "jest-expo",
     "transformIgnorePatterns": []
   },
-  "private": true
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  }
 }

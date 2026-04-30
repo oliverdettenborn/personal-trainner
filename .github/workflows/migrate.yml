@@ -6,6 +6,9 @@ on:
       SUPABASE_DB_URL:
         required: true
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   migrate:
     runs-on: ubuntu-latest
