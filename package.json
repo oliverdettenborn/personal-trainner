@@ -15,9 +15,9 @@
     "test:integration": "jest --config jest.integration.config.js",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\"",
     "typecheck": "tsc --noEmit",
-    "test:e2e": "cypress open",
-    "test:e2e:headless": "cypress run",
-    "test:e2e:ci": "start-server-and-test 'npm run web' http://localhost:8081 test:e2e:headless",
+    "test:e2e": "wait-on http://localhost:8081 --timeout 2000 && cypress open || start-server-and-test 'npm run web' http://localhost:8081 'cypress open'",
+    "test:e2e:run": "wait-on http://localhost:8081 --timeout 2000 && cypress run || start-server-and-test 'npm run web' http://localhost:8081 'cypress run'",
+    "test:e2e:ci": "npm run test:e2e:run",
     "prepare": "husky"
   },
   "dependencies": {
@@ -70,7 +70,8 @@
     "serve": "^14.2.6",
     "start-server-and-test": "^3.0.2",
     "ts-jest": "^29.4.9",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "wait-on": "^9.0.5"
   },
   "jest": {
     "preset": "jest-expo",
