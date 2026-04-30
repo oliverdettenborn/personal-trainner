@@ -9,6 +9,9 @@ This file provides guidance to Gemini CLI when working with code in this reposit
 - Every feature **MUST** have corresponding E2E tests (Cypress for Web, and eventually Maestro for Mobile).
 - No feature is considered complete until it passes its E2E validation.
 
+**CI & Migrations:**
+- When applying migrations to a remote database via Supabase CLI using a connection pooler in **Transaction Mode** (typically port 6543), you **MUST** append `?prepared_statements=false` to the connection string to avoid "prepared statement already exists" errors.
+
 ## Development Workflow
 
 1.  **Research:** Map the feature and dependencies.
