@@ -19,11 +19,10 @@ export function useAssessment() {
     : null;
 
   const studentAssessments = useMemo(
-    () =>
-      (studentId: string) =>
-        Object.values(db.assessments)
-          .filter((a) => a.studentId === studentId)
-          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
+    () => (studentId: string) =>
+      Object.values(db.assessments)
+        .filter((a) => a.studentId === studentId)
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
     [db.assessments],
   );
 

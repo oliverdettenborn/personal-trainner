@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createStudentRepository } from "@repositories/index";
 import { useState, useEffect, useCallback, useMemo } from "react";
 
 import { Student } from "../types/assessment";
-import { createStudentRepository } from "@repositories/index";
 
 const STORAGE_KEY = "@caio_oliver_db";
 const MIGRATION_FLAG = "@migration_v1_students_done";
@@ -27,7 +27,9 @@ export function useStudents(userId: string | null) {
         if (raw) {
           const db = JSON.parse(raw);
           const existing = Object.values(db.students ?? {}) as Student[];
-          await Promise.all(existing.map((s) => repo.insert(s).catch(() => {})));
+          await Promise.all(
+            existing.map((s) => repo.insert(s).catch(() => {})),
+          );
         }
         await AsyncStorage.setItem(MIGRATION_FLAG, "1");
       }
@@ -44,7 +46,7 @@ export function useStudents(userId: string | null) {
     async (name: string): Promise<string> => {
       if (!repo) throw new Error("Not authenticated");
       const student: Student = {
-        id: `s_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+        id: crypto.randomUUID(),
         name,
         createdAt: Date.now(),
       };

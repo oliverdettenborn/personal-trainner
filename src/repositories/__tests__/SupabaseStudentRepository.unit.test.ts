@@ -1,4 +1,5 @@
 import { SupabaseStudentRepository } from "../supabase/SupabaseStudentRepository";
+
 import { Student } from "@/src/types/assessment";
 
 const mockEq = jest.fn().mockResolvedValue({ error: null });
@@ -58,7 +59,9 @@ describe("SupabaseStudentRepository", () => {
   });
 
   it("insert throws when supabase returns error", async () => {
-    mockInsert.mockResolvedValueOnce({ error: { message: "unique violation" } });
+    mockInsert.mockResolvedValueOnce({
+      error: { message: "unique violation" },
+    });
     const student: Student = { id: "s_3", name: "Carol", createdAt: 3000 };
     await expect(repo.insert(student)).rejects.toMatchObject({
       message: "unique violation",
