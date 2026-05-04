@@ -44,7 +44,7 @@ export function AssessmentDashboard() {
     removeAssessment,
     cleanupStudentData,
     saveManual,
-  } = useAssessment();
+  } = useAssessment(userId);
 
   const loading = studentsLoading || assessmentsLoading;
 

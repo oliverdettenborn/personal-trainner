@@ -1,186 +1,166 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { createAssessmentRepository } from "@repositories/index";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { Assessment, AssessmentDB } from "../types/assessment";
 
 const STORAGE_KEY = "@caio_oliver_db";
+const MIGRATION_FLAG = "@migration_v2_assessments_done";
+const DEBOUNCE_MS = 2000;
 
-export function useAssessment() {
-  const [db, setDb] = useState<AssessmentDB>({ students: {}, assessments: {} });
+export function useAssessment(userId: string | null) {
+  const [assessments, setAssessments] = useState<Record<string, Assessment>>(
+    {},
+  );
   const [loading, setLoading] = useState(true);
   const [currentAssessmentId, setCurrentAssessmentId] = useState<string | null>(
     null,
   );
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const currentAssessment = currentAssessmentId
-    ? db.assessments[currentAssessmentId]
-    : null;
-
-  const studentAssessments = useMemo(
-    () => (studentId: string) =>
-      Object.values(db.assessments)
-        .filter((a) => a.studentId === studentId)
-        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
-    [db.assessments],
+  const repo = useMemo(
+    () => (userId ? createAssessmentRepository(userId) : null),
+    [userId],
   );
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const jsonValue = await AsyncStorage.getItem(STORAGE_KEY);
-        if (jsonValue != null) {
-          setDb(JSON.parse(jsonValue));
+    if (!repo) return;
+    const init = async () => {
+      const migrated = await AsyncStorage.getItem(MIGRATION_FLAG);
+      if (!migrated) {
+        const raw = await AsyncStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const db = JSON.parse(raw) as AssessmentDB;
+          const existing = Object.values(db.assessments ?? {});
+          await Promise.all(
+            existing.map((a) => repo.insert(a).catch(() => {})),
+          );
         }
-      } catch (e) {
-        console.error("Erro ao carregar banco de dados", e);
-      } finally {
-        setLoading(false);
+        await AsyncStorage.setItem(MIGRATION_FLAG, "1");
       }
+      const data = await repo.findAll();
+      const map: Record<string, Assessment> = {};
+      data.forEach((a) => {
+        map[a.id] = a;
+      });
+      setAssessments(map);
     };
-    load();
-  }, []);
-
-  const saveToStorage = useCallback(async (newDb: AssessmentDB) => {
-    try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newDb));
-    } catch (e) {
-      console.error("Erro ao salvar no AsyncStorage", e);
-    }
-  }, []);
-
-  const triggerAutoSave = useCallback(
-    (newDb: AssessmentDB) => {
-      if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
-      autoSaveTimer.current = setTimeout(() => saveToStorage(newDb), 3000);
-    },
-    [saveToStorage],
-  );
+    init().finally(() => setLoading(false));
+  }, [repo]);
 
   const addAssessment = useCallback(
-    (studentId: string) => {
+    (studentId: string): string => {
       const now = Date.now();
       const id = "a_" + now + "_" + Math.floor(Math.random() * 1000);
-      const newAssessment: Assessment = { id, studentId, createdAt: now };
-
-      setDb((prev) => {
-        const updated = {
-          ...prev,
-          assessments: { ...prev.assessments, [id]: newAssessment },
-        };
-        saveToStorage(updated);
-        return updated;
-      });
-
+      const assessment: Assessment = { id, studentId, createdAt: now };
+      repo?.insert(assessment).catch(console.error);
+      setAssessments((prev) => ({ ...prev, [id]: assessment }));
       setCurrentAssessmentId(id);
       return id;
     },
-    [saveToStorage],
+    [repo],
   );
 
   const updateAssessment = useCallback(
     (id: string, data: Partial<Assessment>) => {
-      setDb((prev) => {
-        if (!prev.assessments[id]) return prev;
-        const updated = {
-          ...prev,
-          assessments: {
-            ...prev.assessments,
-            [id]: { ...prev.assessments[id], ...data },
-          },
-        };
-        triggerAutoSave(updated);
-        return updated;
+      setAssessments((prev) => {
+        if (!prev[id]) return prev;
+        const updated = { ...prev[id], ...data };
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        debounceRef.current = setTimeout(() => {
+          repo?.upsert(updated).catch(console.error);
+        }, DEBOUNCE_MS);
+        return { ...prev, [id]: updated };
       });
     },
-    [triggerAutoSave],
+    [repo],
   );
 
   const removeAssessment = useCallback(
     (id: string) => {
-      const studentId = db.assessments[id]?.studentId;
-      const assessmentsOfStudent = Object.values(db.assessments)
+      const studentId = assessments[id]?.studentId;
+      const ofStudent = Object.values(assessments)
         .filter((a) => a.studentId === studentId)
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
       let nextId: string | null = null;
-      const idx = assessmentsOfStudent.findIndex((a) => a.id === id);
-      if (assessmentsOfStudent.length > 1) {
+      if (ofStudent.length > 1) {
+        const idx = ofStudent.findIndex((a) => a.id === id);
         nextId =
-          idx < assessmentsOfStudent.length - 1
-            ? assessmentsOfStudent[idx + 1].id
-            : assessmentsOfStudent[idx - 1].id;
+          idx < ofStudent.length - 1
+            ? ofStudent[idx + 1].id
+            : ofStudent[idx - 1].id;
       }
-
-      setDb((prev) => {
-        const newAssessments = { ...prev.assessments };
-        delete newAssessments[id];
-        const updated = { ...prev, assessments: newAssessments };
-        saveToStorage(updated);
-        return updated;
+      repo?.delete(id).catch(console.error);
+      setAssessments((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
       });
-
       setCurrentAssessmentId((prev) => (prev === id ? nextId : prev));
     },
-    [db, saveToStorage],
+    [repo, assessments],
   );
 
   const cleanupStudentData = useCallback(
     (studentId: string) => {
-      setDb((prev) => {
-        const assessments = { ...prev.assessments };
-        Object.values(assessments)
+      // DB cascade already removed the rows; only local state needs cleanup.
+      setAssessments((prev) => {
+        const next = { ...prev };
+        Object.values(next)
           .filter((a) => a.studentId === studentId)
-          .forEach((a) => delete assessments[a.id]);
-        const updated = { ...prev, assessments };
-        saveToStorage(updated);
-        return updated;
+          .forEach((a) => delete next[a.id]);
+        return next;
       });
+      setCurrentAssessmentId((prev) =>
+        prev && assessments[prev]?.studentId === studentId ? null : prev,
+      );
     },
-    [saveToStorage],
+    [assessments],
   );
 
   const importFromJSON = useCallback(
     (jsonData: any, studentId: string) => {
-      try {
-        const assessmentId = "a_" + Date.now();
-        const newAssessment: Assessment = {
-          ...jsonData,
-          id: assessmentId,
-          studentId,
-          createdAt: Date.now(),
-        };
-
-        setDb((prev) => {
-          const updated = {
-            ...prev,
-            assessments: { ...prev.assessments, [assessmentId]: newAssessment },
-          };
-          saveToStorage(updated);
-          return updated;
-        });
-
-        setCurrentAssessmentId(assessmentId);
-      } catch (e) {
-        console.error("Erro na importação do JSON", e);
-      }
+      const id = "a_" + Date.now();
+      const assessment: Assessment = {
+        ...jsonData,
+        id,
+        studentId,
+        createdAt: Date.now(),
+      };
+      repo?.insert(assessment).catch(console.error);
+      setAssessments((prev) => ({ ...prev, [id]: assessment }));
+      setCurrentAssessmentId(id);
     },
-    [saveToStorage],
+    [repo],
+  );
+
+  const saveManual = useCallback(() => {
+    if (!currentAssessmentId) return;
+    const assessment = assessments[currentAssessmentId];
+    if (assessment) repo?.upsert(assessment).catch(console.error);
+  }, [repo, currentAssessmentId, assessments]);
+
+  const studentAssessments = useMemo(
+    () => (studentId: string) =>
+      Object.values(assessments)
+        .filter((a) => a.studentId === studentId)
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
+    [assessments],
   );
 
   return {
-    db,
     loading,
     currentAssessmentId,
     setCurrentAssessmentId,
-    currentAssessment,
+    currentAssessment: currentAssessmentId
+      ? assessments[currentAssessmentId]
+      : null,
     studentAssessments,
     addAssessment,
     updateAssessment,
     removeAssessment,
     cleanupStudentData,
     importFromJSON,
-    saveManual: () => saveToStorage(db),
+    saveManual,
   };
 }
