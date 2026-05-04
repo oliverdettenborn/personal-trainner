@@ -11,6 +11,7 @@ import { useAssessment } from "../../../hooks/useAssessment";
 import { useAuth } from "../../../hooks/useAuth";
 import { useConfirmModal } from "../../../hooks/useConfirmModal";
 import { useImageCapture } from "../../../hooks/useImageCapture";
+import { useStudents } from "../../../hooks/useStudents";
 import { useToast } from "../../../hooks/useToast";
 import { signOut } from "../../../services/authService";
 import { Assessment } from "../../../types/assessment";
@@ -25,21 +26,27 @@ import { Sidebar } from "../Sidebar";
 export function AssessmentDashboard() {
   const { userId } = useAuth();
   const {
-    db,
-    loading,
+    students,
+    loading: studentsLoading,
     currentStudentId,
     setCurrentStudentId,
+    addStudent,
+    removeStudent,
+  } = useStudents(userId);
+  const {
+    loading: assessmentsLoading,
     currentAssessmentId,
     setCurrentAssessmentId,
     currentAssessment,
     studentAssessments,
-    addStudent,
-    removeStudent,
     addAssessment,
     updateAssessment,
     removeAssessment,
+    cleanupStudentData,
     saveManual,
-  } = useAssessment(userId);
+  } = useAssessment();
+
+  const loading = studentsLoading || assessmentsLoading;
 
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
@@ -54,7 +61,6 @@ export function AssessmentDashboard() {
   const confirm = useConfirmModal();
   const { toast, show: showToast } = useToast();
 
-  // Sync isDirty with the autosave debounce (3s in useAssessment)
   useEffect(() => {
     if (isDirty) {
       if (dirtyTimerRef.current) clearTimeout(dirtyTimerRef.current);
@@ -67,9 +73,8 @@ export function AssessmentDashboard() {
     };
   }, [isDirty]);
 
-  const studentName = currentStudentId
-    ? db.students[currentStudentId]?.name || "Avaliacao"
-    : "Avaliacao";
+  const currentStudent = students.find((s) => s.id === currentStudentId);
+  const studentName = currentStudent?.name || "Avaliacao";
   const assessmentDate = new Date(currentAssessment?.createdAt || Date.now())
     .toLocaleDateString()
     .replace(/\//g, "-");
@@ -80,6 +85,16 @@ export function AssessmentDashboard() {
     fileName: `Avaliacao_${studentName}_${assessmentDate}`,
     onError: (msg) => showToast(msg, "error"),
   });
+
+  const handleAddStudent = async (name: string) => {
+    const studentId = await addStudent(name);
+    addAssessment(studentId);
+  };
+
+  const handleRemoveStudent = async (id: string) => {
+    await removeStudent(id);
+    cleanupStudentData(id);
+  };
 
   const handleUpdate = (key: string, value: string | string[]) => {
     if (currentAssessmentId) {
@@ -122,14 +137,14 @@ export function AssessmentDashboard() {
       <AppHeader
         testID="app-header"
         currentStudentId={currentStudentId}
-        students={Object.values(db.students)}
+        students={students}
         onSelectStudent={setCurrentStudentId}
-        onAddStudent={addStudent}
+        onAddStudent={handleAddStudent}
         onRemoveStudent={(id) =>
           confirm.show(
             "Remover Aluno",
-            `Deseja remover o aluno "${db.students[id]?.name}" e todas as suas avaliações? Essa ação é irreversível.`,
-            () => removeStudent(id),
+            `Deseja remover o aluno "${students.find((s) => s.id === id)?.name}" e todas as suas avaliações? Essa ação é irreversível.`,
+            () => handleRemoveStudent(id),
           )
         }
         sidebarVisible={sidebarVisible}
@@ -141,9 +156,11 @@ export function AssessmentDashboard() {
         {sidebarVisible && (
           <Sidebar
             testID="sidebar"
-            students={Object.values(db.students)}
+            students={students}
             currentStudentId={currentStudentId}
-            assessments={studentAssessments}
+            assessments={
+              currentStudentId ? studentAssessments(currentStudentId) : []
+            }
             currentAssessmentId={currentAssessmentId}
             onSelectAssessment={(id) => {
               setCurrentAssessmentId(id);

@@ -30,6 +30,9 @@
       "@lib/*": [
         "./src/lib/*"
       ],
+      "@repositories/*": [
+        "./src/repositories/*"
+      ],
       "@services/*": [
         "./src/services/*"
       ]

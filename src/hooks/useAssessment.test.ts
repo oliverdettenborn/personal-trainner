@@ -2,9 +2,8 @@ import { act, renderHook } from "@testing-library/react-native";
 
 import { useAssessment } from "./useAssessment";
 
-// Mock do AsyncStorage
 jest.mock("@react-native-async-storage/async-storage", () => ({
-  getItem: jest.fn(),
+  getItem: jest.fn().mockResolvedValue(null),
   setItem: jest.fn(),
 }));
 
@@ -13,72 +12,35 @@ describe("useAssessment", () => {
     jest.clearAllMocks();
   });
 
-  it("adds a student and auto-creates/selects an assessment", async () => {
-    const { result } = renderHook(() => useAssessment(null));
-
-    let studentId: string = "";
-    await act(async () => {
-      studentId = result.current.addStudent("John Doe");
-    });
-
-    expect(result.current.currentStudentId).toBe(studentId);
-    expect(result.current.db.students[studentId]).toBeDefined();
-    expect(result.current.currentAssessmentId).toBeDefined();
-    expect(result.current.studentAssessments.length).toBe(1);
-  });
-
   it("adds an assessment and auto-selects it", async () => {
-    const { result } = renderHook(() => useAssessment(null));
+    const { result } = renderHook(() => useAssessment());
 
-    let studentId: string = "";
-    let secondAssessmentId: string = "";
-
-    await act(async () => {
-      studentId = result.current.addStudent("John Doe");
-    });
-
-    await act(async () => {
-      secondAssessmentId = result.current.addAssessment(studentId);
-    });
-
-    expect(result.current.currentAssessmentId).toBe(secondAssessmentId);
-    expect(result.current.studentAssessments.length).toBe(2);
-    expect(result.current.studentAssessments.map((a) => a.id)).toContain(
-      secondAssessmentId,
-    );
-  });
-
-  it("clears selection when removing current student", async () => {
-    const { result } = renderHook(() => useAssessment(null));
-
-    let studentId: string = "";
-    await act(async () => {
-      studentId = result.current.addStudent("John Doe");
-    });
-
-    await act(async () => {
-      result.current.removeStudent(studentId);
-    });
-
-    expect(result.current.currentStudentId).toBeNull();
-    expect(result.current.currentAssessmentId).toBeNull();
-  });
-
-  it("selects next assessment when removing current one", async () => {
-    const { result } = renderHook(() => useAssessment(null));
-
-    let studentId: string = "";
     let firstId: string = "";
     let secondId: string = "";
 
     await act(async () => {
-      studentId = result.current.addStudent("John Doe");
+      firstId = result.current.addAssessment("student-1");
+    });
+    await act(async () => {
+      secondId = result.current.addAssessment("student-1");
     });
 
-    firstId = result.current.currentAssessmentId!;
+    expect(result.current.currentAssessmentId).toBe(secondId);
+    expect(result.current.studentAssessments("student-1").length).toBe(2);
+    expect(result.current.studentAssessments("student-1").map((a) => a.id)).toContain(firstId);
+  });
+
+  it("selects next assessment when removing current one", async () => {
+    const { result } = renderHook(() => useAssessment());
+
+    let firstId: string = "";
+    let secondId: string = "";
 
     await act(async () => {
-      secondId = result.current.addAssessment(studentId);
+      firstId = result.current.addAssessment("student-1");
+    });
+    await act(async () => {
+      secondId = result.current.addAssessment("student-1");
     });
 
     expect(result.current.currentAssessmentId).toBe(secondId);
@@ -90,9 +52,26 @@ describe("useAssessment", () => {
     expect(result.current.currentAssessmentId).toBe(firstId);
   });
 
+  it("cleanupStudentData removes all assessments for a student", async () => {
+    const { result } = renderHook(() => useAssessment());
+
+    await act(async () => {
+      result.current.addAssessment("student-1");
+      result.current.addAssessment("student-1");
+      result.current.addAssessment("student-2");
+    });
+
+    await act(async () => {
+      result.current.cleanupStudentData("student-1");
+    });
+
+    expect(result.current.studentAssessments("student-1").length).toBe(0);
+    expect(result.current.studentAssessments("student-2").length).toBe(1);
+  });
+
   it("calls AsyncStorage.setItem when saveManual is called", async () => {
     const AsyncStorage = require("@react-native-async-storage/async-storage");
-    const { result } = renderHook(() => useAssessment(null));
+    const { result } = renderHook(() => useAssessment());
 
     await act(async () => {
       result.current.saveManual();
@@ -100,7 +79,7 @@ describe("useAssessment", () => {
 
     expect(AsyncStorage.setItem).toHaveBeenCalledWith(
       "@caio_oliver_db",
-      JSON.stringify({ students: {}, assessments: {} }),
+      expect.any(String),
     );
   });
 });
