@@ -44,65 +44,67 @@ function SideInfo({
 
   return (
     <View style={styles.sideInfo}>
-      {/* Date - boxed field */}
-      <View style={styles.fieldGroup}>
-        <Text style={[styles.fieldLabel, isRight && styles.fieldLabelRight]}>
-          Data
-        </Text>
-        <Input
-          variant="boxed"
-          placeholder="__/__/____"
-          value={(assessmentData[`${prefix}_date`] as string) || ''}
-          onChangeText={(v) => onFieldChange(`${prefix}_date`, maskDate(v))}
-          keyboardType="numeric"
-          style={[
-            styles.fieldValue,
-            { borderColor: border },
-            isRight && { textAlign: 'right' },
-          ]}
-          containerStyle={styles.fieldContainer}
-        />
-      </View>
+      <View style={styles.inputsWrapper}>
+        {/* Date - boxed field */}
+        <View style={styles.fieldGroup}>
+          <Text style={[styles.fieldLabel, isRight && styles.fieldLabelRight]}>
+            Data
+          </Text>
+          <Input
+            variant="boxed"
+            placeholder="__/__/____"
+            value={(assessmentData[`${prefix}_date`] as string) || ''}
+            onChangeText={(v) => onFieldChange(`${prefix}_date`, maskDate(v))}
+            keyboardType="numeric"
+            style={[
+              styles.fieldValue,
+              { borderColor: border },
+              isRight && { textAlign: 'right' },
+            ]}
+            containerStyle={styles.fieldContainer}
+          />
+        </View>
 
-      {/* Weight - boxed field */}
-      <View style={styles.fieldGroup}>
-        <Text style={[styles.fieldLabel, isRight && styles.fieldLabelRight]}>
-          Peso
-        </Text>
-        <Input
-          variant="boxed"
-          placeholder="0,0 kg"
-          value={(assessmentData[`${prefix}_weight`] as string) || ''}
-          onChangeText={(v) => onFieldChange(`${prefix}_weight`, maskWeight(v))}
-          keyboardType="numeric"
-          error={weightError}
-          style={[
-            styles.fieldValue,
-            { borderColor: border },
-            isRight && { textAlign: 'right' },
-          ]}
-          containerStyle={styles.fieldContainer}
-        />
-      </View>
+        {/* Weight - boxed field */}
+        <View style={styles.fieldGroup}>
+          <Text style={[styles.fieldLabel, isRight && styles.fieldLabelRight]}>
+            Peso
+          </Text>
+          <Input
+            variant="boxed"
+            placeholder="0,0 kg"
+            value={(assessmentData[`${prefix}_weight`] as string) || ''}
+            onChangeText={(v) => onFieldChange(`${prefix}_weight`, maskWeight(v))}
+            keyboardType="numeric"
+            error={weightError}
+            style={[
+              styles.fieldValue,
+              { borderColor: border },
+              isRight && { textAlign: 'right' },
+            ]}
+            containerStyle={styles.fieldContainer}
+          />
+        </View>
 
-      {/* Waist (Cintura) - boxed field */}
-      <View style={styles.fieldGroup}>
-        <Text style={[styles.fieldLabel, isRight && styles.fieldLabelRight]}>
-          Cintura
-        </Text>
-        <Input
-          variant="boxed"
-          placeholder="0,0 cm"
-          value={(assessmentData[`${prefix}_cintura`] as string) || ''}
-          onChangeText={(v) => onFieldChange(`${prefix}_cintura`, maskCm(v))}
-          keyboardType="numeric"
-          style={[
-            styles.fieldValue,
-            { borderColor: border },
-            isRight && { textAlign: 'right' },
-          ]}
-          containerStyle={styles.fieldContainer}
-        />
+        {/* Waist (Cintura) - boxed field */}
+        <View style={styles.fieldGroup}>
+          <Text style={[styles.fieldLabel, isRight && styles.fieldLabelRight]}>
+            Cintura
+          </Text>
+          <Input
+            variant="boxed"
+            placeholder="0,0 cm"
+            value={(assessmentData[`${prefix}_cintura`] as string) || ''}
+            onChangeText={(v) => onFieldChange(`${prefix}_cintura`, maskCm(v))}
+            keyboardType="numeric"
+            style={[
+              styles.fieldValue,
+              { borderColor: border },
+              isRight && { textAlign: 'right' },
+            ]}
+            containerStyle={styles.fieldContainer}
+          />
+        </View>
       </View>
 
       {/* Body Part Indicators */}
@@ -246,6 +248,11 @@ const styles = StyleSheet.create({
   sideInfoRight: {
     paddingLeft: 0,
     paddingRight: 10,
+  },
+  inputsWrapper: {
+    flexDirection: 'column',
+    gap: 10,
+    marginHorizontal: 8,
   },
   fieldGroup: {
     flexDirection: 'column',
