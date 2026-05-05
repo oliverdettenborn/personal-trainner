@@ -33,13 +33,6 @@ jobs:
           EXPO_PUBLIC_SUPABASE_URL: ${{ inputs.EXPO_PUBLIC_SUPABASE_URL }}
           EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ inputs.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
 
-      - name: Patch asset paths for GitHub Pages subdirectory
-        run: |
-          find dist -name "*.html" -exec sed -i \
-            -e 's|src="/_expo/|src="/personal-trainner/_expo/|g' \
-            -e 's|href="/favicon.ico"|href="/personal-trainner/favicon.ico"|g' \
-            {} +
-
       - name: Add 404.html for SPA routing
         run: cp dist/index.html dist/404.html
 
