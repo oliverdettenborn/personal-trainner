@@ -253,6 +253,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: 10,
     marginHorizontal: 8,
+    marginTop: 16,
   },
   fieldGroup: {
     flexDirection: 'column',
