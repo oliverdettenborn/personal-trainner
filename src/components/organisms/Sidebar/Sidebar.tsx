@@ -88,7 +88,7 @@ export function Sidebar({
               <Pressable
                 key={assessment.id}
                 onPress={() => onSelectAssessment(assessment.id)}
-                style={({ hovered }: { hovered?: boolean }) => [
+                style={({ hovered }) => [
                   styles.assessmentItem,
                   assessment.id === currentAssessmentId && [
                     styles.assessmentItemActive,
