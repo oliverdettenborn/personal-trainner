@@ -66,29 +66,19 @@ describe('Physical Assessment Flow', () => {
     cy.get('select').select('s1');
     cy.contains('+ Nova avaliação').click();
 
-    // Intercept the assessment update/create call
-    cy.intercept('POST', '**/rest/v1/assessments*').as('saveAssessment');
-    cy.intercept('PATCH', '**/rest/v1/assessments*').as('updateAssessment');
-
     // When I change the "Peso" field to "82"
     cy.get('input[placeholder="0,0 kg"]').first().clear().type('82');
 
-    // And I wait for the debounce (3s) + network call
+    // And I wait for the debounce (3s) + network call to process
     cy.wait(4000);
 
-    // Then the data should be automatically saved to Supabase or locally
-    // Check if either create or update was called, or check localStorage
+    // Then the form should still show the value with mask applied (82 kg)
+    cy.get('input[placeholder="0,0 kg"]').first().should('have.value', '82 kg');
+
+    // And localStorage should have some draft data
     cy.window().then((win) => {
-      const db = JSON.parse(
-        win.localStorage.getItem('@caio_oliver_db') || '{}',
-      );
-      const assessments = Object.values(db.assessments || {});
-      // The draft should exist either in localStorage or have been sent to API
-      const hasDraft = assessments.some(
-        (a: Record<string, unknown>) => String(a.front_before_weight || '').includes('82'),
-      );
-      // Test passes if data is in localStorage (legacy) or if we can find the value
-      expect(assessments.length >= 0).to.equal(true); // At least localStorage works
+      const dbStr = win.localStorage.getItem('@caio_oliver_db');
+      return expect(dbStr).to.not.be.null; // Verify localStorage is being used
     });
   });
 });

@@ -12,13 +12,14 @@ export { };
 
 declare global {
   namespace Cypress {
-    type Chainable = {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+    interface Chainable {
       setupSession(initialDb?: Record<string, unknown>): Chainable<void>;
-    };
+    }
   }
 }
 
-Cypress.Commands.add('setupSession', (initialDb = null) => {
+Cypress.Commands.add('setupSession', (initialDb: Record<string, unknown> | undefined = undefined) => {
   // Create a valid-looking JWT (3 parts: header.payload.signature)
   // This is just for testing - it doesn't need to be cryptographically valid
   const fakeJwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1XzEyMyIsImVtYWlsIjoidHJhaW5lckBleGFtcGxlLmNvbSIsImV4cCI6OTk5OTk5OTk5OX0.fake-signature';
