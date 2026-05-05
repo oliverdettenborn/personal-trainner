@@ -1,1 +1,1 @@
-export { AssessmentContent } from "./AssessmentContent";
+export { AssessmentContent } from './AssessmentContent';

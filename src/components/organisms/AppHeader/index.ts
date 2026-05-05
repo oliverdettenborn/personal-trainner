@@ -1,1 +1,1 @@
-export { AppHeader, type AppHeaderProps } from "./AppHeader";
+export { AppHeader, type AppHeaderProps } from './AppHeader';

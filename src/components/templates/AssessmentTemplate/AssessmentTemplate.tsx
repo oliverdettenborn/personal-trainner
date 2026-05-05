@@ -1,14 +1,14 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
-import { useThemeColor } from "../../../hooks/useThemeColor";
+import { useThemeColor } from '../../../hooks/useThemeColor';
 
 export type AssessmentTemplateProps = {
   children?: React.ReactNode;
 };
 
 export function AssessmentTemplate({ children }: AssessmentTemplateProps) {
-  const borderGold = useThemeColor({}, "borderGold");
+  const borderGold = useThemeColor({}, 'borderGold');
 
   return (
     <View
@@ -24,9 +24,9 @@ const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
     borderRadius: 10,
-    overflow: "hidden",
+    overflow: 'hidden',
     maxWidth: 900,
-    alignSelf: "center",
-    width: "100%",
+    alignSelf: 'center',
+    width: '100%',
   },
 });

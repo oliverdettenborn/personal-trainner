@@ -1,29 +1,29 @@
-import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
 
-import { useThemeColor } from "../../../hooks/useThemeColor";
-import { Button } from "../../atoms/Button";
-import { Input } from "../../atoms/Input";
-import { Text } from "../../atoms/Text";
+import { useThemeColor } from '../../../hooks/useThemeColor';
+import { Button } from '../../atoms/Button';
+import { Input } from '../../atoms/Input';
+import { Text } from '../../atoms/Text';
 
 export type LoginFormProps = {
   onSubmit: (email: string, password: string) => Promise<void>;
 };
 
 export function LoginForm({ onSubmit }: LoginFormProps) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const gold = useThemeColor({}, "gold");
-  const text = useThemeColor({}, "text");
-  const text3 = useThemeColor({}, "text3");
-  const danger = useThemeColor({}, "danger");
+  const gold = useThemeColor({}, 'gold');
+  const text = useThemeColor({}, 'text');
+  const text3 = useThemeColor({}, 'text3');
+  const danger = useThemeColor({}, 'danger');
 
   const handleSubmit = async () => {
     if (!email || !password) {
-      setError("Por favor, preencha todos os campos.");
+      setError('Por favor, preencha todos os campos.');
       return;
     }
     setLoading(true);
@@ -31,7 +31,7 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
     try {
       await onSubmit(email, password);
     } catch {
-      setError("E-mail ou senha inválidos.");
+      setError('E-mail ou senha inválidos.');
     } finally {
       setLoading(false);
     }
@@ -84,13 +84,13 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
 const styles = StyleSheet.create({
   title: {
     fontSize: 22,
-    fontWeight: "700",
+    fontWeight: '700',
     letterSpacing: 1,
     marginBottom: 32,
-    textAlign: "center",
+    textAlign: 'center',
   },
-  error: { marginBottom: 12, textAlign: "center", fontSize: 14 },
+  error: { marginBottom: 12, textAlign: 'center', fontSize: 14 },
   field: { marginBottom: 12 },
   button: { marginTop: 4 },
-  info: { textAlign: "center", fontSize: 12, marginTop: 24 },
+  info: { textAlign: 'center', fontSize: 12, marginTop: 24 },
 });

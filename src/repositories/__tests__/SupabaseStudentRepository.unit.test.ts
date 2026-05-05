@@ -1,6 +1,6 @@
-import { SupabaseStudentRepository } from "../supabase/SupabaseStudentRepository";
-
-import { Student } from "@/src/types/assessment";
+import { Student } from '@/src/types/assessment';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseStudentRepository } from '../supabase/SupabaseStudentRepository';
 
 const mockEq = jest.fn().mockResolvedValue({ error: null });
 const mockOrder = jest.fn().mockResolvedValue({ data: [], error: null });
@@ -13,10 +13,10 @@ const mockFrom = jest.fn().mockReturnValue({
   delete: mockDelete,
 });
 
-const mockClient = { from: mockFrom } as any;
-const USER_ID = "user-123";
+const mockClient = { from: mockFrom } as unknown as SupabaseClient;
+const USER_ID = 'user-123';
 
-describe("SupabaseStudentRepository", () => {
+describe('SupabaseStudentRepository', () => {
   let repo: SupabaseStudentRepository;
 
   beforeEach(() => {
@@ -29,48 +29,55 @@ describe("SupabaseStudentRepository", () => {
     repo = new SupabaseStudentRepository(mockClient, USER_ID);
   });
 
-  it("findAll returns empty array when no students", async () => {
+  it('findAll returns empty array when no students', async () => {
     mockOrder.mockResolvedValueOnce({ data: [], error: null });
     const result = await repo.findAll();
     expect(result).toEqual([]);
   });
 
-  it("findAll maps db row to Student shape and omits user_id", async () => {
+  it('findAll maps db row to Student shape and omits user_id', async () => {
     mockOrder.mockResolvedValueOnce({
-      data: [{ id: "s_1", name: "Ana", created_at: 1000, user_id: USER_ID }],
+      data: [
+        {
+          id: 's_1',
+          name: 'Ana',
+          created_at: 1000,
+          user_id: USER_ID,
+        },
+      ],
       error: null,
     });
     const result = await repo.findAll();
-    expect(result[0]).toEqual({ id: "s_1", name: "Ana", createdAt: 1000 });
-    expect(result[0]).not.toHaveProperty("user_id");
-    expect(result[0]).not.toHaveProperty("created_at");
+    expect(result[0]).toEqual({ id: 's_1', name: 'Ana', createdAt: 1000 });
+    expect(result[0]).not.toHaveProperty('user_id');
+    expect(result[0]).not.toHaveProperty('created_at');
   });
 
   it("insert calls from('students').insert with user_id injected", async () => {
-    const student: Student = { id: "s_2", name: "Bob", createdAt: 2000 };
+    const student: Student = { id: 's_2', name: 'Bob', createdAt: 2000 };
     await repo.insert(student);
-    expect(mockClient.from).toHaveBeenCalledWith("students");
+    expect(mockClient.from).toHaveBeenCalledWith('students');
     expect(mockInsert).toHaveBeenCalledWith({
-      id: "s_2",
+      id: 's_2',
       user_id: USER_ID,
-      name: "Bob",
+      name: 'Bob',
       created_at: 2000,
     });
   });
 
-  it("insert throws when supabase returns error", async () => {
+  it('insert throws when supabase returns error', async () => {
     mockInsert.mockResolvedValueOnce({
-      error: { message: "unique violation" },
+      error: { message: 'unique violation' },
     });
-    const student: Student = { id: "s_3", name: "Carol", createdAt: 3000 };
+    const student: Student = { id: 's_3', name: 'Carol', createdAt: 3000 };
     await expect(repo.insert(student)).rejects.toMatchObject({
-      message: "unique violation",
+      message: 'unique violation',
     });
   });
 
   it("delete calls from('students').delete().eq('id', id)", async () => {
-    await repo.delete("s_1");
+    await repo.delete('s_1');
     expect(mockDelete).toHaveBeenCalled();
-    expect(mockEq).toHaveBeenCalledWith("id", "s_1");
+    expect(mockEq).toHaveBeenCalledWith('id', 's_1');
   });
 });

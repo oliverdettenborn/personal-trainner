@@ -1,5 +1,5 @@
-import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
 import {
   Modal,
   Platform,
@@ -7,11 +7,11 @@ import {
   StyleSheet,
   View,
   useWindowDimensions,
-} from "react-native";
+} from 'react-native';
 
-import { useThemeColor } from "../../../hooks/useThemeColor";
-import { Student } from "../../../types/assessment";
-import { Button, Input, Text } from "../../atoms";
+import { useThemeColor } from '../../../hooks/useThemeColor';
+import { Student } from '../../../types/assessment';
+import { Button, Input, Text } from '../../atoms';
 
 export type AppHeaderProps = {
   currentStudentId: string | null;
@@ -40,25 +40,27 @@ export function AppHeader({
   const isMobile = width < 768;
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [studentName, setStudentName] = React.useState("");
+  const [studentName, setStudentName] = React.useState('');
 
-  const bg2 = useThemeColor({}, "backgroundSecondary");
-  const borderGold = useThemeColor({}, "borderGold");
-  const gold = useThemeColor({}, "gold");
-  const text = useThemeColor({}, "text");
+  const bg2 = useThemeColor({}, 'backgroundSecondary');
+  const borderGold = useThemeColor({}, 'borderGold');
+  const gold = useThemeColor({}, 'gold');
+  const text = useThemeColor({}, 'text');
 
   const handleConfirmNewStudent = () => {
     const trimmed = studentName.trim();
     if (trimmed) {
       onAddStudent(trimmed);
-      setStudentName("");
+      setStudentName('');
       setIsModalOpen(false);
     }
   };
 
-  const handleStudentSelectChange = (event: any) => {
-    const value = event.target.value;
-    onSelectStudent(value || "");
+  const handleStudentSelectChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const { value } = event.target;
+    onSelectStudent(value || '');
   };
 
   return (
@@ -75,7 +77,7 @@ export function AppHeader({
             <Text
               style={[
                 styles.menuToggleIcon,
-                { color: sidebarVisible ? gold : "#6a5a40" },
+                { color: sidebarVisible ? gold : '#6a5a40' },
               ]}
             >
               ☰
@@ -89,20 +91,20 @@ export function AppHeader({
 
       <View style={[styles.studentBar, isMobile && styles.studentBarFull]}>
         {/* Native <select> dropdown — matches HTML exactly */}
-        {Platform.OS === "web" ? (
+        {Platform.OS === 'web' ? (
           <select
-            value={currentStudentId || ""}
+            value={currentStudentId || ''}
             onChange={handleStudentSelectChange}
             style={{
-              background: "#222222",
-              border: "1px solid #5a4010",
-              color: "#e8e0d0",
-              padding: "6px 10px",
+              background: '#222222',
+              border: '1px solid #5a4010',
+              color: '#e8e0d0',
+              padding: '6px 10px',
               borderRadius: 6,
               fontSize: 13,
-              cursor: "pointer",
+              cursor: 'pointer',
               minWidth: 160,
-              fontFamily: "inherit",
+              fontFamily: 'inherit',
             }}
           >
             <option value="">— Selecione um aluno —</option>
@@ -117,8 +119,8 @@ export function AppHeader({
         ) : (
           <Button
             title={
-              students.find((s) => s.id === currentStudentId)?.name ||
-              "— Selecione um aluno —"
+              students.find((s) => s.id === currentStudentId)?.name
+              || '— Selecione um aluno —'
             }
             variant="outline"
             size="sm"
@@ -130,7 +132,7 @@ export function AppHeader({
         {isMobile ? (
           <Pressable
             onPress={() => {
-              setStudentName("");
+              setStudentName('');
               setIsModalOpen(true);
             }}
             style={styles.iconButton}
@@ -143,14 +145,14 @@ export function AppHeader({
             variant="gold"
             size="sm"
             onPress={() => {
-              setStudentName("");
+              setStudentName('');
               setIsModalOpen(true);
             }}
           />
         )}
 
-        {currentStudentId &&
-          (isMobile ? (
+        {currentStudentId
+          && (isMobile ? (
             <Pressable
               onPress={() => onRemoveStudent(currentStudentId)}
               style={styles.iconButton}
@@ -229,18 +231,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     paddingVertical: 12,
     paddingHorizontal: 20,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 16,
-    flexWrap: "wrap",
+    flexWrap: 'wrap',
   },
   titleRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
   },
   titleRowFull: {
-    width: "100%" as any,
+    width: '100%',
   },
   menuToggle: {
     padding: 6,
@@ -252,18 +254,18 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: "700",
+    fontWeight: '700',
     letterSpacing: 1,
   },
   studentBar: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
     flex: 1,
   },
   studentBarFull: {
     flex: 0,
-    width: "100%" as any,
+    width: '100%',
   },
   studentSelect: {
     minWidth: 160,
@@ -273,28 +275,28 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.75)",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: 'rgba(0,0,0,0.75)',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
   },
   modal: {
-    width: "100%",
+    width: '100%',
     maxWidth: 340,
     padding: 24,
     borderRadius: 10,
     borderWidth: 1,
   },
   modalTitle: {
-    color: "#C9963A",
+    color: '#C9963A',
     fontSize: 15,
     marginBottom: 16,
-    fontWeight: "700",
+    fontWeight: '700',
   },
   modalActions: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 8,
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
     marginTop: 4,
   },
 });

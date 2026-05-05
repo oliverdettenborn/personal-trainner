@@ -1,6 +1,6 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { IStudentRepository } from "../IStudentRepository";
-import { Student } from "@/src/types/assessment";
+import { SupabaseClient } from '@supabase/supabase-js';
+import { IStudentRepository } from '../IStudentRepository';
+import { Student } from '@/src/types/assessment';
 
 export class SupabaseStudentRepository implements IStudentRepository {
   constructor(
@@ -10,9 +10,9 @@ export class SupabaseStudentRepository implements IStudentRepository {
 
   async findAll(): Promise<Student[]> {
     const { data, error } = await this.client
-      .from("students")
-      .select("*")
-      .order("created_at", { ascending: true });
+      .from('students')
+      .select('*')
+      .order('created_at', { ascending: true });
     if (error) throw error;
     return (data ?? []).map((r) => ({
       id: r.id,
@@ -22,7 +22,7 @@ export class SupabaseStudentRepository implements IStudentRepository {
   }
 
   async insert(student: Student): Promise<void> {
-    const { error } = await this.client.from("students").insert({
+    const { error } = await this.client.from('students').insert({
       id: student.id,
       user_id: this.userId,
       name: student.name,
@@ -32,10 +32,7 @@ export class SupabaseStudentRepository implements IStudentRepository {
   }
 
   async delete(id: string): Promise<void> {
-    const { error } = await this.client
-      .from("students")
-      .delete()
-      .eq("id", id);
+    const { error } = await this.client.from('students').delete().eq('id', id);
     if (error) throw error;
   }
 }

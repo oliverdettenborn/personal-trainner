@@ -1,1 +1,1 @@
-export * from "./BodyPartIndicator";
+export * from './BodyPartIndicator';

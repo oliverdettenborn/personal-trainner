@@ -28,6 +28,7 @@ npm run web      # Expo web on port 8081
 ### Environment
 
 Create a `.env` file:
+
 ```
 EXPO_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
 EXPO_PUBLIC_SUPABASE_ANON_KEY=<key from supabase start>
@@ -83,33 +84,36 @@ docs/
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Supabase + Expo together |
-| `npm run db` | Supabase local only |
-| `npm start` | Expo dev server |
-| `npm run web` | Expo web (port 8081) |
-| `npm test` | Unit + integration tests |
-| `npm run test:e2e:run` | Cypress E2E (headless) |
-| `npm run test:e2e` | Cypress E2E (interactive) |
-| `npm run typecheck` | TypeScript validation |
-| `npm run lint:fix` | ESLint autofix |
+| Command                | Description               |
+| ---------------------- | ------------------------- |
+| `npm run dev`          | Supabase + Expo together  |
+| `npm run db`           | Supabase local only       |
+| `npm start`            | Expo dev server           |
+| `npm run web`          | Expo web (port 8081)      |
+| `npm test`             | Unit + integration tests  |
+| `npm run test:e2e:run` | Cypress E2E (headless)    |
+| `npm run test:e2e`     | Cypress E2E (interactive) |
+| `npm run typecheck`    | TypeScript validation     |
+| `npm run lint:fix`     | ESLint autofix            |
 
 ## Testing
 
 ### Unit Tests (Jest)
+
 ```bash
 npm test
 npm test -- src/hooks/useAssessment.test.ts  # single file
 ```
 
 ### E2E Tests (Cypress)
+
 ```bash
 npm run test:e2e:run   # headless
 npm run test:e2e       # interactive (opens Cypress UI)
 ```
 
 ### Integration Tests
+
 ```bash
 npm run test:integration  # schema tests with pg-mem
 ```

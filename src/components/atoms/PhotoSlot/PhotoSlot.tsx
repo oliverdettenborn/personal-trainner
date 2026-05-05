@@ -1,16 +1,16 @@
-import { Ionicons } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
-import React from "react";
+import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import React from 'react';
 import {
   Image,
   Pressable,
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native";
+} from 'react-native';
 
-import { useThemeColor } from "../../../hooks/useThemeColor";
-import { Text } from "../Text";
+import { useThemeColor } from '../../../hooks/useThemeColor';
+import { Text } from '../Text';
 
 export type PhotoSlotProps = {
   uri?: string;
@@ -27,13 +27,13 @@ export function PhotoSlot({
   onRemove,
   testID,
 }: PhotoSlotProps) {
-  const bgTertiary = useThemeColor({}, "backgroundTertiary");
-  const borderGold = useThemeColor({}, "borderGold");
-  const text3 = "#6a5a40"; // text3 from HTML
+  const bgTertiary = useThemeColor({}, 'backgroundTertiary');
+  const borderGold = useThemeColor({}, 'borderGold');
+  const text3 = '#6a5a40'; // text3 from HTML
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
+      mediaTypes: ['images'],
       allowsEditing: true,
       aspect: [3, 4],
       quality: 0.8,
@@ -90,53 +90,53 @@ export function PhotoSlot({
 
 const styles = StyleSheet.create({
   wrapper: {
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
     gap: 8,
   },
   label: {
     fontSize: 11,
-    fontWeight: "700",
-    color: "#a89878", // text2
+    fontWeight: '700',
+    color: '#a89878', // text2
     letterSpacing: 2,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
   slot: {
-    width: "100%",
+    width: '100%',
     aspectRatio: 3 / 4,
     borderWidth: 1,
-    borderStyle: "dashed",
+    borderStyle: 'dashed',
     borderRadius: 6,
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   placeholder: {
-    alignItems: "center",
+    alignItems: 'center',
     gap: 6,
   },
   placeholderText: {
     fontSize: 10,
-    textAlign: "center",
+    textAlign: 'center',
   },
   removeBtn: {
-    position: "absolute",
+    position: 'absolute',
     top: 4,
     right: 4,
-    backgroundColor: "rgba(0,0,0,0.7)",
+    backgroundColor: 'rgba(0,0,0,0.7)',
     paddingVertical: 2,
     paddingHorizontal: 6,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: "#555",
+    borderColor: '#555',
   },
   removeText: {
-    color: "#ccc",
+    color: '#ccc',
     fontSize: 10,
   },
 });

@@ -1,45 +1,46 @@
-import { render } from "@testing-library/react-native";
-import React from "react";
+import { render } from '@testing-library/react-native';
+import React from 'react';
+import { View as MockView } from 'react-native';
 
-import { AssessmentContent } from "./AssessmentContent";
-import { Assessment } from "../../../types/assessment";
+import { Assessment } from '../../../types/assessment';
+import { AssessmentContent } from './AssessmentContent';
 
-jest.mock("react-native-svg", () => {
-  const { View: MockView } = require("react-native");
-  return {
-    Svg: (props: any) => <MockView {...props} />,
-    Path: (props: any) => <MockView {...props} />,
-  };
-});
+jest.mock('react-native-svg', () => ({
+  Svg: (props: React.ComponentProps<typeof MockView>) => (
+    <MockView {...props} />
+  ),
+  Path: (props: React.ComponentProps<typeof MockView>) => (
+    <MockView {...props} />
+  ),
+}));
 
-jest.mock("../../molecules/PhotoSection/PhotoSection", () => {
-  const { View: MockView } = require("react-native");
-  return { PhotoSection: () => <MockView testID="mock-photo" /> };
-});
+jest.mock('../../molecules/PhotoSection/PhotoSection', () => ({
+  PhotoSection: () => <MockView testID="mock-photo" />,
+}));
 
 const mockAssessment: Assessment = {
-  id: "a1",
-  studentId: "s1",
+  id: 'a1',
+  studentId: 's1',
   createdAt: Date.now(),
-  front_before_date: "",
-  front_before_weight: "75",
-  front_before_cintura: "",
-  back_before_date: "",
-  back_before_weight: "",
-  back_before_cintura: "",
-  photo_front_before: "",
-  photo_front_after: "",
-  photo_back_before: "",
-  photo_back_after: "",
+  front_before_date: '',
+  front_before_weight: '75',
+  front_before_cintura: '',
+  back_before_date: '',
+  back_before_weight: '',
+  back_before_cintura: '',
+  photo_front_before: '',
+  photo_front_after: '',
+  photo_back_before: '',
+  photo_back_after: '',
 };
 
 const mockOnUpdate = jest.fn();
 const mockRef = { current: null };
 
-describe("AssessmentContent", () => {
+describe('AssessmentContent', () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("renders desktop layout by default", () => {
+  it('renders desktop layout by default', () => {
     const { toJSON } = render(
       <AssessmentContent
         assessment={mockAssessment}
@@ -55,7 +56,7 @@ describe("AssessmentContent", () => {
     expect(tree).not.toContain('"horizontal":true');
   });
 
-  it("renders mobile layout with horizontal scroll", () => {
+  it('renders mobile layout with horizontal scroll', () => {
     const { toJSON } = render(
       <AssessmentContent
         assessment={mockAssessment}

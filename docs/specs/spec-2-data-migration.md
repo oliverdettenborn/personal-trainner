@@ -20,28 +20,29 @@ Migração principal de dados. Auth será adicionado no Spec 3. Por ora, usamos 
 
 ## File Structure
 
-| Arquivo | Ação | Responsabilidade |
-|---|---|---|
-| `src/lib/supabase.ts` | Criar | Cliente Supabase singleton |
-| `src/repositories/IStudentRepository.ts` | Criar | Interface de acesso a students |
-| `src/repositories/IAssessmentRepository.ts` | Criar | Interface de acesso a assessments |
-| `src/repositories/IStorageRepository.ts` | Criar | Interface de upload/delete de fotos |
-| `src/repositories/supabase/SupabaseStudentRepository.ts` | Criar | Implementação Supabase |
-| `src/repositories/supabase/SupabaseAssessmentRepository.ts` | Criar | Implementação Supabase |
-| `src/repositories/supabase/SupabaseStorageRepository.ts` | Criar | Implementação Supabase Storage |
-| `src/repositories/index.ts` | Criar | Único ponto de troca de implementação |
-| `src/repositories/__tests__/SupabaseStudentRepository.unit.test.ts` | Criar | Unit tests (mock client) |
-| `src/repositories/__tests__/SupabaseAssessmentRepository.unit.test.ts` | Criar | Unit tests (mock client) |
-| `src/repositories/__tests__/repositories.integration.test.ts` | Criar | Integration tests (banco local) |
-| `src/hooks/useAssessment.ts` | Modificar | Trocar AsyncStorage por repositórios |
-| `app/index.tsx` | Modificar | Fotos via IStorageRepository |
-| `tsconfig.json` | Modificar | Aliases `@lib/*`, `@repositories/*`, `@services/*` |
+| Arquivo                                                                | Ação      | Responsabilidade                                   |
+| ---------------------------------------------------------------------- | --------- | -------------------------------------------------- |
+| `src/lib/supabase.ts`                                                  | Criar     | Cliente Supabase singleton                         |
+| `src/repositories/IStudentRepository.ts`                               | Criar     | Interface de acesso a students                     |
+| `src/repositories/IAssessmentRepository.ts`                            | Criar     | Interface de acesso a assessments                  |
+| `src/repositories/IStorageRepository.ts`                               | Criar     | Interface de upload/delete de fotos                |
+| `src/repositories/supabase/SupabaseStudentRepository.ts`               | Criar     | Implementação Supabase                             |
+| `src/repositories/supabase/SupabaseAssessmentRepository.ts`            | Criar     | Implementação Supabase                             |
+| `src/repositories/supabase/SupabaseStorageRepository.ts`               | Criar     | Implementação Supabase Storage                     |
+| `src/repositories/index.ts`                                            | Criar     | Único ponto de troca de implementação              |
+| `src/repositories/__tests__/SupabaseStudentRepository.unit.test.ts`    | Criar     | Unit tests (mock client)                           |
+| `src/repositories/__tests__/SupabaseAssessmentRepository.unit.test.ts` | Criar     | Unit tests (mock client)                           |
+| `src/repositories/__tests__/repositories.integration.test.ts`          | Criar     | Integration tests (banco local)                    |
+| `src/hooks/useAssessment.ts`                                           | Modificar | Trocar AsyncStorage por repositórios               |
+| `app/index.tsx`                                                        | Modificar | Fotos via IStorageRepository                       |
+| `tsconfig.json`                                                        | Modificar | Aliases `@lib/*`, `@repositories/*`, `@services/*` |
 
 ---
 
 ## Task 1: Supabase Client + Aliases
 
 **Files:**
+
 - Create: `src/lib/supabase.ts`
 - Modify: `tsconfig.json`
 
@@ -75,7 +76,7 @@ export const supabase = createClient(
       persistSession: true,
       detectSessionInUrl: false,
     },
-  }
+  },
 );
 ```
 
@@ -101,6 +102,7 @@ git commit -m "feat: add supabase client and tsconfig aliases"
 ## Task 2: Repository Interfaces
 
 **Files:**
+
 - Create: `src/repositories/IStudentRepository.ts`
 - Create: `src/repositories/IAssessmentRepository.ts`
 - Create: `src/repositories/IStorageRepository.ts`
@@ -151,6 +153,7 @@ git commit -m "feat: add repository interfaces"
 ## Task 3: Unit Tests das Interfaces (escrita antes das implementações — TDD)
 
 **Files:**
+
 - Create: `src/repositories/__tests__/SupabaseStudentRepository.unit.test.ts`
 - Create: `src/repositories/__tests__/SupabaseAssessmentRepository.unit.test.ts`
 
@@ -272,10 +275,15 @@ describe('SupabaseAssessmentRepository', () => {
 
   it('findAll maps db row to Assessment shape', async () => {
     mockOrder.mockResolvedValueOnce({
-      data: [{
-        id: 'a_1', student_id: 's_1', user_id: USER_ID,
-        created_at: 1000, positivo_1: 'Ótimo',
-      }],
+      data: [
+        {
+          id: 'a_1',
+          student_id: 's_1',
+          user_id: USER_ID,
+          created_at: 1000,
+          positivo_1: 'Ótimo',
+        },
+      ],
       error: null,
     });
     const result = await repo.findAll();
@@ -291,16 +299,21 @@ describe('SupabaseAssessmentRepository', () => {
 
   it('insert maps Assessment to db row with user_id', async () => {
     const assessment: Assessment = {
-      id: 'a_2', studentId: 's_1', createdAt: 2000, positivo_1: 'Bom',
+      id: 'a_2',
+      studentId: 's_1',
+      createdAt: 2000,
+      positivo_1: 'Bom',
     };
     await repo.insert(assessment);
-    expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({
-      id: 'a_2',
-      student_id: 's_1',
-      user_id: USER_ID,
-      created_at: 2000,
-      positivo_1: 'Bom',
-    }));
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 'a_2',
+        student_id: 's_1',
+        user_id: USER_ID,
+        created_at: 2000,
+        positivo_1: 'Bom',
+      }),
+    );
   });
 
   it('upsert calls supabase upsert', async () => {
@@ -330,6 +343,7 @@ Esperado: FAIL — `Cannot find module '../supabase/SupabaseAssessmentRepository
 ## Task 4: Implementações Supabase
 
 **Files:**
+
 - Create: `src/repositories/supabase/SupabaseStudentRepository.ts`
 - Create: `src/repositories/supabase/SupabaseAssessmentRepository.ts`
 - Create: `src/repositories/supabase/SupabaseStorageRepository.ts`
@@ -344,7 +358,7 @@ import { Student } from '@/src/types/assessment';
 export class SupabaseStudentRepository implements IStudentRepository {
   constructor(
     private readonly client: SupabaseClient,
-    private readonly userId: string
+    private readonly userId: string,
   ) {}
 
   async findAll(): Promise<Student[]> {
@@ -353,7 +367,7 @@ export class SupabaseStudentRepository implements IStudentRepository {
       .select('*')
       .order('created_at', { ascending: true });
     if (error) throw error;
-    return (data ?? []).map(row => ({
+    return (data ?? []).map((row) => ({
       id: row.id,
       name: row.name,
       createdAt: row.created_at,
@@ -395,7 +409,7 @@ import { Assessment } from '@/src/types/assessment';
 export class SupabaseAssessmentRepository implements IAssessmentRepository {
   constructor(
     private readonly client: SupabaseClient,
-    private readonly userId: string
+    private readonly userId: string,
   ) {}
 
   async findAll(): Promise<Assessment[]> {
@@ -404,11 +418,14 @@ export class SupabaseAssessmentRepository implements IAssessmentRepository {
       .select('*')
       .order('created_at', { ascending: true });
     if (error) throw error;
-    return (data ?? []).map(({ user_id, student_id, created_at, ...rest }) => ({
-      ...rest,
-      studentId: student_id,
-      createdAt: created_at,
-    } as Assessment));
+    return (data ?? []).map(
+      ({ user_id, student_id, created_at, ...rest }) =>
+        ({
+          ...rest,
+          studentId: student_id,
+          createdAt: created_at,
+        }) as Assessment,
+    );
   }
 
   async insert(assessment: Assessment): Promise<void> {
@@ -464,7 +481,7 @@ export class SupabaseStorageRepository implements IStorageRepository {
     userId: string,
     assessmentId: string,
     field: string,
-    uri: string
+    uri: string,
   ): Promise<string> {
     const ext = uri.split('.').pop() ?? 'jpg';
     const path = `${userId}/${assessmentId}/${field}.${ext}`;
@@ -509,6 +526,7 @@ git commit -m "feat: add supabase repository implementations"
 ## Task 5: Integration Tests dos Repositórios
 
 **Files:**
+
 - Create: `src/repositories/__tests__/repositories.integration.test.ts`
 
 Estes testes rodam contra o banco local (`supabase start`) e verificam o comportamento real de CRUD.
@@ -569,14 +587,14 @@ describe('Repository Integration Tests', () => {
   it('inserts and finds a student', async () => {
     await studentRepo.insert(testStudent);
     const students = await studentRepo.findAll();
-    const found = students.find(s => s.id === testStudent.id);
+    const found = students.find((s) => s.id === testStudent.id);
     expect(found).toMatchObject({ id: testStudent.id, name: testStudent.name });
   });
 
   it('inserts and finds an assessment', async () => {
     await assessmentRepo.insert(testAssessment);
     const assessments = await assessmentRepo.findAll();
-    const found = assessments.find(a => a.id === testAssessment.id);
+    const found = assessments.find((a) => a.id === testAssessment.id);
     expect(found).toMatchObject({
       id: testAssessment.id,
       studentId: testStudent.id,
@@ -588,20 +606,20 @@ describe('Repository Integration Tests', () => {
     const updated = { ...testAssessment, positivo_1: 'Excelente' };
     await assessmentRepo.upsert(updated);
     const assessments = await assessmentRepo.findAll();
-    const found = assessments.find(a => a.id === testAssessment.id);
+    const found = assessments.find((a) => a.id === testAssessment.id);
     expect(found?.positivo_1).toBe('Excelente');
   });
 
   it('deletes assessment', async () => {
     await assessmentRepo.delete(testAssessment.id);
     const assessments = await assessmentRepo.findAll();
-    expect(assessments.find(a => a.id === testAssessment.id)).toBeUndefined();
+    expect(assessments.find((a) => a.id === testAssessment.id)).toBeUndefined();
   });
 
   it('deletes student (cascades to assessments)', async () => {
     await studentRepo.delete(testStudent.id);
     const students = await studentRepo.findAll();
-    expect(students.find(s => s.id === testStudent.id)).toBeUndefined();
+    expect(students.find((s) => s.id === testStudent.id)).toBeUndefined();
   });
 });
 ```
@@ -635,6 +653,7 @@ git commit -m "test: add repository integration tests"
 ## Task 6: Repository Index
 
 **Files:**
+
 - Create: `src/repositories/index.ts`
 
 - [ ] **Step 1: Criar `src/repositories/index.ts`**
@@ -679,6 +698,7 @@ git commit -m "feat: add repository index (single swap point)"
 ## Task 7: Migrar useAssessment
 
 **Files:**
+
 - Modify: `src/hooks/useAssessment.ts`
 
 - [ ] **Step 1: Ler `src/hooks/useAssessment.ts` atual na íntegra**
@@ -710,100 +730,119 @@ export function useAssessment() {
       Promise.all([repos.students.findAll(), repos.assessments.findAll()])
         .then(([students, assessments]) => {
           const studentsMap: Record<string, Student> = {};
-          students.forEach(s => { studentsMap[s.id] = s; });
+          students.forEach((s) => {
+            studentsMap[s.id] = s;
+          });
           const assessmentsMap: Record<string, Assessment> = {};
-          assessments.forEach(a => { assessmentsMap[a.id] = a; });
+          assessments.forEach((a) => {
+            assessmentsMap[a.id] = a;
+          });
           setDb({ students: studentsMap, assessments: assessmentsMap });
           if (!currentStudentId && students.length > 0) {
             const firstId = students[0].id;
             setCurrentStudentId(firstId);
             const first = assessments
-              .filter(a => a.studentId === firstId)
+              .filter((a) => a.studentId === firstId)
               .sort((a, b) => b.createdAt - a.createdAt)[0];
             if (first) setCurrentAssessmentId(first.id);
           }
         })
         .finally(() => setLoading(false));
-    }, [repos])
+    }, [repos]),
   );
 
-  const addStudent = useCallback(async (name: string) => {
-    const student: Student = {
-      id: `s_${Date.now()}_${Math.random().toString(36).slice(2)}`,
-      name,
-      createdAt: Date.now(),
-    };
-    const assessment: Assessment = {
-      id: `a_${Date.now()}_${Math.random().toString(36).slice(2)}`,
-      studentId: student.id,
-      createdAt: Date.now(),
-    };
-    await repos.students.insert(student);
-    await repos.assessments.insert(assessment);
-    setDb(prev => ({
-      students: { ...prev.students, [student.id]: student },
-      assessments: { ...prev.assessments, [assessment.id]: assessment },
-    }));
-    setCurrentStudentId(student.id);
-    setCurrentAssessmentId(assessment.id);
-  }, [repos]);
+  const addStudent = useCallback(
+    async (name: string) => {
+      const student: Student = {
+        id: `s_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+        name,
+        createdAt: Date.now(),
+      };
+      const assessment: Assessment = {
+        id: `a_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+        studentId: student.id,
+        createdAt: Date.now(),
+      };
+      await repos.students.insert(student);
+      await repos.assessments.insert(assessment);
+      setDb((prev) => ({
+        students: { ...prev.students, [student.id]: student },
+        assessments: { ...prev.assessments, [assessment.id]: assessment },
+      }));
+      setCurrentStudentId(student.id);
+      setCurrentAssessmentId(assessment.id);
+    },
+    [repos],
+  );
 
-  const removeStudent = useCallback(async (id: string) => {
-    await repos.students.delete(id);
-    setDb(prev => {
-      const students = { ...prev.students };
-      const assessments = { ...prev.assessments };
-      delete students[id];
-      Object.values(assessments)
-        .filter(a => a.studentId === id)
-        .forEach(a => delete assessments[a.id]);
-      return { students, assessments };
-    });
-    if (currentStudentId === id) {
-      setCurrentStudentId(null);
-      setCurrentAssessmentId(null);
-    }
-  }, [repos, currentStudentId]);
+  const removeStudent = useCallback(
+    async (id: string) => {
+      await repos.students.delete(id);
+      setDb((prev) => {
+        const students = { ...prev.students };
+        const assessments = { ...prev.assessments };
+        delete students[id];
+        Object.values(assessments)
+          .filter((a) => a.studentId === id)
+          .forEach((a) => delete assessments[a.id]);
+        return { students, assessments };
+      });
+      if (currentStudentId === id) {
+        setCurrentStudentId(null);
+        setCurrentAssessmentId(null);
+      }
+    },
+    [repos, currentStudentId],
+  );
 
-  const addAssessment = useCallback(async (studentId: string) => {
-    const assessment: Assessment = {
-      id: `a_${Date.now()}_${Math.random().toString(36).slice(2)}`,
-      studentId,
-      createdAt: Date.now(),
-    };
-    await repos.assessments.insert(assessment);
-    setDb(prev => ({
-      ...prev,
-      assessments: { ...prev.assessments, [assessment.id]: assessment },
-    }));
-    setCurrentAssessmentId(assessment.id);
-  }, [repos]);
+  const addAssessment = useCallback(
+    async (studentId: string) => {
+      const assessment: Assessment = {
+        id: `a_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+        studentId,
+        createdAt: Date.now(),
+      };
+      await repos.assessments.insert(assessment);
+      setDb((prev) => ({
+        ...prev,
+        assessments: { ...prev.assessments, [assessment.id]: assessment },
+      }));
+      setCurrentAssessmentId(assessment.id);
+    },
+    [repos],
+  );
 
-  const updateAssessment = useCallback((id: string, data: Partial<Assessment>) => {
-    setDb(prev => {
-      const updated = { ...prev.assessments[id], ...data };
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-      debounceRef.current = setTimeout(() => {
-        repos.assessments.upsert(updated).catch(console.error);
-      }, DEBOUNCE_MS);
-      return { ...prev, assessments: { ...prev.assessments, [id]: updated } };
-    });
-  }, [repos]);
+  const updateAssessment = useCallback(
+    (id: string, data: Partial<Assessment>) => {
+      setDb((prev) => {
+        const updated = { ...prev.assessments[id], ...data };
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        debounceRef.current = setTimeout(() => {
+          repos.assessments.upsert(updated).catch(console.error);
+        }, DEBOUNCE_MS);
+        return { ...prev, assessments: { ...prev.assessments, [id]: updated } };
+      });
+    },
+    [repos],
+  );
 
-  const removeAssessment = useCallback(async (id: string) => {
-    await repos.assessments.delete(id);
-    setDb(prev => {
-      const assessments = { ...prev.assessments };
-      delete assessments[id];
-      return { ...prev, assessments };
-    });
-    if (currentAssessmentId === id) {
-      const remaining = Object.values(db.assessments)
-        .filter(a => a.id !== id && a.studentId === currentStudentId)
-        .sort((a, b) => b.createdAt - a.createdAt);
-      setCurrentAssessmentId(remaining[0]?.id ?? null);
-    }
-  }, [repos, currentAssessmentId, currentStudentId, db.assessments]);
+  const removeAssessment = useCallback(
+    async (id: string) => {
+      await repos.assessments.delete(id);
+      setDb((prev) => {
+        const assessments = { ...prev.assessments };
+        delete assessments[id];
+        return { ...prev, assessments };
+      });
+      if (currentAssessmentId === id) {
+        const remaining = Object.values(db.assessments)
+          .filter((a) => a.id !== id && a.studentId === currentStudentId)
+          .sort((a, b) => b.createdAt - a.createdAt);
+        setCurrentAssessmentId(remaining[0]?.id ?? null);
+      }
+    },
+    [repos, currentAssessmentId, currentStudentId, db.assessments],
+  );
 
   const saveManual = useCallback(async () => {
     if (!currentAssessmentId) return;
@@ -811,30 +850,44 @@ export function useAssessment() {
     if (assessment) await repos.assessments.upsert(assessment);
   }, [repos, currentAssessmentId, db.assessments]);
 
-  const importFromJSON = useCallback(async (jsonData: any) => {
-    const imported = jsonData as AssessmentDB;
-    await Promise.all([
-      ...Object.values(imported.students).map(s => repos.students.insert(s)),
-      ...Object.values(imported.assessments).map(a => repos.assessments.insert(a)),
-    ]);
-    setDb(prev => ({
-      students: { ...prev.students, ...imported.students },
-      assessments: { ...prev.assessments, ...imported.assessments },
-    }));
-  }, [repos]);
+  const importFromJSON = useCallback(
+    async (jsonData: any) => {
+      const imported = jsonData as AssessmentDB;
+      await Promise.all([
+        ...Object.values(imported.students).map((s) => repos.students.insert(s)),
+        ...Object.values(imported.assessments).map((a) => repos.assessments.insert(a)),
+      ]);
+      setDb((prev) => ({
+        students: { ...prev.students, ...imported.students },
+        assessments: { ...prev.assessments, ...imported.assessments },
+      }));
+    },
+    [repos],
+  );
 
   const currentStudent = currentStudentId ? db.students[currentStudentId] : null;
   const currentAssessment = currentAssessmentId ? db.assessments[currentAssessmentId] : null;
   const studentAssessments = currentStudentId
-    ? Object.values(db.assessments).filter(a => a.studentId === currentStudentId)
+    ? Object.values(db.assessments).filter((a) => a.studentId === currentStudentId)
     : [];
 
   return {
-    db, loading, currentStudentId, currentAssessmentId,
-    currentStudent, currentAssessment, studentAssessments,
-    setCurrentStudentId, setCurrentAssessmentId,
-    addStudent, removeStudent, addAssessment, updateAssessment,
-    removeAssessment, importFromJSON, saveManual,
+    db,
+    loading,
+    currentStudentId,
+    currentAssessmentId,
+    currentStudent,
+    currentAssessment,
+    studentAssessments,
+    setCurrentStudentId,
+    setCurrentAssessmentId,
+    addStudent,
+    removeStudent,
+    addAssessment,
+    updateAssessment,
+    removeAssessment,
+    importFromJSON,
+    saveManual,
   };
 }
 ```
@@ -859,6 +912,7 @@ git commit -m "feat: migrate useAssessment to repository pattern (removes AsyncS
 ## Task 8: Migrar Upload de Fotos
 
 **Files:**
+
 - Modify: `app/index.tsx`
 
 - [ ] **Step 1: Ler `app/index.tsx` e localizar handlers de foto**
@@ -873,12 +927,15 @@ import { createRepositories } from '@repositories/index';
 // Dentro do componente (userId temporário até Spec 3):
 const ANON_USER_ID = 'anon';
 
-const handlePhotoCapture = useCallback(async (field: keyof Assessment, uri: string) => {
-  if (!currentAssessmentId) return;
-  const { storage } = createRepositories(ANON_USER_ID);
-  const url = await storage.uploadPhoto(ANON_USER_ID, currentAssessmentId, field, uri);
-  updateAssessment(currentAssessmentId, { [field]: url } as Partial<Assessment>);
-}, [currentAssessmentId, updateAssessment]);
+const handlePhotoCapture = useCallback(
+  async (field: keyof Assessment, uri: string) => {
+    if (!currentAssessmentId) return;
+    const { storage } = createRepositories(ANON_USER_ID);
+    const url = await storage.uploadPhoto(ANON_USER_ID, currentAssessmentId, field, uri);
+    updateAssessment(currentAssessmentId, { [field]: url } as Partial<Assessment>);
+  },
+  [currentAssessmentId, updateAssessment],
+);
 ```
 
 Substituir o handler de foto existente por este.

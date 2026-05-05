@@ -3,8 +3,5 @@
     "types": ["cypress", "node"],
     "noEmit": true
   },
-  "include": [
-    "../node_modules/cypress",
-    "**/*.ts"
-  ]
+  "include": ["../node_modules/cypress", "**/*.ts"]
 }

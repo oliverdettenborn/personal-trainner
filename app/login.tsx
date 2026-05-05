@@ -1,7 +1,7 @@
-import { LoginForm } from "@organisms/LoginForm";
-import { signIn } from "@services/authService";
-import { AuthTemplate } from "@templates/AuthTemplate";
-import React from "react";
+import { LoginForm } from '@organisms/LoginForm';
+import { signIn } from '@services/authService';
+import { AuthTemplate } from '@templates/AuthTemplate';
+import React from 'react';
 
 export default function LoginScreen() {
   const handleSubmit = async (email: string, password: string) => {

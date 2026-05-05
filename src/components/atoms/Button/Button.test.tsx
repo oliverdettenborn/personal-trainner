@@ -1,34 +1,34 @@
-import { render, fireEvent } from "@testing-library/react-native";
-import React from "react";
+import { render, fireEvent } from '@testing-library/react-native';
+import React from 'react';
 
-import { Button } from "./Button";
+import { Button } from './Button';
 
-describe("Button", () => {
-  it("renders correctly with title", () => {
+describe('Button', () => {
+  it('renders correctly with title', () => {
     const { getByText } = render(<Button title="Test Button" />);
-    expect(getByText("Test Button")).toBeTruthy();
+    expect(getByText('Test Button')).toBeTruthy();
   });
 
-  it("calls onPress when clicked", () => {
+  it('calls onPress when clicked', () => {
     const onPressMock = jest.fn();
     const { getByText } = render(
       <Button title="Click Me" onPress={onPressMock} />,
     );
 
-    fireEvent.press(getByText("Click Me"));
+    fireEvent.press(getByText('Click Me'));
     expect(onPressMock).toHaveBeenCalledTimes(1);
   });
 
-  it("renders with different variants", () => {
+  it('renders with different variants', () => {
     const { getByTestId, rerender } = render(
       <Button title="Gold" variant="gold" testID="btn" />,
     );
-    expect(getByTestId("btn")).toBeTruthy();
+    expect(getByTestId('btn')).toBeTruthy();
 
     rerender(<Button title="Outline" variant="outline" testID="btn" />);
-    expect(getByTestId("btn")).toBeTruthy();
+    expect(getByTestId('btn')).toBeTruthy();
 
     rerender(<Button title="Danger" variant="danger" testID="btn" />);
-    expect(getByTestId("btn")).toBeTruthy();
+    expect(getByTestId('btn')).toBeTruthy();
   });
 });

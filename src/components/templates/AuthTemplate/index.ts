@@ -1,1 +1,1 @@
-export * from "./AuthTemplate";
+export * from './AuthTemplate';

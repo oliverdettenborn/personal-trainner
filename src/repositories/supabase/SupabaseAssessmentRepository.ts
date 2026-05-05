@@ -1,14 +1,14 @@
-import { SupabaseClient } from "@supabase/supabase-js";
+import { SupabaseClient } from '@supabase/supabase-js';
 
-import { Assessment } from "@/src/types/assessment";
+import { Assessment } from '@/src/types/assessment';
 
-import { IAssessmentRepository } from "../IAssessmentRepository";
+import { IAssessmentRepository } from '../IAssessmentRepository';
 
 const CINTURA_FIELDS: Array<keyof Assessment> = [
-  "front_before_cintura",
-  "front_after_cintura",
-  "back_before_cintura",
-  "back_after_cintura",
+  'front_before_cintura',
+  'front_after_cintura',
+  'back_before_cintura',
+  'back_after_cintura',
 ];
 
 export class SupabaseAssessmentRepository implements IAssessmentRepository {
@@ -19,36 +19,29 @@ export class SupabaseAssessmentRepository implements IAssessmentRepository {
 
   async findAll(): Promise<Assessment[]> {
     const { data, error } = await this.client
-      .from("assessments")
+      .from('assessments')
       .select(
-        "*, snapshots:assessment_snapshots(*), feedback:assessment_feedback(*), metrics:assessment_metrics(*)",
+        '*, snapshots:assessment_snapshots(*), feedback:assessment_feedback(*), metrics:assessment_metrics(*)',
       )
-      .order("created_at", { ascending: true });
+      .order('created_at', { ascending: true });
     if (error) throw error;
     return (data ?? []).map((row) => this.fromRow(row));
   }
 
   async insert(assessment: Assessment): Promise<void> {
-    const { error } = await this.client
-      .from("assessments")
-      .insert(this.toCoreRow(assessment));
+    const { error } = await this.client.from('assessments').insert(this.toCoreRow(assessment));
     if (error) throw error;
     await this.upsertSubEntities(assessment);
   }
 
   async upsert(assessment: Assessment): Promise<void> {
-    const { error } = await this.client
-      .from("assessments")
-      .upsert(this.toCoreRow(assessment));
+    const { error } = await this.client.from('assessments').upsert(this.toCoreRow(assessment));
     if (error) throw error;
     await this.upsertSubEntities(assessment);
   }
 
   async delete(id: string): Promise<void> {
-    const { error } = await this.client
-      .from("assessments")
-      .delete()
-      .eq("id", id);
+    const { error } = await this.client.from('assessments').delete().eq('id', id);
     if (error) throw error;
   }
 
@@ -72,29 +65,29 @@ export class SupabaseAssessmentRepository implements IAssessmentRepository {
   private async upsertSnapshots(a: Assessment): Promise<void> {
     const pairs = [
       {
-        side: "front",
-        moment: "before",
+        side: 'front',
+        moment: 'before',
         photo: a.photo_front_before,
         date: a.front_before_date,
         weight: a.front_before_weight,
       },
       {
-        side: "front",
-        moment: "after",
+        side: 'front',
+        moment: 'after',
         photo: a.photo_front_after,
         date: a.front_after_date,
         weight: a.front_after_weight,
       },
       {
-        side: "back",
-        moment: "before",
+        side: 'back',
+        moment: 'before',
         photo: a.photo_back_before,
         date: a.back_before_date,
         weight: a.back_before_weight,
       },
       {
-        side: "back",
-        moment: "after",
+        side: 'back',
+        moment: 'after',
         photo: a.photo_back_after,
         date: a.back_after_date,
         weight: a.back_after_weight,
@@ -113,35 +106,32 @@ export class SupabaseAssessmentRepository implements IAssessmentRepository {
       }));
     if (rows.length === 0) return;
     const { error } = await this.client
-      .from("assessment_snapshots")
-      .upsert(rows, { onConflict: "assessment_id,side,moment", ignoreDuplicates: false });
+      .from('assessment_snapshots')
+      .upsert(rows, { onConflict: 'assessment_id,side,moment', ignoreDuplicates: false });
     if (error) throw error;
   }
 
   private async replaceFeedback(a: Assessment): Promise<void> {
     if (!a.positive_items && !a.adjustment_items) return;
-    await this.client
-      .from("assessment_feedback")
-      .delete()
-      .eq("assessment_id", a.id);
+    await this.client.from('assessment_feedback').delete().eq('assessment_id', a.id);
     const rows = [
       ...(a.positive_items ?? []).map((content, i) => ({
         id: crypto.randomUUID(),
         assessment_id: a.id,
-        category: "positive",
+        category: 'positive',
         content,
         position: i,
       })),
       ...(a.adjustment_items ?? []).map((content, i) => ({
         id: crypto.randomUUID(),
         assessment_id: a.id,
-        category: "adjustment",
+        category: 'adjustment',
         content,
         position: i,
       })),
     ];
     if (rows.length === 0) return;
-    const { error } = await this.client.from("assessment_feedback").insert(rows);
+    const { error } = await this.client.from('assessment_feedback').insert(rows);
     if (error) throw error;
   }
 
@@ -158,18 +148,18 @@ export class SupabaseAssessmentRepository implements IAssessmentRepository {
           assessment_id: a.id,
           name: field as string,
           value,
-          unit: "cm",
+          unit: 'cm',
           position: i,
         },
       ];
     });
     await this.client
-      .from("assessment_metrics")
+      .from('assessment_metrics')
       .delete()
-      .eq("assessment_id", a.id)
-      .in("name", CINTURA_FIELDS as string[]);
+      .eq('assessment_id', a.id)
+      .in('name', CINTURA_FIELDS as string[]);
     if (rows.length === 0) return;
-    const { error } = await this.client.from("assessment_metrics").insert(rows);
+    const { error } = await this.client.from('assessment_metrics').insert(rows);
     if (error) throw error;
   }
 
@@ -224,8 +214,8 @@ export class SupabaseAssessmentRepository implements IAssessmentRepository {
     }
 
     // Backfill legacy feedback arrays
-    const positives = feedback.filter((f: any) => f.category === "positive");
-    const adjustments = feedback.filter((f: any) => f.category === "adjustment");
+    const positives = feedback.filter((f: any) => f.category === 'positive');
+    const adjustments = feedback.filter((f: any) => f.category === 'adjustment');
     if (positives.length > 0)
       assessment.positive_items = positives
         .sort((a: any, b: any) => a.position - b.position)

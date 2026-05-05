@@ -1,9 +1,9 @@
-import { supabase } from "@lib/supabase";
+import { supabase } from '@lib/supabase';
 
-import type { IAssessmentRepository } from "./IAssessmentRepository";
-import type { IStudentRepository } from "./IStudentRepository";
-import { SupabaseAssessmentRepository } from "./supabase/SupabaseAssessmentRepository";
-import { SupabaseStudentRepository } from "./supabase/SupabaseStudentRepository";
+import type { IAssessmentRepository } from './IAssessmentRepository';
+import type { IStudentRepository } from './IStudentRepository';
+import { SupabaseAssessmentRepository } from './supabase/SupabaseAssessmentRepository';
+import { SupabaseStudentRepository } from './supabase/SupabaseStudentRepository';
 
 // Single swap point — to migrate to HTTP backend, only this file changes.
 

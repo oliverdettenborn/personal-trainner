@@ -1,9 +1,9 @@
-import React, { RefObject } from "react";
-import { ScrollView, View } from "react-native";
+import React, { RefObject } from 'react';
+import { ScrollView, View } from 'react-native';
 
-import { Assessment } from "../../../types/assessment";
-import { AssessmentTemplate } from "../../templates/AssessmentTemplate";
-import { AssessmentForm } from "../AssessmentForm";
+import { Assessment } from '../../../types/assessment';
+import { AssessmentTemplate } from '../../templates/AssessmentTemplate';
+import { AssessmentForm } from '../AssessmentForm';
 
 type Props = {
   assessment: Assessment;
@@ -31,7 +31,7 @@ export function AssessmentContent({
         <View
           ref={captureRef}
           nativeID="template-capture-area"
-          style={{ backgroundColor: "#0e0e0e", width: 900 }}
+          style={{ backgroundColor: '#0e0e0e', width: 900 }}
         >
           <AssessmentTemplate>
             <AssessmentForm
@@ -50,10 +50,10 @@ export function AssessmentContent({
       ref={captureRef}
       nativeID="template-capture-area"
       style={{
-        backgroundColor: "#0e0e0e",
+        backgroundColor: '#0e0e0e',
         maxWidth: 900,
-        alignSelf: "center",
-        width: "100%",
+        alignSelf: 'center',
+        width: '100%',
       }}
     >
       <AssessmentTemplate>

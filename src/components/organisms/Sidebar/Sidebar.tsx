@@ -1,9 +1,11 @@
-import React from "react";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import React from 'react';
+import {
+  Pressable, ScrollView, StyleSheet, View,
+} from 'react-native';
 
-import { useThemeColor } from "../../../hooks/useThemeColor";
-import { Assessment, Student } from "../../../types/assessment";
-import { Button, Text } from "../../atoms";
+import { useThemeColor } from '../../../hooks/useThemeColor';
+import { Assessment, Student } from '../../../types/assessment';
+import { Button, Text } from '../../atoms';
 
 export type SidebarProps = {
   students: Student[];
@@ -26,23 +28,23 @@ export function Sidebar({
   testID,
   onClose,
 }: SidebarProps) {
-  const bg2 = useThemeColor({}, "backgroundSecondary");
-  const activeAssessmentBg = useThemeColor({}, "activeAssessmentBg");
-  const border = useThemeColor({}, "border");
+  const bg2 = useThemeColor({}, 'backgroundSecondary');
+  const activeAssessmentBg = useThemeColor({}, 'activeAssessmentBg');
+  const border = useThemeColor({}, 'border');
 
   const currentStudent = students.find((s) => s.id === currentStudentId);
 
   const formatDate = (assessment: Assessment) => {
     const v = assessment.front_before_date;
     if (v) {
-      if (v.includes("-")) {
-        const [y, m, d] = v.split("-");
+      if (v.includes('-')) {
+        const [y, m, d] = v.split('-');
         return `${d}/${m}/${y}`;
       }
       return v; // already DD/MM/YYYY
     }
     const date = new Date(assessment.createdAt);
-    return `${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
+    return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
   };
 
   return (
@@ -70,41 +72,45 @@ export function Sidebar({
       )}
 
       <ScrollView style={styles.assessmentList}>
-        {!currentStudentId ? (
+        {!currentStudentId && (
           <Text style={styles.noAssessments}>
             Selecione um aluno para ver as avaliações
           </Text>
-        ) : assessments.length > 0 ? (
-          assessments.map((assessment) => (
-            <Pressable
-              key={assessment.id}
-              onPress={() => onSelectAssessment(assessment.id)}
-              style={({ hovered }: any) => [
-                styles.assessmentItem,
-                assessment.id === currentAssessmentId && [
-                  styles.assessmentItemActive,
-                  { backgroundColor: activeAssessmentBg },
-                ],
-                hovered && styles.assessmentItemHover,
-              ]}
-            >
-              <Text style={styles.assessmentDate}>
-                {formatDate(assessment)}
-              </Text>
-              <Text style={styles.assessmentStudent}>
-                {currentStudent?.name}
-              </Text>
-              {assessment.front_before_weight ? (
-                <Text style={styles.assessmentWeight}>
-                  {assessment.front_before_weight}
-                </Text>
-              ) : null}
-            </Pressable>
-          ))
-        ) : (
+        )}
+        {currentStudentId && assessments.length === 0 && (
           <Text style={styles.noAssessments}>
             Nenhuma avaliação ainda. Clique em "+ Nova avaliação"
           </Text>
+        )}
+        {currentStudentId && assessments.length > 0 && (
+          <>
+            {assessments.map((assessment) => (
+              <Pressable
+                key={assessment.id}
+                onPress={() => onSelectAssessment(assessment.id)}
+                style={({ hovered }: { hovered?: boolean }) => [
+                  styles.assessmentItem,
+                  assessment.id === currentAssessmentId && [
+                    styles.assessmentItemActive,
+                    { backgroundColor: activeAssessmentBg },
+                  ],
+                  hovered && styles.assessmentItemHover,
+                ]}
+              >
+                <Text style={styles.assessmentDate}>
+                  {formatDate(assessment)}
+                </Text>
+                <Text style={styles.assessmentStudent}>
+                  {currentStudent?.name}
+                </Text>
+                {assessment.front_before_weight ? (
+                  <Text style={styles.assessmentWeight}>
+                    {assessment.front_before_weight}
+                  </Text>
+                ) : null}
+              </Pressable>
+            ))}
+          </>
         )}
       </ScrollView>
     </View>
@@ -119,13 +125,13 @@ const styles = StyleSheet.create({
     gap: 8,
     flexShrink: 0,
     borderRightWidth: 1,
-    flexDirection: "column",
+    flexDirection: 'column',
   },
   sidebarTitle: {
     fontSize: 11,
-    fontWeight: "700",
-    color: "#6a5a40",
-    textTransform: "uppercase",
+    fontWeight: '700',
+    color: '#6a5a40',
+    textTransform: 'uppercase',
     letterSpacing: 1,
     marginBottom: 4,
   },
@@ -133,48 +139,48 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   assessmentItem: {
-    backgroundColor: "#222222",
+    backgroundColor: '#222222',
     borderWidth: 1,
-    borderColor: "#3a3020",
+    borderColor: '#3a3020',
     borderRadius: 6,
     paddingVertical: 8,
     paddingHorizontal: 10,
     marginBottom: 4,
-    cursor: "pointer",
-  } as any,
+    cursor: 'pointer' as never,
+  },
   assessmentItemHover: {
-    borderColor: "#5a4010",
+    borderColor: '#5a4010',
   },
   assessmentItemActive: {
-    borderColor: "#C9963A",
+    borderColor: '#C9963A',
   },
   assessmentDate: {
     fontSize: 12,
-    color: "#C9963A",
-    fontWeight: "600",
+    color: '#C9963A',
+    fontWeight: '600',
   },
   assessmentStudent: {
     fontSize: 11,
-    color: "#a89878",
+    color: '#a89878',
     marginTop: 2,
   },
   assessmentWeight: {
     fontSize: 11,
-    color: "#6a5a40",
+    color: '#6a5a40',
   },
   noAssessments: {
-    color: "#6a5a40",
+    color: '#6a5a40',
     fontSize: 12,
-    textAlign: "center",
+    textAlign: 'center',
     paddingVertical: 20,
   },
   closeButton: {
-    alignSelf: "flex-end",
+    alignSelf: 'flex-end',
     padding: 8,
     marginBottom: -4,
   },
   closeButtonText: {
-    color: "#6a5a40",
+    color: '#6a5a40',
     fontSize: 16,
     lineHeight: 16,
   },

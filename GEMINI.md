@@ -7,6 +7,7 @@ This file provides guidance to Gemini CLI when working with code in this reposit
 **Layer hierarchy:** `atoms/` → `molecules/` → `organisms/` → `templates/`
 
 **Screen files (`app/*.tsx`) MUST be thin wrappers:**
+
 - Compose templates + organisms only
 - NO `useState`, NO inline styles, NO business logic
 - All state/logic lives in organisms or hooks
@@ -20,6 +21,7 @@ This file provides guidance to Gemini CLI when working with code in this reposit
 | `src/components/templates/` | Layout wrappers, receive children | AuthTemplate, AssessmentTemplate |
 
 **Example — correct screen:**
+
 ```tsx
 export default function LoginScreen() {
   return (
@@ -35,12 +37,14 @@ export default function LoginScreen() {
 ## Quality & Testing Standards
 
 **BDD & E2E Mandate:**
+
 - When creating a new feature, you **MUST** first write its BDD scenarios in a dedicated file inside `docs/bdd/`.
 - Every feature **MUST** have corresponding E2E tests (Cypress for Web, and eventually Maestro for Mobile).
 - **E2E Isolation:** E2E tests **MUST** always run against an isolated local Supabase stack (using `supabase start`). Never point E2E tests to production or staging databases.
 - No feature is considered complete until it passes its E2E validation.
 
 **CI & Migrations:**
+
 - When applying migrations to a remote database via Supabase CLI using a connection pooler in **Transaction Mode** (typically port 6543), you **MUST** append `?prepared_statements=false` to the connection string to avoid "prepared statement already exists" errors.
 
 ## Development Workflow

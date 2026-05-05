@@ -1,1 +1,1 @@
-export * from "./AssessmentTemplate";
+export * from './AssessmentTemplate';

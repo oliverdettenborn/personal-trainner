@@ -14,6 +14,7 @@ npm run typecheck        # TypeScript type check
 ```
 
 Run a single test file:
+
 ```bash
 npm test -- src/hooks/useAssessment.test.ts
 ```
@@ -25,12 +26,14 @@ npm test -- src/hooks/useAssessment.test.ts
 **Atomic design:** `src/components/atoms/` → `molecules/` → `organisms/` → `templates/`. Screen files in `app/` MUST be thin — they compose templates + organisms, delegate ALL logic/state to organisms or hooks. NO inline styles, NO useState, NO business logic in screen files.
 
 **Component rules:**
+
 - `atoms/` — Stateless primitives (Button, Input, Text, Card, PhotoSlot). No business logic.
 - `molecules/` — Combine 2+ atoms with minimal local state (PhotoSection, ConfirmModal, SectionLabel).
 - `organisms/` — Feature-complete sections with their own state/logic (LoginForm, AssessmentForm, ActionBar, Sidebar).
 - `templates/` — Layout wrappers that define page structure (AuthTemplate, AssessmentTemplate). Receive children, no business logic.
 
-**Screen pattern (app/*.tsx):**
+**Screen pattern (app/\*.tsx):**
+
 ```tsx
 // CORRECT — thin screen, delegates everything
 export default function LoginScreen() {
@@ -60,33 +63,38 @@ export default function LoginScreen() {
 
 **Testing:** Unit tests use `jest-expo` preset. Integration tests use `jest.integration.config.js` (ts-jest + node) with `pg-mem` as in-memory PostgreSQL — no Docker required for CI.
 
-**CI/CD:** 
+**CI/CD:**
+
 - `release.yml`: Runs on push to `main`. Executes `checks.yml` -> (Parallel: `e2e-web.yml`, `build-web.yml`) -> `migrate.yml` (depends on E2Es) -> `deploy-pages.yml` (depends on migrate & build).
 - `pr.yml`: Runs on pull requests. Executes `checks.yml`, `build-test` (with placeholders), and `e2e-web.yml`.
 - **Note:** For GitHub Actions, ensure `SUPABASE_DB_URL` uses the **Connection Pooler (Transaction Mode, port 6543)**.
 
 ## Quality & Testing
 
-**BDD & E2E:** 
-- When creating a new feature, ALWAYS write its BDD scenarios in a dedicated file inside `docs/bdd/` and implement the corresponding E2E tests (Cypress for Web, and eventually Maestro for Mobile). 
+**BDD & E2E:**
+
+- When creating a new feature, ALWAYS write its BDD scenarios in a dedicated file inside `docs/bdd/` and implement the corresponding E2E tests (Cypress for Web, and eventually Maestro for Mobile).
 - **E2E Isolation:** E2E tests **MUST** always run against an isolated local Supabase stack (using `supabase start` in CI). NEVER use production or staging credentials for E2E.
 - Every feature must be validated by an E2E test before being considered complete.
 
 ## Environment
 
 Local `.env` (not committed):
+
 ```
 EXPO_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
 EXPO_PUBLIC_SUPABASE_ANON_KEY=<publishable key from supabase start output>
 ```
 
 GitHub Actions uses:
+
 - Secret: `SUPABASE_ACCESS_TOKEN`
 - Variables: `SUPABASE_PROJECT_REF`, `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`
 
 ## Supabase local reset
 
 After changing migration files, reset the local DB:
+
 ```bash
 supabase db reset
 ```

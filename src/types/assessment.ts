@@ -1,13 +1,13 @@
-export interface Student {
+export type Student = {
   id: string;
   name: string;
   createdAt: number;
-}
+};
 
-export type SnapshotSide = "front" | "back" | "side" | "other";
-export type SnapshotMoment = "before" | "after" | "during";
+export type SnapshotSide = 'front' | 'back' | 'side' | 'other';
+export type SnapshotMoment = 'before' | 'after' | 'during';
 
-export interface AssessmentSnapshot {
+export type AssessmentSnapshot = {
   id: string;
   assessmentId: string;
   side: SnapshotSide;
@@ -15,26 +15,26 @@ export interface AssessmentSnapshot {
   photoUrl?: string;
   date?: string; // YYYY-MM-DD from Postgres DATE
   weight?: number; // float from Postgres FLOAT
-}
+};
 
-export interface AssessmentMetric {
+export type AssessmentMetric = {
   id: string;
   assessmentId: string;
   name: string;
   value: number; // float from Postgres FLOAT
   unit?: string;
   position: number;
-}
+};
 
-export interface AssessmentFeedback {
+export type AssessmentFeedback = {
   id: string;
   assessmentId: string;
   category: string;
   content: string;
   position: number;
-}
+};
 
-export interface Assessment {
+export type Assessment = {
   id: string;
   studentId: string;
   createdAt: number;
@@ -65,9 +65,9 @@ export interface Assessment {
   photo_front_after?: string;
   photo_back_before?: string;
   photo_back_after?: string;
-}
+};
 
-export interface AssessmentDB {
+export type AssessmentDB = {
   students: Record<string, Student>;
   assessments: Record<string, Assessment>;
-}
+};

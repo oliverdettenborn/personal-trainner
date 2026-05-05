@@ -1,8 +1,8 @@
-import { act, renderHook } from "@testing-library/react-native";
+import { act, renderHook } from '@testing-library/react-native';
 
-import { useToast } from "../useToast";
+import { useToast } from '../useToast';
 
-describe("useToast", () => {
+describe('useToast', () => {
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -11,42 +11,42 @@ describe("useToast", () => {
     jest.useRealTimers();
   });
 
-  it("starts with hidden state", () => {
+  it('starts with hidden state', () => {
     const { result } = renderHook(() => useToast());
 
     expect(result.current.toast.visible).toBe(false);
-    expect(result.current.toast.message).toBe("");
-    expect(result.current.toast.type).toBe("success");
+    expect(result.current.toast.message).toBe('');
+    expect(result.current.toast.type).toBe('success');
   });
 
-  it("shows toast with message and type", () => {
+  it('shows toast with message and type', () => {
     const { result } = renderHook(() => useToast());
 
     act(() => {
-      result.current.show("Saved!", "success");
+      result.current.show('Saved!', 'success');
     });
 
     expect(result.current.toast.visible).toBe(true);
-    expect(result.current.toast.message).toBe("Saved!");
-    expect(result.current.toast.type).toBe("success");
+    expect(result.current.toast.message).toBe('Saved!');
+    expect(result.current.toast.type).toBe('success');
   });
 
-  it("shows error toast", () => {
+  it('shows error toast', () => {
     const { result } = renderHook(() => useToast());
 
     act(() => {
-      result.current.show("Something went wrong", "error");
+      result.current.show('Something went wrong', 'error');
     });
 
     expect(result.current.toast.visible).toBe(true);
-    expect(result.current.toast.type).toBe("error");
+    expect(result.current.toast.type).toBe('error');
   });
 
-  it("auto-hides after duration", () => {
+  it('auto-hides after duration', () => {
     const { result } = renderHook(() => useToast(2000));
 
     act(() => {
-      result.current.show("Temp message");
+      result.current.show('Temp message');
     });
 
     expect(result.current.toast.visible).toBe(true);
@@ -58,11 +58,11 @@ describe("useToast", () => {
     expect(result.current.toast.visible).toBe(false);
   });
 
-  it("hides manually", () => {
+  it('hides manually', () => {
     const { result } = renderHook(() => useToast());
 
     act(() => {
-      result.current.show("Message");
+      result.current.show('Message');
     });
 
     expect(result.current.toast.visible).toBe(true);
@@ -74,11 +74,11 @@ describe("useToast", () => {
     expect(result.current.toast.visible).toBe(false);
   });
 
-  it("resets timer when showing a new toast", () => {
+  it('resets timer when showing a new toast', () => {
     const { result } = renderHook(() => useToast(3000));
 
     act(() => {
-      result.current.show("First");
+      result.current.show('First');
     });
 
     act(() => {
@@ -86,7 +86,7 @@ describe("useToast", () => {
     });
 
     act(() => {
-      result.current.show("Second");
+      result.current.show('Second');
     });
 
     act(() => {
@@ -95,7 +95,7 @@ describe("useToast", () => {
 
     // Should still be visible (timer was reset)
     expect(result.current.toast.visible).toBe(true);
-    expect(result.current.toast.message).toBe("Second");
+    expect(result.current.toast.message).toBe('Second');
 
     act(() => {
       jest.advanceTimersByTime(1000);

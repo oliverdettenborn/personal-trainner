@@ -1,33 +1,40 @@
-import React from "react";
-import { StyleSheet, TextInput, TextInputProps, View } from "react-native";
+import React from 'react';
+import {
+  StyleProp,
+  StyleSheet,
+  TextInput,
+  TextInputProps,
+  View,
+  ViewStyle,
+} from 'react-native';
 
-import { useThemeColor } from "../../../hooks/useThemeColor";
-import { Text } from "../Text";
+import { useThemeColor } from '../../../hooks/useThemeColor';
+import { Text } from '../Text';
 
-export type InputVariant = "boxed" | "minimal";
+export type InputVariant = 'boxed' | 'minimal';
 
 export type InputProps = TextInputProps & {
   label?: string;
   variant?: InputVariant;
-  containerStyle?: any;
+  containerStyle?: StyleProp<ViewStyle>;
   error?: string;
   testID?: string;
 };
 
 export function Input({
   label,
-  variant = "boxed",
+  variant = 'boxed',
   containerStyle,
   style,
   error,
   testID,
   ...rest
 }: InputProps) {
-  const textBeige = useThemeColor({}, "text");
-  const borderGold = useThemeColor({}, "borderGold");
-  const bgTertiary = useThemeColor({}, "backgroundTertiary");
+  const textBeige = useThemeColor({}, 'text');
+  const borderGold = useThemeColor({}, 'borderGold');
+  const bgTertiary = useThemeColor({}, 'backgroundTertiary');
 
-  const isMinimal = variant === "minimal";
+  const isMinimal = variant === 'minimal';
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -38,12 +45,12 @@ export function Input({
           isMinimal ? styles.inputMinimal : styles.inputBoxed,
           {
             color: textBeige,
-            borderColor: isMinimal ? "transparent" : borderGold,
+            borderColor: isMinimal ? 'transparent' : borderGold,
             borderBottomColor: borderGold,
-            backgroundColor: isMinimal ? "transparent" : bgTertiary,
+            backgroundColor: isMinimal ? 'transparent' : bgTertiary,
           },
           error
-            ? { borderColor: "#d32f2f", borderBottomColor: "#d32f2f" }
+            ? { borderColor: '#d32f2f', borderBottomColor: '#d32f2f' }
             : undefined,
           style,
         ]}
@@ -58,15 +65,15 @@ export function Input({
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    width: '100%',
     marginBottom: 12,
   },
   label: {
     fontSize: 11,
-    fontWeight: "600",
+    fontWeight: '600',
     marginBottom: 4,
     opacity: 0.8,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
   input: {
     fontSize: 14,
@@ -83,7 +90,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   errorText: {
-    color: "#d32f2f",
+    color: '#d32f2f',
     fontSize: 11,
     marginTop: 2,
   },

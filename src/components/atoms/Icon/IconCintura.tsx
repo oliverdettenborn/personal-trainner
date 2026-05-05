@@ -1,13 +1,15 @@
-import React from "react";
-import { Path, Svg, SvgProps, Circle, G } from "react-native-svg";
+import React from 'react';
+import {
+  Circle, G, Path, Svg, SvgProps,
+} from 'react-native-svg';
 
-interface IconProps extends SvgProps {
+type IconProps = {
   color?: string;
   size?: number;
-}
+} & SvgProps;
 
 export function IconCintura({
-  color = "#BE8B5E",
+  color = '#BE8B5E',
   size = 120,
   ...props
 }: IconProps) {

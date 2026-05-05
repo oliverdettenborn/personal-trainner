@@ -21,6 +21,7 @@ Após o Spec 2, o app funciona com dados no Supabase mas sem auth — qualquer r
 ## User Management (Manual)
 
 Antes de testar o login, o administrador deve:
+
 1.  Acessar o Supabase Dashboard -> **Authentication** -> **Settings**.
 2.  Desativar "Allow new users to sign up" para impedir auto-cadastro.
 3.  Ir em **Users** -> **Add User** -> **Create new user**.
@@ -30,22 +31,23 @@ Antes de testar o login, o administrador deve:
 
 ## File Structure
 
-| Arquivo | Ação | Responsabilidade |
-|---|---|---|
-| `src/services/authService.ts` | Criar | signIn, signOut |
-| `src/hooks/useAuth.ts` | Criar | Estado reativo de sessão |
-| `src/hooks/useAssessment.ts` | Modificar | Receber `userId` como parâmetro (remover hardcoded `'anon'`) |
-| `app/login.tsx` | Criar | Tela de login (apenas entrada) |
-| `app/_layout.tsx` | Modificar | Auth guard + passar `userId` para o hook |
-| `app/index.tsx` | Modificar | Usar `userId` real para fotos |
-| `src/services/__tests__/authService.unit.test.ts` | Criar | Unit tests do auth service |
-| `src/hooks/__tests__/useAuth.unit.test.ts` | Criar | Unit tests do hook |
+| Arquivo                                           | Ação      | Responsabilidade                                             |
+| ------------------------------------------------- | --------- | ------------------------------------------------------------ |
+| `src/services/authService.ts`                     | Criar     | signIn, signOut                                              |
+| `src/hooks/useAuth.ts`                            | Criar     | Estado reativo de sessão                                     |
+| `src/hooks/useAssessment.ts`                      | Modificar | Receber `userId` como parâmetro (remover hardcoded `'anon'`) |
+| `app/login.tsx`                                   | Criar     | Tela de login (apenas entrada)                               |
+| `app/_layout.tsx`                                 | Modificar | Auth guard + passar `userId` para o hook                     |
+| `app/index.tsx`                                   | Modificar | Usar `userId` real para fotos                                |
+| `src/services/__tests__/authService.unit.test.ts` | Criar     | Unit tests do auth service                                   |
+| `src/hooks/__tests__/useAuth.unit.test.ts`        | Criar     | Unit tests do hook                                           |
 
 ---
 
 ## Task 1: Auth Service
 
 **Files:**
+
 - Create: `src/services/authService.ts`
 - Create: `src/services/__tests__/authService.unit.test.ts`
 
@@ -143,6 +145,7 @@ git commit -m "feat: add auth service (signIn, signOut)"
 ## Task 2: useAuth Hook
 
 **Files:**
+
 - Create: `src/hooks/useAuth.ts`
 - Create: `src/hooks/__tests__/useAuth.unit.test.ts`
 
@@ -232,7 +235,9 @@ export function useAuth() {
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);
     });
 
@@ -261,6 +266,7 @@ git commit -m "feat: add useAuth hook"
 ## Task 3: Tela de Login
 
 **Files:**
+
 - Create: `app/login.tsx`
 
 - [ ] **Step 1: Criar `app/login.tsx`**
@@ -327,7 +333,7 @@ export default function LoginScreen() {
           ? <ActivityIndicator color="#fff" />
           : <Text style={styles.buttonText}>Entrar</Text>}
       </TouchableOpacity>
-      
+
       <Text style={styles.info}>Acesso restrito. Entre em contato com o administrador para obter sua conta.</Text>
     </KeyboardAvoidingView>
   );
@@ -362,6 +368,7 @@ git commit -m "feat: add login screen (restricted access)"
 ## Task 4: Auth Guard no Root Layout
 
 **Files:**
+
 - Modify: `app/_layout.tsx`
 
 - [ ] **Step 1: Ler `app/_layout.tsx` atual na íntegra**
@@ -375,6 +382,7 @@ git commit -m "feat: add login screen (restricted access)"
 ## Task 5: Conectar userId Real ao useAssessment e Fotos
 
 **Files:**
+
 - Modify: `src/hooks/useAssessment.ts`
 - Modify: `app/index.tsx`
 
@@ -389,6 +397,7 @@ git commit -m "feat: add login screen (restricted access)"
 ## Task 6: Botão de Logout
 
 **Files:**
+
 - Modify: `src/components/organisms/AppHeader/AppHeader.tsx`
 
 - [ ] **Step 1: Ler `AppHeader.tsx` para entender estrutura atual de botões**

@@ -1,23 +1,25 @@
-import { render } from "@testing-library/react-native";
-import React from "react";
+import { render } from '@testing-library/react-native';
+import React from 'react';
+import { View as MockView } from 'react-native';
 
-import { FeedbackPanel } from "./FeedbackPanel";
+import { FeedbackPanel } from './FeedbackPanel';
 
-jest.mock("react-native-svg", () => {
-  const { View: MockView } = require("react-native");
-  return {
-    Svg: (props: any) => <MockView {...props} />,
-    Path: (props: any) => <MockView {...props} />,
-  };
-});
+jest.mock('react-native-svg', () => ({
+  Svg: (props: React.ComponentProps<typeof MockView>) => (
+      <MockView {...props} />
+  ),
+  Path: (props: React.ComponentProps<typeof MockView>) => (
+      <MockView {...props} />
+  ),
+}));
 
-describe("FeedbackPanel", () => {
+describe('FeedbackPanel', () => {
   const mockItems = [
-    { value: "Test Item 1", onChangeText: jest.fn() },
-    { value: "Test Item 2", onChangeText: jest.fn() },
+    { value: 'Test Item 1', onChangeText: jest.fn() },
+    { value: 'Test Item 2', onChangeText: jest.fn() },
   ];
 
-  it("renders title and items correctly", () => {
+  it('renders title and items correctly', () => {
     const { getByText, getByDisplayValue } = render(
       <FeedbackPanel
         title="Test"
@@ -30,7 +32,7 @@ describe("FeedbackPanel", () => {
 
     expect(getByText(/Test/)).toBeTruthy();
     expect(getByText(/Panel/)).toBeTruthy();
-    expect(getByDisplayValue("Test Item 1")).toBeTruthy();
-    expect(getByDisplayValue("Test Item 2")).toBeTruthy();
+    expect(getByDisplayValue('Test Item 1')).toBeTruthy();
+    expect(getByDisplayValue('Test Item 2')).toBeTruthy();
   });
 });

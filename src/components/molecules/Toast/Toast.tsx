@@ -1,16 +1,15 @@
-import React, { useEffect, useRef } from "react";
-import { Animated, StyleSheet, View } from "react-native";
+import React, { useEffect, useRef } from 'react';
+import { Animated, StyleSheet, View } from 'react-native';
 
-import { ToastState } from "../../../hooks/useToast";
-import { Text } from "../../atoms";
+import { ToastState } from '../../../hooks/useToast';
+import { Text } from '../../atoms';
 
 export type ToastProps = {
   toast: ToastState;
-  onHide?: () => void;
   testID?: string;
 };
 
-export function Toast({ toast, onHide, testID }: ToastProps) {
+export function Toast({ toast, testID }: ToastProps) {
   const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -31,9 +30,9 @@ export function Toast({ toast, onHide, testID }: ToastProps) {
 
   if (!toast.visible && !toast.message) return null;
 
-  const bgColor = toast.type === "success" ? "#1a3020" : "#301010";
-  const borderColor = toast.type === "success" ? "#2a6040" : "#602020";
-  const dotColor = toast.type === "success" ? "#3a8a3a" : "#d32f2f";
+  const bgColor = toast.type === 'success' ? '#1a3020' : '#301010';
+  const borderColor = toast.type === 'success' ? '#2a6040' : '#602020';
+  const dotColor = toast.type === 'success' ? '#3a8a3a' : '#d32f2f';
 
   return (
     <Animated.View
@@ -51,13 +50,13 @@ export function Toast({ toast, onHide, testID }: ToastProps) {
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 40,
-    left: "50%",
+    left: '50%',
     transform: [{ translateX: -150 }],
     width: 300,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 8,

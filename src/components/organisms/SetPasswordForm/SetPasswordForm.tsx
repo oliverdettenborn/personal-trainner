@@ -1,37 +1,37 @@
-import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
 
-import { useThemeColor } from "../../../hooks/useThemeColor";
-import { Button } from "../../atoms/Button";
-import { Input } from "../../atoms/Input";
-import { Text } from "../../atoms/Text";
+import { useThemeColor } from '../../../hooks/useThemeColor';
+import { Button } from '../../atoms/Button';
+import { Input } from '../../atoms/Input';
+import { Text } from '../../atoms/Text';
 
 export type SetPasswordFormProps = {
   onSubmit: (password: string) => Promise<void>;
 };
 
 export function SetPasswordForm({ onSubmit }: SetPasswordFormProps) {
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const gold = useThemeColor({}, "gold");
-  const text = useThemeColor({}, "text");
-  const text3 = useThemeColor({}, "text3");
-  const danger = useThemeColor({}, "danger");
+  const gold = useThemeColor({}, 'gold');
+  const text = useThemeColor({}, 'text');
+  const text3 = useThemeColor({}, 'text3');
+  const danger = useThemeColor({}, 'danger');
 
   const handleSubmit = async () => {
     if (!password || !confirm) {
-      setError("Por favor, preencha todos os campos.");
+      setError('Por favor, preencha todos os campos.');
       return;
     }
     if (password.length < 8) {
-      setError("A senha deve ter no mínimo 8 caracteres.");
+      setError('A senha deve ter no mínimo 8 caracteres.');
       return;
     }
     if (password !== confirm) {
-      setError("As senhas não coincidem.");
+      setError('As senhas não coincidem.');
       return;
     }
     setLoading(true);
@@ -39,7 +39,7 @@ export function SetPasswordForm({ onSubmit }: SetPasswordFormProps) {
     try {
       await onSubmit(password);
     } catch {
-      setError("Não foi possível salvar a senha. Tente novamente.");
+      setError('Não foi possível salvar a senha. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -90,13 +90,13 @@ export function SetPasswordForm({ onSubmit }: SetPasswordFormProps) {
 const styles = StyleSheet.create({
   title: {
     fontSize: 22,
-    fontWeight: "700",
+    fontWeight: '700',
     letterSpacing: 1,
     marginBottom: 8,
-    textAlign: "center",
+    textAlign: 'center',
   },
-  subtitle: { textAlign: "center", fontSize: 13, marginBottom: 28 },
-  error: { marginBottom: 12, textAlign: "center", fontSize: 14 },
+  subtitle: { textAlign: 'center', fontSize: 13, marginBottom: 28 },
+  error: { marginBottom: 12, textAlign: 'center', fontSize: 14 },
   field: { marginBottom: 12 },
   button: { marginTop: 4 },
 });

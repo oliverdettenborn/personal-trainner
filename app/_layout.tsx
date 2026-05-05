@@ -1,7 +1,7 @@
-import { useAuth } from "@hooks/useAuth";
-import { Slot, useRouter, useSegments } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useAuth } from '@hooks/useAuth';
+import { Slot, useRouter, useSegments } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -16,19 +16,19 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loading) return;
-    const onLogin = segments[0] === "login";
-    const onSetPassword = segments[0] === "set-password";
+    const onLogin = segments[0] === 'login';
+    const onSetPassword = segments[0] === 'set-password';
 
     if (session && needsPasswordSet && !onSetPassword) {
-      router.replace("/set-password");
+      router.replace('/set-password');
       return;
     }
     if (session && !needsPasswordSet && onSetPassword) {
-      router.replace("/");
+      router.replace('/');
       return;
     }
-    if (!session && !onLogin && !needsPasswordSet) router.replace("/login");
-    if (session && onLogin) router.replace("/");
+    if (!session && !onLogin && !needsPasswordSet) router.replace('/login');
+    if (session && onLogin) router.replace('/');
   }, [session, loading, needsPasswordSet, segments]);
 
   return <Slot />;

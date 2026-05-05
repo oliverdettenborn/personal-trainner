@@ -18,15 +18,15 @@ O projeto persiste dados via AsyncStorage. Este spec cria a fundação de banco 
 
 ## File Structure
 
-| Arquivo | Ação | Responsabilidade |
-|---|---|---|
-| `supabase/config.toml` | Criar (via CLI) | Configuração do projeto Supabase CLI |
-| `supabase/migrations/<ts>_create_tables.sql` | Criar | DDL: tabelas students e assessments |
-| `supabase/migrations/<ts>_enable_rls.sql` | Criar | RLS policies (separado do DDL para clareza) |
-| `src/repositories/__tests__/schema.integration.test.ts` | Criar | Testes de integração contra banco local |
-| `.env` | Criar | Credenciais Supabase (não commitado) |
-| `.env.test` | Criar | DB URL local para testes (não commitado) |
-| `.gitignore` | Modificar | Garantir `.env` e `.env.test` ignorados |
+| Arquivo                                                 | Ação            | Responsabilidade                            |
+| ------------------------------------------------------- | --------------- | ------------------------------------------- |
+| `supabase/config.toml`                                  | Criar (via CLI) | Configuração do projeto Supabase CLI        |
+| `supabase/migrations/<ts>_create_tables.sql`            | Criar           | DDL: tabelas students e assessments         |
+| `supabase/migrations/<ts>_enable_rls.sql`               | Criar           | RLS policies (separado do DDL para clareza) |
+| `src/repositories/__tests__/schema.integration.test.ts` | Criar           | Testes de integração contra banco local     |
+| `.env`                                                  | Criar           | Credenciais Supabase (não commitado)        |
+| `.env.test`                                             | Criar           | DB URL local para testes (não commitado)    |
+| `.gitignore`                                            | Modificar       | Garantir `.env` e `.env.test` ignorados     |
 
 ---
 
@@ -42,6 +42,7 @@ O projeto persiste dados via AsyncStorage. Este spec cria a fundação de banco 
 ## Task 1: Init + Variáveis de Ambiente
 
 **Files:**
+
 - Create: `supabase/config.toml` (via CLI)
 - Create: `.env`
 - Modify: `.gitignore`
@@ -95,6 +96,7 @@ git commit -m "chore: init supabase cli"
 ## Task 2: Migration — DDL (Tabelas)
 
 **Files:**
+
 - Create: `supabase/migrations/<timestamp>_create_tables.sql`
 
 - [ ] **Step 1: Criar migration**
@@ -166,6 +168,7 @@ git commit -m "chore: migration - create students and assessments tables"
 ## Task 3: Migration — RLS Policies
 
 **Files:**
+
 - Create: `supabase/migrations/<timestamp>_enable_rls.sql`
 
 - [ ] **Step 1: Criar migration**
@@ -204,6 +207,7 @@ git commit -m "chore: migration - enable rls on students and assessments"
 ## Task 4: Ambiente Local + Testes de Integração
 
 **Files:**
+
 - Create: `src/repositories/__tests__/schema.integration.test.ts`
 - Create: `.env.test`
 
@@ -214,6 +218,7 @@ supabase start
 ```
 
 Esperado: output com URLs locais incluindo:
+
 ```
 API URL: http://127.0.0.1:54321
 DB URL:  postgresql://postgres:postgres@127.0.0.1:54322/postgres
@@ -275,8 +280,7 @@ Esperado: FAIL com `connection refused` (banco não está rodando ainda em CI).
 import { Client } from 'pg';
 
 const DB_URL =
-  process.env.SUPABASE_DB_URL ??
-  'postgresql://postgres:postgres@127.0.0.1:54322/postgres';
+  process.env.SUPABASE_DB_URL ?? 'postgresql://postgres:postgres@127.0.0.1:54322/postgres';
 
 describe('Schema Integration', () => {
   let client: Client;
@@ -334,14 +338,14 @@ describe('Schema Integration', () => {
 
   it('RLS is enabled on students', async () => {
     const res = await client.query(
-      `SELECT rowsecurity FROM pg_tables WHERE tablename = 'students'`
+      `SELECT rowsecurity FROM pg_tables WHERE tablename = 'students'`,
     );
     expect(res.rows[0].rowsecurity).toBe(true);
   });
 
   it('RLS is enabled on assessments', async () => {
     const res = await client.query(
-      `SELECT rowsecurity FROM pg_tables WHERE tablename = 'assessments'`
+      `SELECT rowsecurity FROM pg_tables WHERE tablename = 'assessments'`,
     );
     expect(res.rows[0].rowsecurity).toBe(true);
   });

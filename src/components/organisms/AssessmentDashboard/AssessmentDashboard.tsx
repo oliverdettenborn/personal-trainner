@@ -1,27 +1,27 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Platform,
   ScrollView,
   StyleSheet,
   View,
   useWindowDimensions,
-} from "react-native";
+} from 'react-native';
 
-import { useAssessment } from "../../../hooks/useAssessment";
-import { useAuth } from "../../../hooks/useAuth";
-import { useConfirmModal } from "../../../hooks/useConfirmModal";
-import { useImageCapture } from "../../../hooks/useImageCapture";
-import { useStudents } from "../../../hooks/useStudents";
-import { useToast } from "../../../hooks/useToast";
-import { signOut } from "../../../services/authService";
-import { Assessment } from "../../../types/assessment";
-import { ConfirmModal } from "../../molecules/ConfirmModal";
-import { EmptyState } from "../../molecules/EmptyState";
-import { Toast } from "../../molecules/Toast";
-import { ActionBar } from "../ActionBar";
-import { AppHeader } from "../AppHeader";
-import { AssessmentContent } from "../AssessmentContent";
-import { Sidebar } from "../Sidebar";
+import { useAssessment } from '../../../hooks/useAssessment';
+import { useAuth } from '../../../hooks/useAuth';
+import { useConfirmModal } from '../../../hooks/useConfirmModal';
+import { useImageCapture } from '../../../hooks/useImageCapture';
+import { useStudents } from '../../../hooks/useStudents';
+import { useToast } from '../../../hooks/useToast';
+import { signOut } from '../../../services/authService';
+import { Assessment } from '../../../types/assessment';
+import { ConfirmModal } from '../../molecules/ConfirmModal';
+import { EmptyState } from '../../molecules/EmptyState';
+import { Toast } from '../../molecules/Toast';
+import { ActionBar } from '../ActionBar';
+import { AppHeader } from '../AppHeader';
+import { AssessmentContent } from '../AssessmentContent';
+import { Sidebar } from '../Sidebar';
 
 export function AssessmentDashboard() {
   const { userId } = useAuth();
@@ -53,8 +53,8 @@ export function AssessmentDashboard() {
 
   const [isSaving, setIsSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
-  const [sidebarVisible, setSidebarVisible] = useState(Platform.OS === "web");
-  const [weightError, setWeightError] = useState("");
+  const [sidebarVisible, setSidebarVisible] = useState(Platform.OS === 'web');
+  const [weightError, setWeightError] = useState('');
 
   const captureAreaRef = useRef<View>(null);
   const dirtyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -74,16 +74,16 @@ export function AssessmentDashboard() {
   }, [isDirty]);
 
   const currentStudent = students.find((s) => s.id === currentStudentId);
-  const studentName = currentStudent?.name || "Avaliacao";
+  const studentName = currentStudent?.name || 'Avaliacao';
   const assessmentDate = new Date(currentAssessment?.createdAt || Date.now())
     .toLocaleDateString()
-    .replace(/\//g, "-");
+    .replace(/\//g, '-');
 
   const { download, copy } = useImageCapture({
     captureRef: captureAreaRef,
-    elementId: "template-capture-area",
+    elementId: 'template-capture-area',
     fileName: `Avaliacao_${studentName}_${assessmentDate}`,
-    onError: (msg) => showToast(msg, "error"),
+    onError: (msg) => showToast(msg, 'error'),
   });
 
   const handleAddStudent = async (name: string) => {
@@ -107,24 +107,24 @@ export function AssessmentDashboard() {
 
   const handleSave = () => {
     if (!currentAssessment?.front_before_weight) {
-      setWeightError("O peso é obrigatório");
+      setWeightError('O peso é obrigatório');
       return;
     }
-    setWeightError("");
+    setWeightError('');
     setIsSaving(true);
     saveManual();
     setTimeout(() => {
       setIsSaving(false);
       setIsDirty(false);
-      showToast("Avaliação salva com sucesso", "success");
+      showToast('Avaliação salva com sucesso', 'success');
     }, 500);
   };
 
   const handleDelete = () => {
     if (currentAssessmentId) {
       confirm.show(
-        "Excluir Avaliação",
-        "Tem certeza que deseja excluir esta avaliação? A ação é irreversível.",
+        'Excluir Avaliação',
+        'Tem certeza que deseja excluir esta avaliação? A ação é irreversível.',
         () => removeAssessment(currentAssessmentId),
       );
     }
@@ -140,13 +140,11 @@ export function AssessmentDashboard() {
         students={students}
         onSelectStudent={setCurrentStudentId}
         onAddStudent={handleAddStudent}
-        onRemoveStudent={(id) =>
-          confirm.show(
-            "Remover Aluno",
-            `Deseja remover o aluno "${students.find((s) => s.id === id)?.name}" e todas as suas avaliações? Essa ação é irreversível.`,
-            () => handleRemoveStudent(id),
-          )
-        }
+        onRemoveStudent={(id) => {
+          const name = students.find((s) => s.id === id)?.name;
+          const message = `Deseja remover o aluno "${name}" e todas as suas avaliações? Essa ação é irreversível.`;
+          confirm.show('Remover Aluno', message, () => handleRemoveStudent(id));
+        }}
         sidebarVisible={sidebarVisible}
         onToggleSidebar={() => setSidebarVisible((v) => !v)}
         onLogout={signOut}
@@ -187,7 +185,7 @@ export function AssessmentDashboard() {
                 onCopyImage={copy}
                 onDelete={handleDelete}
                 isSaving={isSaving}
-                status={isDirty ? "unsaved" : "saved"}
+                status={isDirty ? 'unsaved' : 'saved'}
               />
               <AssessmentContent
                 assessment={currentAssessment}
@@ -219,11 +217,11 @@ export function AssessmentDashboard() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: "#0e0e0e",
+    backgroundColor: '#0e0e0e',
   },
   appBody: {
     flex: 1,
-    flexDirection: "row" as const,
+    flexDirection: 'row' as const,
   },
   mainContent: {
     flex: 1,

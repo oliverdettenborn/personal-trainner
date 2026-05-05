@@ -36,6 +36,7 @@ O usuário já criou o projeto no Supabase. Falta: inicializar o CLI localmente,
 `pg-mem` é uma implementação in-memory de PostgreSQL puro em JS/TS — análoga ao H2 do Java ou ao mem-db do Datomic. Roda sem Docker, sem conexão de rede, sem dependência de ambiente externo. Isso mantém o CI atual (`pr.yml`, `deploy.yml`) funcionando sem mudanças na infraestrutura.
 
 **Limitação conhecida:** `pg-mem` não suporta RLS (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY` / `CREATE POLICY`). Por isso:
+
 - Testes de schema testam estrutura de tabelas e FK constraints (3 testes)
 - Correctude do RLS é validada pela migration SQL + `supabase db push` bem-sucedido no CI
 
@@ -45,16 +46,16 @@ O usuário já criou o projeto no Supabase. Falta: inicializar o CLI localmente,
 
 ## Arquivos críticos
 
-| Arquivo | Ação |
-|---|---|
-| `supabase/config.toml` | Criar via `supabase init` |
-| `supabase/migrations/<ts>_create_tables.sql` | Criar — DDL |
-| `supabase/migrations/<ts>_enable_rls.sql` | Criar — RLS |
-| `src/repositories/__tests__/schema.integration.test.ts` | Criar — 3 testes via pg-mem |
-| `jest.integration.config.js` | Criar — config separada (ts-jest + node) |
-| `package.json` | Modificar — script `test:integration` + deps (`pg-mem`, `ts-jest`, `pg`) |
-| `.github/workflows/deploy.yml` | Modificar — adicionar job `migrate` |
-| `.gitignore` | Verificar — `.env.test` já coberto? |
+| Arquivo                                                 | Ação                                                                     |
+| ------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `supabase/config.toml`                                  | Criar via `supabase init`                                                |
+| `supabase/migrations/<ts>_create_tables.sql`            | Criar — DDL                                                              |
+| `supabase/migrations/<ts>_enable_rls.sql`               | Criar — RLS                                                              |
+| `src/repositories/__tests__/schema.integration.test.ts` | Criar — 3 testes via pg-mem                                              |
+| `jest.integration.config.js`                            | Criar — config separada (ts-jest + node)                                 |
+| `package.json`                                          | Modificar — script `test:integration` + deps (`pg-mem`, `ts-jest`, `pg`) |
+| `.github/workflows/deploy.yml`                          | Modificar — adicionar job `migrate`                                      |
+| `.gitignore`                                            | Verificar — `.env.test` já coberto?                                      |
 
 **Não criar:** `.env.test` (pg-mem não precisa de connection string).
 
@@ -90,7 +91,9 @@ O usuário já criou o projeto no Supabase. Falta: inicializar o CLI localmente,
    module.exports = {
      preset: 'ts-jest',
      testEnvironment: 'node',
-     moduleNameMapper: { /* aliases do tsconfig */ },
+     moduleNameMapper: {
+       /* aliases do tsconfig */
+     },
    };
    ```
 3. Adicionar ao `package.json`:
@@ -125,6 +128,7 @@ migrate:
 E ajustar `needs` do job `build` para `needs: [test, migrate]`.
 
 Também modificar o step `expo export` do job `build` para injetar as env vars do Supabase:
+
 ```yaml
 - run: npx expo export --platform web
   env:

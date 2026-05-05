@@ -1,11 +1,13 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createStudentRepository } from "@repositories/index";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createStudentRepository } from '@repositories/index';
+import {
+  useCallback, useEffect, useMemo, useState,
+} from 'react';
 
-import { Student } from "../types/assessment";
+import { Student } from '../types/assessment';
 
-const STORAGE_KEY = "@caio_oliver_db";
-const MIGRATION_FLAG = "@migration_v1_students_done";
+const STORAGE_KEY = '@caio_oliver_db';
+const MIGRATION_FLAG = '@migration_v1_students_done';
 
 export function useStudents(userId: string | null) {
   const [students, setStudents] = useState<Student[]>([]);
@@ -31,7 +33,7 @@ export function useStudents(userId: string | null) {
             existing.map((s) => repo.insert(s).catch(() => {})),
           );
         }
-        await AsyncStorage.setItem(MIGRATION_FLAG, "1");
+        await AsyncStorage.setItem(MIGRATION_FLAG, '1');
       }
 
       const data = await repo.findAll();
@@ -44,7 +46,7 @@ export function useStudents(userId: string | null) {
 
   const addStudent = useCallback(
     async (name: string): Promise<string> => {
-      if (!repo) throw new Error("Not authenticated");
+      if (!repo) throw new Error('Not authenticated');
       const student: Student = {
         id: crypto.randomUUID(),
         name,

@@ -1,2 +1,2 @@
-export * from "./AssessmentTemplate";
-export * from "./AuthTemplate";
+export * from './AssessmentTemplate';
+export * from './AuthTemplate';

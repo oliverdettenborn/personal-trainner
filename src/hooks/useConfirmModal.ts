@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 type ConfirmConfig = {
   visible: boolean;
@@ -9,8 +9,8 @@ type ConfirmConfig = {
 
 const INITIAL: ConfirmConfig = {
   visible: false,
-  title: "",
-  message: "",
+  title: '',
+  message: '',
   onConfirm: () => {},
 };
 
@@ -18,7 +18,12 @@ export function useConfirmModal() {
   const [config, setConfig] = useState<ConfirmConfig>(INITIAL);
 
   const show = (title: string, message: string, onConfirm: () => void) => {
-    setConfig({ visible: true, title, message, onConfirm });
+    setConfig({
+      visible: true,
+      title,
+      message,
+      onConfirm,
+    });
   };
 
   const hide = () => setConfig((prev) => ({ ...prev, visible: false }));
