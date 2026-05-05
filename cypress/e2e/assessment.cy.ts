@@ -81,7 +81,7 @@ describe("Physical Assessment Flow", () => {
       const hasDraft = assessments.some(
         (a: any) => a.front_before_weight === "82 kg",
       );
-      expect(hasDraft).to.be.true;
+      expect(hasDraft).to.equal(true);
     });
   });
 });
